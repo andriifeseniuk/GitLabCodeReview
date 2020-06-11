@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="GitLabCodeReview.andrew_fesenyuk.c7f993e3-ad79-4cc8-9a93-306f622b8cb3" Version="1.0" Language="en-US" Publisher="andrew_fesenyuk" />
-    <DisplayName>GitLabCodeReview</DisplayName>
-    <Description>Empty VSIX Project.</Description>
+    <Identity Id="c7f993e3-ad79-4cc8-9a93-306f622b8cb3" Version="1.0" Language="en-US" Publisher="Andrii Feseniuk" />
+    <DisplayName>GitLab Code Review</DisplayName>
+    <Description xml:space="preserve">A tool for reviewing merge requests in GitLab. Provided as-is.</Description>
   </Metadata>
   <Installation>
     <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0]" />
