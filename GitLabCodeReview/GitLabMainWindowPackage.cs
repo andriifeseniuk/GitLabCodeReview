@@ -39,6 +39,7 @@ namespace GitLabCodeReview
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideToolWindow(typeof(GitLabMainWindow))]
+    [ProvideOptionPage(typeof(GitLabOptions), "GitLab Code Review", "General", 1234, 1235, true)]
     [Guid(GitLabMainWindowPackage.PackageGuidString)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     public sealed class GitLabMainWindowPackage : Package
