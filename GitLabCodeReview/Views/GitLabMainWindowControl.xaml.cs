@@ -26,10 +26,10 @@ namespace GitLabCodeReview.Views
             this.DataContext = mainViewModel;
         }
 
-        internal void SetPackage(Package package)
+        private void MyToolWindow_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
             var mainViewModel = (MainViewModel)this.DataContext;
-            mainViewModel.SetPackge(package);
+            mainViewModel.RefreshAll();
         }
-    }
+    }    
 }

@@ -8,12 +8,14 @@
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="300"
-             Name="MyToolWindow">
+             Name="MyToolWindow"
+             Loaded="MyToolWindow_Loaded">
     <Grid>
         <StackPanel Orientation="Vertical">
             <Expander Header="Options">
                 <Grid>
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
@@ -36,6 +38,8 @@
 
                     <TextBlock Grid.Row="3" Grid.Column="0" Text="Working Directory: "/>
                     <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding GitOptions.WorkingDirectory}"/>
+
+                    <Button Grid.Row="4" Grid.Column="0" Content="Refresh Options" Command="{Binding RefreshOptionsCommand}"/>
                 </Grid>
             </Expander>
             <Expander Header="{Binding ErrorsHeader}">

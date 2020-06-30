@@ -37,11 +37,5 @@ namespace GitLabCodeReview
             // the object returned by the Content property.
             this.Content = new GitLabMainWindowControl();
         }
-
-        public void SetPackage(Package package)
-        {
-            var control = (GitLabMainWindowControl)this.Content;
-            control.SetPackage(package);
-        }
     }
 }
