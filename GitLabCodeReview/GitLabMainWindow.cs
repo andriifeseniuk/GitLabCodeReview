@@ -9,6 +9,7 @@ namespace GitLabCodeReview
     using System;
     using System.Runtime.InteropServices;
     using Microsoft.VisualStudio.Shell;
+    using Views;
 
     /// <summary>
     /// This class implements the tool window exposed by this package and hosts a user control.
@@ -35,6 +36,12 @@ namespace GitLabCodeReview
             // we are not calling Dispose on this object. This is because ToolWindowPane calls Dispose on
             // the object returned by the Content property.
             this.Content = new GitLabMainWindowControl();
+        }
+
+        public void SetPackage(Package package)
+        {
+            var control = (GitLabMainWindowControl)this.Content;
+            control.SetPackage(package);
         }
     }
 }
