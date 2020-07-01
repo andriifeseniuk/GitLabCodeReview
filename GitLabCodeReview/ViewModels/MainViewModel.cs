@@ -1,14 +1,20 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using Microsoft.VisualStudio.Shell;
 using EnvDTE;
 using System.Windows.Input;
 using GitLabCodeReview.Common.Commands;
+using System.Net;
+using System.Net.Http;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace GitLabCodeReview.ViewModels
 {
     public class MainViewModel : BaseViewModel
     {
+        private long? userId;
+        private string userName;
+
         public MainViewModel()
         {
             this.Errors.CollectionChanged += Errors_CollectionChanged;
@@ -16,6 +22,22 @@ namespace GitLabCodeReview.ViewModels
         }
 
         public GitLabOptionsViewModel GitOptions { get; set; } = new GitLabOptionsViewModel();
+
+        public long? UserId
+        {
+            get
+            {
+                return this.userId;
+            }
+        }
+
+        public string UserName
+        {
+            get
+            {
+                return this.userName;
+            }
+        }
 
         public string ErrorsHeader => $"Errors ({this.Errors.Count})";
 
@@ -26,6 +48,7 @@ namespace GitLabCodeReview.ViewModels
         public void RefreshAll()
         {
             this.RefreshOptions();
+            this.RefreshUserInfo();
         }
 
         private void Errors_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -48,8 +71,36 @@ namespace GitLabCodeReview.ViewModels
             }
             catch(Exception ex)
             {
-                this.Errors.Add(ex.Message);
+                this.AddError(ex.ToString());
             }
+        }
+
+        private async void RefreshUserInfo()
+        {
+            try
+            {
+                ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
+                var client = new HttpClient();
+                client.DefaultRequestHeaders.Add("PRIVATE-TOKEN", this.GitOptions.PrivateToken);
+                var uri = $"{this.GitOptions.ApiUrl}/user";
+                var response = await client.GetAsync(uri);
+                var responseAsString = await response.Content.ReadAsStringAsync();
+                var jToken = (JToken)JsonConvert.DeserializeObject(responseAsString);
+                this.userId = jToken["id"].Value<long>();
+                this.userName = jToken["username"].Value<string>();
+
+                this.SchedulePropertyChanged(nameof(this.UserId));
+                this.SchedulePropertyChanged(nameof(this.UserName));
+            }
+            catch (Exception ex)
+            {
+                this.AddError(ex.ToString());
+            }
+        }
+
+        private void AddError(string message)
+        {
+            this.Errors.Add(message);
         }
     }
 }

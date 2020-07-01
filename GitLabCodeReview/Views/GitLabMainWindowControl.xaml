@@ -42,6 +42,26 @@
                     <Button Grid.Row="4" Grid.Column="0" Content="Refresh Options" Command="{Binding RefreshOptionsCommand}"/>
                 </Grid>
             </Expander>
+            <Expander Header="User Info">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="User ID: " />
+                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding UserId}" />
+
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Username: " />
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding UserName}" />
+                </Grid>
+            </Expander>
             <Expander Header="{Binding ErrorsHeader}">
                 <ItemsControl ItemsSource="{Binding Errors}">
                 </ItemsControl>

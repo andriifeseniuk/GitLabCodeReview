@@ -10,7 +10,7 @@ namespace GitLabCodeReview.ViewModels
     {
         private string apiUrl;
         private string privateToken;
-        private int? selectedProjectId;
+        private long? selectedProjectId;
         private string repositoryLocalPath;
         private string workingDirectory;
 
@@ -40,7 +40,7 @@ namespace GitLabCodeReview.ViewModels
             }
         }
 
-        public int? SelectedProjectId
+        public long? SelectedProjectId
         {
             get
             {

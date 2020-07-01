@@ -20,7 +20,7 @@ namespace GitLabCodeReview
 
         [DisplayName("Selected Project Id")]
         [Description("The ID of GitLab project you are working with. If you don't know no worries you will be able to choose it from the projects list. This field is optional.")]
-        public int? SelectedProjectId { get; set; }
+        public long? SelectedProjectId { get; set; }
 
         [DisplayName("Repository Local Path")]
         [Description("The local path to your git repository root. Used to diff files from remote against your local files if you current branch is the same as in merge request. This field is optional.")]
