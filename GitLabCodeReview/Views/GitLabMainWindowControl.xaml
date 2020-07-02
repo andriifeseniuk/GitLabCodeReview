@@ -62,6 +62,27 @@
                     <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding UserName}" />
                 </Grid>
             </Expander>
+            <Expander Header="Projects">
+                <ItemsControl ItemsSource="{Binding Projects}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <RadioButton Grid.Column="0" IsChecked="{Binding IsSelected}"/>
+                                <TextBlock Grid.Column="1" Text="{Binding Id}"/>
+                                <TextBlock Grid.Column="2" Text=": "/>
+                                <TextBlock Grid.Column="3" Text="{Binding Name}"/>
+                            </Grid>  
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Expander>
             <Expander Header="{Binding ErrorsHeader}">
                 <ItemsControl ItemsSource="{Binding Errors}">
                 </ItemsControl>

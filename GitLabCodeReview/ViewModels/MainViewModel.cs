@@ -7,6 +7,8 @@ using System.Net;
 using System.Net.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using GitLabCodeReview.Models;
+using System.Threading.Tasks;
 
 namespace GitLabCodeReview.ViewModels
 {
@@ -39,16 +41,19 @@ namespace GitLabCodeReview.ViewModels
             }
         }
 
+        public ObservableCollection<GitLabProjectViewModel> Projects { get; } = new ObservableCollection<GitLabProjectViewModel>();
+
         public string ErrorsHeader => $"Errors ({this.Errors.Count})";
 
         public ObservableCollection<string> Errors { get; } = new ObservableCollection<string>();
 
         public ICommand RefreshOptionsCommand { get; }
 
-        public void RefreshAll()
+        public async void RefreshAll()
         {
             this.RefreshOptions();
-            this.RefreshUserInfo();
+            await this.RefreshUserInfo();
+            await this.RefreshProjects();
         }
 
         private void Errors_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -75,7 +80,7 @@ namespace GitLabCodeReview.ViewModels
             }
         }
 
-        private async void RefreshUserInfo()
+        private async Task RefreshUserInfo()
         {
             try
             {
@@ -95,6 +100,67 @@ namespace GitLabCodeReview.ViewModels
             catch (Exception ex)
             {
                 this.AddError(ex.ToString());
+            }
+        }
+
+        private async Task RefreshProjects()
+        {
+            try
+            {
+                ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
+                var client = new HttpClient();
+                client.DefaultRequestHeaders.Add("PRIVATE-TOKEN", this.GitOptions.PrivateToken);
+                var uri = $"{this.GitOptions.ApiUrl}/users/{this.userId}/projects";
+                var response = await client.GetAsync(uri);
+                var responseAsString = await response.Content.ReadAsStringAsync();
+                var jArray = (JArray)JsonConvert.DeserializeObject(responseAsString);
+
+                foreach(var project in this.Projects)
+                {
+                    project.PropertyChanged -= this.OnProjectPropertyChanged;
+                }
+
+                this.Projects.Clear();
+                
+                foreach(var jToken in jArray)
+                {
+                    var projectId = jToken["id"].Value<long>();
+                    var projectName = jToken["name"].Value<string>();
+                    var project = new GitLabProjectViewModel(projectId, projectName);
+                    this.Projects.Add(project);
+                }
+
+                foreach (var project in this.Projects)
+                {
+                    project.PropertyChanged += this.OnProjectPropertyChanged;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                this.AddError(ex.ToString());
+            }
+        }
+
+        private void OnProjectPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            var project = sender as GitLabProjectViewModel;
+            if (project == null)
+            {
+                return;
+            }
+
+            switch (e.PropertyName)
+            {
+                case nameof(GitLabProjectViewModel.IsSelected):
+                {
+                    if (project.IsSelected)
+                    {
+                        this.GitOptions.SelectedProjectId = project.Id;
+                    }
+
+                    break;
+                }
             }
         }
 
