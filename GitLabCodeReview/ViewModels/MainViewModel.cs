@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using GitLabCodeReview.Models;
 using System.Threading.Tasks;
+using GitLabCodeReview.Client;
 
 namespace GitLabCodeReview.ViewModels
 {
@@ -84,15 +85,12 @@ namespace GitLabCodeReview.ViewModels
         {
             try
             {
-                ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
-                var client = new HttpClient();
-                client.DefaultRequestHeaders.Add("PRIVATE-TOKEN", this.GitOptions.PrivateToken);
-                var uri = $"{this.GitOptions.ApiUrl}/user";
-                var response = await client.GetAsync(uri);
-                var responseAsString = await response.Content.ReadAsStringAsync();
-                var jToken = (JToken)JsonConvert.DeserializeObject(responseAsString);
-                this.userId = jToken["id"].Value<long>();
-                this.userName = jToken["username"].Value<string>();
+                using (var client = new GitLabClient(this.GitOptions.ApiUrl, this.GitOptions.PrivateToken))
+                {
+                    var user = await client.GetUserAsync();
+                    this.userId = user.UserId;
+                    this.userName = user.UserName;
+                }
 
                 this.SchedulePropertyChanged(nameof(this.UserId));
                 this.SchedulePropertyChanged(nameof(this.UserName));
@@ -107,27 +105,25 @@ namespace GitLabCodeReview.ViewModels
         {
             try
             {
-                ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
-                var client = new HttpClient();
-                client.DefaultRequestHeaders.Add("PRIVATE-TOKEN", this.GitOptions.PrivateToken);
-                var uri = $"{this.GitOptions.ApiUrl}/users/{this.userId}/projects";
-                var response = await client.GetAsync(uri);
-                var responseAsString = await response.Content.ReadAsStringAsync();
-                var jArray = (JArray)JsonConvert.DeserializeObject(responseAsString);
-
-                foreach(var project in this.Projects)
+                foreach (var project in this.Projects)
                 {
                     project.PropertyChanged -= this.OnProjectPropertyChanged;
                 }
 
                 this.Projects.Clear();
-                
-                foreach(var jToken in jArray)
+
+                if (this.UserId == null)
                 {
-                    var projectId = jToken["id"].Value<long>();
-                    var projectName = jToken["name"].Value<string>();
-                    var project = new GitLabProjectViewModel(projectId, projectName);
-                    this.Projects.Add(project);
+                    throw new InvalidOperationException("UserId is null");
+                }
+
+                using (var client = new GitLabClient(this.GitOptions.ApiUrl, this.GitOptions.PrivateToken))
+                {
+                    var projects = await client.GetProjects(this.UserId.Value);
+                    foreach (var project in projects)
+                    {
+                        this.Projects.Add(new GitLabProjectViewModel(project.Id, project.Name));
+                    }
                 }
 
                 foreach (var project in this.Projects)
