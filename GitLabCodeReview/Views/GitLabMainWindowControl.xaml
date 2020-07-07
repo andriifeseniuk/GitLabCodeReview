@@ -78,7 +78,28 @@
                                 <TextBlock Grid.Column="1" Text="{Binding Id}"/>
                                 <TextBlock Grid.Column="2" Text=": "/>
                                 <TextBlock Grid.Column="3" Text="{Binding Name}"/>
-                            </Grid>  
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Expander>
+            <Expander Header="Merge requests">
+                <ItemsControl ItemsSource="{Binding MergeRequests}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <RadioButton Grid.Column="0" IsChecked="{Binding IsSelected}"/>
+                                <TextBlock Grid.Column="1" Text="{Binding InternalId}"/>
+                                <TextBlock Grid.Column="2" Text=": "/>
+                                <TextBlock Grid.Column="3" Text="{Binding Title}"/>
+                            </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>

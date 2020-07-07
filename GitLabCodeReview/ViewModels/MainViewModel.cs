@@ -3,10 +3,6 @@ using System.Collections.ObjectModel;
 using EnvDTE;
 using System.Windows.Input;
 using GitLabCodeReview.Common.Commands;
-using System.Net;
-using System.Net.Http;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using GitLabCodeReview.Models;
 using System.Threading.Tasks;
 using GitLabCodeReview.Client;
@@ -17,6 +13,7 @@ namespace GitLabCodeReview.ViewModels
     {
         private long? userId;
         private string userName;
+        private long? selectedMergeRequestId;
 
         public MainViewModel()
         {
@@ -43,6 +40,35 @@ namespace GitLabCodeReview.ViewModels
         }
 
         public ObservableCollection<GitLabProjectViewModel> Projects { get; } = new ObservableCollection<GitLabProjectViewModel>();
+
+        public long? SelectedProjectId
+        {
+            get
+            {
+                return this.GitOptions.SelectedProjectId;
+            }
+            set
+            {
+                this.GitOptions.SelectedProjectId = value;
+                this.SchedulePropertyChanged();
+                this.RefreshMergeRequests().ConfigureAwait(false);
+            }
+        }
+
+        public ObservableCollection<GitLabMergeRequestViewModel> MergeRequests { get; } = new ObservableCollection<GitLabMergeRequestViewModel>();
+
+        public long? SelectedMergeRequestId
+        {
+            get
+            {
+                return this.selectedMergeRequestId;
+            }
+            set
+            {
+                this.selectedMergeRequestId = value;
+                this.SchedulePropertyChanged();
+            }
+        }
 
         public string ErrorsHeader => $"Errors ({this.Errors.Count})";
 
@@ -138,6 +164,43 @@ namespace GitLabCodeReview.ViewModels
             }
         }
 
+        private async Task RefreshMergeRequests()
+        {
+            try
+            {
+                foreach (var request in this.MergeRequests)
+                {
+                    request.PropertyChanged -= this.OnMergeRequestPropertyChanged;
+                }
+
+                this.MergeRequests.Clear();
+
+                if (this.SelectedProjectId == null)
+                {
+                    throw new InvalidOperationException("SelectedProjectId is null");
+                }
+
+                using (var client = new GitLabClient(this.GitOptions.ApiUrl, this.GitOptions.PrivateToken))
+                {
+                    var requests = await client.GetMergeRequests(this.GitOptions.SelectedProjectId.Value);
+                    foreach (var request in requests)
+                    {
+                        this.MergeRequests.Add(new GitLabMergeRequestViewModel(request.Id, request.InternalId, request.Title));
+                    }
+                }
+
+                foreach (var request in this.MergeRequests)
+                {
+                    request.PropertyChanged += this.OnMergeRequestPropertyChanged;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                this.AddError(ex.ToString());
+            }
+        }
+
         private void OnProjectPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             var project = sender as GitLabProjectViewModel;
@@ -152,11 +215,33 @@ namespace GitLabCodeReview.ViewModels
                 {
                     if (project.IsSelected)
                     {
-                        this.GitOptions.SelectedProjectId = project.Id;
+                        this.SelectedProjectId = project.Id;
                     }
 
                     break;
                 }
+            }
+        }
+
+        private void OnMergeRequestPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            var MergeRequest = sender as GitLabMergeRequestViewModel;
+            if (MergeRequest == null)
+            {
+                return;
+            }
+
+            switch (e.PropertyName)
+            {
+                case nameof(GitLabMergeRequestViewModel.IsSelected):
+                    {
+                        if (MergeRequest.IsSelected)
+                        {
+                            this.SelectedMergeRequestId = MergeRequest.Id;
+                        }
+
+                        break;
+                    }
             }
         }
 

@@ -53,5 +53,14 @@ namespace GitLabCodeReview.Client
             var projects = (GitLabProject[])JsonConvert.DeserializeObject(responseAsString, typeof(GitLabProject[]));
             return projects;
         }
+
+        public async Task<IEnumerable<GitLabMergeRequest>> GetMergeRequests(long projectId)
+        {
+            var uri = $"{this.apiUrl}/projects/{projectId}/merge_requests?state=opened";
+            var response = await client.GetAsync(uri);
+            var responseAsString = await response.Content.ReadAsStringAsync();
+            var requests = (GitLabMergeRequest[])JsonConvert.DeserializeObject(responseAsString, typeof(GitLabMergeRequest[]));
+            return requests;
+        }
     }
 }

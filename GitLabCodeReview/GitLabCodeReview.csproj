@@ -59,8 +59,10 @@
     <Compile Include="GitLabOptions.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Models\GitLabMergeRequest.cs" />
     <Compile Include="Models\GitLabProject.cs" />
     <Compile Include="Models\GitLabUser.cs" />
+    <Compile Include="ViewModels\GitLabMergeRequestViewModel.cs" />
     <Compile Include="ViewModels\GitLabProjectViewModel.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\GitLabOptionsViewModel.cs" />
