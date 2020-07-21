@@ -104,6 +104,22 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </Expander>
+            <Expander Header="Changes">
+                <ItemsControl ItemsSource="{Binding Changes}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Column="1" Text="{Binding FileDisplayName}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Expander>
             <Expander Header="{Binding ErrorsHeader}">
                 <ItemsControl ItemsSource="{Binding Errors}">
                 </ItemsControl>

@@ -57,7 +57,7 @@ namespace GitLabCodeReview.ViewModels
 
         public ObservableCollection<GitLabMergeRequestViewModel> MergeRequests { get; } = new ObservableCollection<GitLabMergeRequestViewModel>();
 
-        public long? SelectedMergeRequestId
+        public long? SelectedMergeRequestInternalId
         {
             get
             {
@@ -67,8 +67,11 @@ namespace GitLabCodeReview.ViewModels
             {
                 this.selectedMergeRequestId = value;
                 this.SchedulePropertyChanged();
+                this.RefreshChanges().ConfigureAwait(false);
             }
         }
+
+        public ObservableCollection<GitLabChangeViewModel> Changes { get; } = new ObservableCollection<GitLabChangeViewModel>();
 
         public string ErrorsHeader => $"Errors ({this.Errors.Count})";
 
@@ -145,7 +148,7 @@ namespace GitLabCodeReview.ViewModels
 
                 using (var client = new GitLabClient(this.GitOptions.ApiUrl, this.GitOptions.PrivateToken))
                 {
-                    var projects = await client.GetProjects(this.UserId.Value);
+                    var projects = await client.GetProjectsAsync(this.UserId.Value);
                     foreach (var project in projects)
                     {
                         this.Projects.Add(new GitLabProjectViewModel(project.Id, project.Name));
@@ -182,7 +185,7 @@ namespace GitLabCodeReview.ViewModels
 
                 using (var client = new GitLabClient(this.GitOptions.ApiUrl, this.GitOptions.PrivateToken))
                 {
-                    var requests = await client.GetMergeRequests(this.GitOptions.SelectedProjectId.Value);
+                    var requests = await client.GetMergeRequestsAsync(this.GitOptions.SelectedProjectId.Value);
                     foreach (var request in requests)
                     {
                         this.MergeRequests.Add(new GitLabMergeRequestViewModel(request.Id, request.InternalId, request.Title));
@@ -200,6 +203,38 @@ namespace GitLabCodeReview.ViewModels
                 this.AddError(ex.ToString());
             }
         }
+
+        private async Task RefreshChanges()
+        {
+            try
+            {
+                this.Changes.Clear();
+
+                if (this.SelectedProjectId == null)
+                {
+                    throw new InvalidOperationException("SelectedProjectId is null");
+                }
+
+                if (this.SelectedMergeRequestInternalId == null)
+                {
+                    throw new InvalidOperationException("SelectedMergeRequestInternalId is null");
+                }
+
+                using (var client = new GitLabClient(this.GitOptions.ApiUrl, this.GitOptions.PrivateToken))
+                {
+                    var details = await client.GetMergeRequestDetailsAsync(this.GitOptions.SelectedProjectId.Value, this.SelectedMergeRequestInternalId.Value);
+                    foreach (var change in details.Changes)
+                    {
+                        this.Changes.Add(new GitLabChangeViewModel(change));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                this.AddError(ex.ToString());
+            }
+        }
+
 
         private void OnProjectPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
@@ -237,7 +272,7 @@ namespace GitLabCodeReview.ViewModels
                     {
                         if (MergeRequest.IsSelected)
                         {
-                            this.SelectedMergeRequestId = MergeRequest.Id;
+                            this.SelectedMergeRequestInternalId = MergeRequest.InternalId;
                         }
 
                         break;

@@ -45,7 +45,7 @@ namespace GitLabCodeReview.Client
             return user;
         }
 
-        public async Task<IEnumerable<GitLabProject>> GetProjects(long userId)
+        public async Task<IEnumerable<GitLabProject>> GetProjectsAsync(long userId)
         {
             var uri = $"{this.apiUrl}/users/{userId}/projects";
             var response = await client.GetAsync(uri);
@@ -54,13 +54,22 @@ namespace GitLabCodeReview.Client
             return projects;
         }
 
-        public async Task<IEnumerable<GitLabMergeRequest>> GetMergeRequests(long projectId)
+        public async Task<IEnumerable<GitLabMergeRequest>> GetMergeRequestsAsync(long projectId)
         {
             var uri = $"{this.apiUrl}/projects/{projectId}/merge_requests?state=opened";
             var response = await client.GetAsync(uri);
             var responseAsString = await response.Content.ReadAsStringAsync();
             var requests = (GitLabMergeRequest[])JsonConvert.DeserializeObject(responseAsString, typeof(GitLabMergeRequest[]));
             return requests;
+        }
+
+        public async Task<GitLabMergeRequestDetails> GetMergeRequestDetailsAsync(long projectId, long mergeRequestInternalId)
+        {
+            var uri = $"{this.apiUrl}/projects/{projectId}/merge_requests/{mergeRequestInternalId}/changes";
+            var response = await client.GetAsync(uri);
+            var responseAsString = await response.Content.ReadAsStringAsync();
+            var changes = (GitLabMergeRequestDetails)JsonConvert.DeserializeObject(responseAsString, typeof(GitLabMergeRequestDetails));
+            return changes;
         }
     }
 }
