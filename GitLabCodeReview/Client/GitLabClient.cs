@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace GitLabCodeReview.Client
 {
@@ -70,6 +71,24 @@ namespace GitLabCodeReview.Client
             var responseAsString = await response.Content.ReadAsStringAsync();
             var changes = (GitLabMergeRequestDetails)JsonConvert.DeserializeObject(responseAsString, typeof(GitLabMergeRequestDetails));
             return changes;
+        }
+
+        public async Task<GitLabFile> GetFileAsync(long projectId, string branch, string path)
+        {
+            var uri = $"{this.apiUrl}/projects/{projectId}/repository/files/{HttpUtility.UrlEncode(path)}?ref={branch}";
+            var response = await client.GetAsync(uri);
+            var responseAsString = await response.Content.ReadAsStringAsync();
+            var file = (GitLabFile)JsonConvert.DeserializeObject(responseAsString, typeof(GitLabFile));
+            return file;
+        }
+
+        public async Task<GitLabBlob> GetFileBlobAsync(long projectId, string blobId)
+        {
+            var uri = $"{this.apiUrl}/projects/{projectId}/repository/blobs/{blobId}";
+            var response = await client.GetAsync(uri);
+            var responseAsString = await response.Content.ReadAsStringAsync();
+            var blob = (GitLabBlob)JsonConvert.DeserializeObject(responseAsString, typeof(GitLabBlob));
+            return blob;
         }
     }
 }

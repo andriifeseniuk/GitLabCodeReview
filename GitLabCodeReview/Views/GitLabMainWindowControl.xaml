@@ -112,9 +112,11 @@
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
 
                                 <TextBlock Grid.Column="1" Text="{Binding FileDisplayName}"/>
+                                <Button Grid.Column="2" Content="diff" Command="{Binding DiffCommand}"/>
                             </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>

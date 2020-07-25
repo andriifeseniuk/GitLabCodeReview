@@ -6,11 +6,13 @@ namespace GitLabCodeReview.Models
     {
         private bool isSelected;
             
-        public GitLabMergeRequestViewModel(long id, long iid, string title)
+        public GitLabMergeRequestViewModel(long id, long iid, string title, string srcBranch, string tgtBranch)
         {
             this.Id = id;
             this.InternalId = iid;
             this.Title = title;
+            this.SourceBranch = srcBranch;
+            this.TargetBranch = tgtBranch;
         }
 
         public bool IsSelected
@@ -29,5 +31,7 @@ namespace GitLabCodeReview.Models
         public long Id { get; }
         public long InternalId { get; }
         public string Title { get; }
+        public string SourceBranch { get; }
+        public string TargetBranch { get; }
     }
 }

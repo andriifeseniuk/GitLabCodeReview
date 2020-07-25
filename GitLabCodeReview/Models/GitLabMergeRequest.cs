@@ -13,5 +13,11 @@ namespace GitLabCodeReview.Models
 
         [JsonProperty(PropertyName = "title")]
         public string Title { get; set; }
+
+        [JsonProperty(PropertyName = "source_branch")]
+        public string SourceBranch { get; set; }
+
+        [JsonProperty(PropertyName = "target_branch")]
+        public string TargetBranch { get; set; }
     }
 }
