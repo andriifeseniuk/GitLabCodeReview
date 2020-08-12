@@ -10,6 +10,23 @@
              d:DesignWidth="300"
              Name="MyToolWindow"
              Loaded="MyToolWindow_Loaded">
+    <UserControl.Resources>
+        <Style TargetType="Expander">
+            <Setter Property="ContentTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <ContentControl Margin="20,0,0,0" Content="{TemplateBinding Content}"/>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="RadioButton">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,0,5,0"/>
+        </Style>
+    </UserControl.Resources>
+    
     <Grid>
         <StackPanel Orientation="Vertical">
             <Expander Header="Options">
