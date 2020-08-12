@@ -126,14 +126,33 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
 
-                                <TextBlock Grid.Column="1" Text="{Binding FileDisplayName}"/>
-                                <Button Grid.Column="2" Content="diff" Command="{Binding DiffCommand}"/>
+                                <Grid Grid.Row="0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding FileDisplayName}"/>
+                                    <Button Grid.Row="0" Grid.Column="2" Content="diff" Command="{Binding DiffCommand}" Width="35"/>
+                                    <Button Grid.Row="0" Grid.Column="3" Content="{Binding MoreLessText}" Command="{Binding MoreLessCommand}" Width="35"/>
+                                </Grid>
+
+                                <Grid Grid.Row="1" Visibility="{Binding MoreSectionVisibility}" Margin="20,0,0,0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock>TODO</TextBlock>
+                                    <ItemsControl Grid.Row="0" ItemsSource="{Binding Discussions}"/>
+                                </Grid>
                             </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
