@@ -179,6 +179,52 @@ namespace GitLabCodeReview.ViewModels
             }
         }
 
+        public async Task<GitLabDiscussion[]> GetDiscussions(GitLabChange change)
+        {
+            try
+            {
+                if (this.SelectedProjectId == null)
+                {
+                    throw new InvalidOperationException("SelectedProjectId is null");
+                }
+
+                if (this.SelectedMergeRequestInternalId == null)
+                {
+                    throw new InvalidOperationException("SelectedMergeRequestInternalId is null");
+                }
+
+                using (var client = new GitLabClient(this.GitOptions.ApiUrl, this.GitOptions.PrivateToken))
+                {
+                    if (change.IsNewFile)
+                    {
+                        // TODO
+                        return new GitLabDiscussion[0];
+                    }
+
+                    if (change.IsDeletedFile)
+                    {
+                        // TODO
+                        return new GitLabDiscussion[0];
+                    }
+
+                    if (change.IsRenamedFile)
+                    {
+                        // TODO
+                        return new GitLabDiscussion[0];
+                    }
+
+                    var discussions = await client.GetDiscussionsAsync(this.SelectedProjectId.Value, this.SelectedMergeRequestInternalId.Value);
+                    return discussions;
+                }
+            }
+            catch (Exception ex)
+            {
+                this.errorService.AddError(ex.ToString());
+            }
+
+            return new GitLabDiscussion[0];
+        }
+
         private void Errors_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             this.SchedulePropertyChanged(nameof(this.ErrorsHeader));
@@ -210,7 +256,7 @@ namespace GitLabCodeReview.ViewModels
                 using (var client = new GitLabClient(this.GitOptions.ApiUrl, this.GitOptions.PrivateToken))
                 {
                     var user = await client.GetUserAsync();
-                    this.userId = user.UserId;
+                    this.userId = user.Id;
                     this.userName = user.UserName;
                 }
 

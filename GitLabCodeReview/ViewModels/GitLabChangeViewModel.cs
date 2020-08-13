@@ -1,5 +1,7 @@
 ﻿using GitLabCodeReview.Common.Commands;
 using GitLabCodeReview.Models;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -75,6 +77,8 @@ namespace GitLabCodeReview.ViewModels
             }
         }
 
+        public ObservableCollection<GitLabDiscussion> Discussions { get; } = new ObservableCollection<GitLabDiscussion>();
+
         private void ExecuteDiff()
         {
             this.mainViewModel.ExecuteDiff(this.change);
@@ -91,6 +95,17 @@ namespace GitLabCodeReview.ViewModels
             {
                 this.MoreSectionVisibility = Visibility.Visible;
                 this.MoreLessText = LessText;
+                this.RefreshDiscussions().ConfigureAwait(false);
+            }
+        }
+
+        private async Task RefreshDiscussions()
+        {
+            this.Discussions.Clear();
+            var discussions = await this.mainViewModel.GetDiscussions(this.change);
+            foreach(var discussion in discussions)
+            {
+                this.Discussions.Add(discussion);
             }
         }
     }

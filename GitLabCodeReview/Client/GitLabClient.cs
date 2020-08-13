@@ -90,5 +90,14 @@ namespace GitLabCodeReview.Client
             var blob = (GitLabBlob)JsonConvert.DeserializeObject(responseAsString, typeof(GitLabBlob));
             return blob;
         }
+
+        public async Task<GitLabDiscussion[]> GetDiscussionsAsync(long projectId, long mergeRequestInternalId)
+        {
+            var uri = $"{this.apiUrl}/projects/{projectId}/merge_requests/{mergeRequestInternalId}/discussions";
+            var response = await client.GetAsync(uri);
+            var responseAsString = await response.Content.ReadAsStringAsync();
+            var discussions = (GitLabDiscussion[])JsonConvert.DeserializeObject(responseAsString, typeof(GitLabDiscussion[]));
+            return discussions;
+        }
     }
 }

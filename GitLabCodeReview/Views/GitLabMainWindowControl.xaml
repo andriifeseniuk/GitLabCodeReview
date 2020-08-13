@@ -150,8 +150,19 @@
                                         <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
 
-                                    <TextBlock>TODO</TextBlock>
-                                    <ItemsControl Grid.Row="0" ItemsSource="{Binding Discussions}"/>
+                                    <ItemsControl Grid.Row="0" ItemsSource="{Binding Discussions}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <ItemsControl ItemsSource="{Binding Notes}">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock Text="{Binding Body}"/>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
                                 </Grid>
                             </Grid>
                         </DataTemplate>
