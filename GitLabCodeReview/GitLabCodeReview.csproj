@@ -69,7 +69,9 @@
     <Compile Include="Models\GitLabNote.cs" />
     <Compile Include="Models\GitLabUser.cs" />
     <Compile Include="Services\ErrorService.cs" />
+    <Compile Include="Services\GitLabService.cs" />
     <Compile Include="ViewModels\GitLabChangeViewModel.cs" />
+    <Compile Include="ViewModels\GitLabDiscussionViewModel.cs" />
     <Compile Include="ViewModels\GitLabMergeRequestViewModel.cs" />
     <Compile Include="ViewModels\GitLabProjectViewModel.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />

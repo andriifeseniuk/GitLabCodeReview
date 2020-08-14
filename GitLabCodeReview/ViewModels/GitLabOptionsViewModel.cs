@@ -1,42 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GitLabCodeReview.ViewModels
+﻿namespace GitLabCodeReview.ViewModels
 {
     public class GitLabOptionsViewModel : BaseViewModel
     {
-        private string apiUrl;
-        private string privateToken;
-        private long? selectedProjectId;
-        private string repositoryLocalPath;
-        private string workingDirectory;
+        private GitLabOptions options;
 
         public string ApiUrl
         {
             get
             {
-                return apiUrl;
-            }
-            set
-            {
-                this.apiUrl = value;
-                this.SchedulePropertyChanged();
-            }
-        }
-
-        public string PrivateToken
-        {
-            get
-            {
-                return privateToken;
-            }
-            set
-            {
-                this.privateToken = value;
-                this.SchedulePropertyChanged();
+                return this.options?.ApiUrl;
             }
         }
 
@@ -44,12 +16,7 @@ namespace GitLabCodeReview.ViewModels
         {
             get
             {
-                return this.selectedProjectId;
-            }
-            set
-            {
-                this.selectedProjectId = value;
-                this.SchedulePropertyChanged();
+                return this.options?.SelectedProjectId;
             }
         }
 
@@ -57,12 +24,7 @@ namespace GitLabCodeReview.ViewModels
         {
             get
             {
-                return this.repositoryLocalPath;
-            }
-            set
-            {
-                this.repositoryLocalPath = value;
-                this.SchedulePropertyChanged();
+                return this.options?.RepositoryLocalPath;
             }
         }
 
@@ -70,13 +32,17 @@ namespace GitLabCodeReview.ViewModels
         {
             get
             {
-                return this.workingDirectory;
+                return this.options?.WorkingDirectory;
             }
-            set
-            {
-                this.workingDirectory = value;
-                this.SchedulePropertyChanged();
-            }
+        }
+
+        public void RefreshOptions(GitLabOptions gitLabOptions)
+        {
+            this.options = gitLabOptions;
+            this.SchedulePropertyChanged(nameof(this.ApiUrl));
+            this.SchedulePropertyChanged(nameof(this.SelectedProjectId));
+            this.SchedulePropertyChanged(nameof(this.WorkingDirectory));
+            this.SchedulePropertyChanged(nameof(this.RepositoryLocalPath));
         }
     }
 }

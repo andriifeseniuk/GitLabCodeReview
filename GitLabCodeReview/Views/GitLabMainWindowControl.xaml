@@ -153,7 +153,7 @@
                                     <ItemsControl Grid.Row="0" ItemsSource="{Binding Discussions}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                <ItemsControl ItemsSource="{Binding Notes}">
+                                                <ItemsControl ItemsSource="{Binding Discussion.Notes}">
                                                     <ItemsControl.ItemTemplate>
                                                         <DataTemplate>
                                                             <TextBlock Text="{Binding Body}"/>
