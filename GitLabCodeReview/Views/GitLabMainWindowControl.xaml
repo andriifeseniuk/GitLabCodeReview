@@ -153,13 +153,20 @@
                                     <ItemsControl Grid.Row="0" ItemsSource="{Binding Discussions}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                <ItemsControl ItemsSource="{Binding Discussion.Notes}">
-                                                    <ItemsControl.ItemTemplate>
-                                                        <DataTemplate>
-                                                            <TextBlock Text="{Binding Body}"/>
-                                                        </DataTemplate>
-                                                    </ItemsControl.ItemTemplate>
-                                                </ItemsControl>
+                                                <Grid>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+                                                    <TextBlock Grid.Row="0" Text="{Binding Title}"/>
+                                                    <ItemsControl Grid.Row="1" ItemsSource="{Binding Discussion.Notes}">
+                                                        <ItemsControl.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <TextBlock Text="{Binding Body}"/>
+                                                            </DataTemplate>
+                                                        </ItemsControl.ItemTemplate>
+                                                    </ItemsControl>
+                                                </Grid>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>

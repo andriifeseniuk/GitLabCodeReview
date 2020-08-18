@@ -1,4 +1,5 @@
 ﻿using GitLabCodeReview.Models;
+using System.Linq;
 
 namespace GitLabCodeReview.ViewModels
 {
@@ -15,7 +16,12 @@ namespace GitLabCodeReview.ViewModels
 
         private string GetTitle()
         {
-            return "+1: TODO";
+            var position = this.Discussion.Notes.First().Position;
+            var lineLabel = position.NewLine != null
+                ? $"+{position.NewLine.Value}"
+                : $"-{position.OldLine.Value}";
+
+            return $"{lineLabel}: TODO";
         }
     }
 }

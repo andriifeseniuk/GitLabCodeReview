@@ -12,6 +12,9 @@ namespace GitLabCodeReview.Models
         public string Body { get; set; }
 
         [JsonProperty(PropertyName = "author")]
-        public GitLabUser Name { get; set; }
+        public GitLabUser Author { get; set; }
+
+        [JsonProperty(PropertyName = "position")]
+        public GitLabPosition Position { get; set; }
     }
 }
