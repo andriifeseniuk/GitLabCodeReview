@@ -11,7 +11,7 @@ using System.Windows.Input;
 
 namespace GitLabCodeReview.ViewModels
 {
-    public class GitLabChangeViewModel : BaseViewModel
+    public class GitLabChangeViewModel : BaseViewModel, ITreeNode
     {
         private const string MoreText = "more";
         private const string LessText = "less";
@@ -66,23 +66,31 @@ namespace GitLabCodeReview.ViewModels
             }
         }
 
-        public string FileDisplayName
+        public string DisplayName
         {
             get
             {
-                if (this.change.IsNewFile)
-                {
-                    return this.change.NewPath;
-                }
-
                 if (this.change.IsDeletedFile)
                 {
-                    return this.change.OldPath;
+                    return Path.GetFileName(this.change.OldPath);
                 }
 
                 if (this.change.IsRenamedFile)
                 {
-                    return $"{this.change.NewPath}[{this.change.OldPath}]";
+                    return $"{Path.GetFileName(this.change.NewPath)}[{Path.GetFileName(this.change.OldPath)}]";
+                }
+
+                return Path.GetFileName(this.change.NewPath);
+            }
+        }
+
+        public string FullPath
+        {
+            get
+            {
+                if (this.change.IsDeletedFile)
+                {
+                    return this.change.OldPath;
                 }
 
                 return this.change.NewPath;

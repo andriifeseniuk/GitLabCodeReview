@@ -4,6 +4,8 @@ using GitLabCodeReview.Common.Commands;
 using GitLabCodeReview.Models;
 using System.Threading.Tasks;
 using GitLabCodeReview.Services;
+using System.Linq;
+using System;
 
 namespace GitLabCodeReview.ViewModels
 {
@@ -58,7 +60,7 @@ namespace GitLabCodeReview.ViewModels
             }
         }
 
-        public ObservableCollection<GitLabChangeViewModel> Changes { get; } = new ObservableCollection<GitLabChangeViewModel>();
+        public FolderViewModel ChangesRoot { get; } = new FolderViewModel("Changes");
 
         public string ErrorsHeader => $"Errors ({this.Errors.Count})";
 
@@ -133,14 +135,35 @@ namespace GitLabCodeReview.ViewModels
             }
         }
 
+        private void AddNode(FolderViewModel root, ITreeNode leaf, string[] parentsFolders)
+        {
+            var currentParent = root;
+            foreach(var folderName in parentsFolders)
+            {
+                var nextParent = currentParent.Items.OfType<FolderViewModel>().FirstOrDefault(item => item.DisplayName == folderName);
+                if (nextParent == null)
+                {
+                    nextParent = new FolderViewModel(folderName);
+                    currentParent.Items.Add(nextParent);
+                }
+
+                currentParent = nextParent;
+            }
+
+            currentParent.Items.Add(leaf);
+        }
+
         private async Task RefreshChanges()
         {
-            this.Changes.Clear();
+            this.ChangesRoot.Items.Clear();
 
             var details = await this.gitLabService.GetMergeRequestDetailsAsync();
             foreach (var change in details.Changes)
             {
-                this.Changes.Add(new GitLabChangeViewModel(change, details, this.gitLabService, this.errorService));
+                var leaf = new GitLabChangeViewModel(change, details, this.gitLabService, this.errorService);
+                var pathSplitList = leaf.FullPath.Split(new char[] { '\\', '/' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                pathSplitList.RemoveAt(pathSplitList.Count - 1);
+                this.AddNode(this.ChangesRoot, leaf, pathSplitList.ToArray());
             }
         }
 
