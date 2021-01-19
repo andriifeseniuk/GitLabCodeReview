@@ -116,11 +116,35 @@ namespace GitLabCodeReview.ViewModels
 
         private async Task RefreshDiscussions()
         {
+            if (change.IsNewFile)
+            {
+                // TODO
+                return;
+            }
+
+            if (change.IsDeletedFile)
+            {
+                // TODO
+                return;
+            }
+
+            if (change.IsRenamedFile)
+            {
+                // TODO
+                return;
+            }
+
+            var sourceFileContent = await this.service.GetFileContentAsync(mergeRequest.SourceBranch, change.NewPath);
+            var targetFileContent = await this.service.GetFileContentAsync(mergeRequest.TargetBranch, change.NewPath);
+
+            var sourceFileLines = sourceFileContent.Split('\n');
+            var targetFileLines = targetFileContent.Split('\n');
+
             this.Discussions.Clear();
             var discussions = await this.GetDiscussions();
             foreach(var discussion in discussions)
             {
-                this.Discussions.Add(new GitLabDiscussionViewModel(discussion));
+                this.Discussions.Add(new GitLabDiscussionViewModel(discussion, sourceFileLines, targetFileLines));
             }
         }
 
@@ -193,26 +217,8 @@ namespace GitLabCodeReview.ViewModels
 
         public async Task<GitLabDiscussion[]> GetDiscussions()
         {
-            if (change.IsNewFile)
-            {
-                // TODO
-                return new GitLabDiscussion[0];
-            }
-
-            if (change.IsDeletedFile)
-            {
-                // TODO
-                return new GitLabDiscussion[0];
-            }
-
-            if (change.IsRenamedFile)
-            {
-                // TODO
-                return new GitLabDiscussion[0];
-            }
-
-            var discussions = await service.GetDiscussionsAsync(change);
+            var discussions = await service.GetDiscussionsAsync();
             return discussions;
-            }
         }
+    }
 }

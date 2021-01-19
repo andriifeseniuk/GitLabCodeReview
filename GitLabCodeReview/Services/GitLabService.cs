@@ -70,7 +70,7 @@ namespace GitLabCodeReview.Services
             }
         }
 
-        public async Task<GitLabDiscussion[]> GetDiscussionsAsync(GitLabChange change)
+        public async Task<GitLabDiscussion[]> GetDiscussionsAsync()
         {
             try
             {
@@ -86,24 +86,6 @@ namespace GitLabCodeReview.Services
 
                 using (var client = new GitLabClient(this.GitOptions.ApiUrl, this.GitOptions.PrivateToken))
                 {
-                    if (change.IsNewFile)
-                    {
-                        // TODO
-                        return new GitLabDiscussion[0];
-                    }
-
-                    if (change.IsDeletedFile)
-                    {
-                        // TODO
-                        return new GitLabDiscussion[0];
-                    }
-
-                    if (change.IsRenamedFile)
-                    {
-                        // TODO
-                        return new GitLabDiscussion[0];
-                    }
-
                     var discussions = await client.GetDiscussionsAsync(this.SelectedProjectId.Value, this.SelectedMergeRequestInternalId.Value);
                     return discussions;
                 }
