@@ -26,6 +26,15 @@
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="Margin" Value="0,0,5,0"/>
         </Style>
+
+        <Style x:Key="VisibleOnMouseOverParent" TargetType="Control">
+            <Setter Property="Visibility" Value="Hidden"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Control}}, Path=IsMouseOver}" Value="True">
+                    <Setter Property="Visibility" Value="Visible"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
     
     <Grid>
@@ -144,8 +153,8 @@
                                     </Grid.ColumnDefinitions>
 
                                     <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding DisplayName}"/>
-                                    <Button Grid.Row="0" Grid.Column="2" Content="diff" Command="{Binding DiffCommand}" Width="35"/>
-                                    <Button Grid.Row="0" Grid.Column="3" Content="{Binding MoreLessText}" Command="{Binding MoreLessCommand}" Width="35"/>
+                                    <Button Grid.Row="0" Grid.Column="2" Content="diff" Command="{Binding DiffCommand}" Width="35" Style="{StaticResource VisibleOnMouseOverParent}"/>
+                                    <Button Grid.Row="0" Grid.Column="3" Content="{Binding MoreLessText}" Command="{Binding MoreLessCommand}" Width="35"  Style="{StaticResource VisibleOnMouseOverParent}"/>
                                 </Grid>
 
                                 <Grid Grid.Row="1" Visibility="{Binding MoreSectionVisibility}" Margin="20,0,0,0">
