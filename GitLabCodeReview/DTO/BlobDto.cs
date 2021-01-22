@@ -3,7 +3,7 @@
 namespace GitLabCodeReview.DTO
 {
     [JsonObject(MemberSerialization.OptIn)]
-    public class GitLabBlob
+    public class BlobDto
     {
         [JsonProperty(PropertyName = "content")]
         public string Content { get; set; }

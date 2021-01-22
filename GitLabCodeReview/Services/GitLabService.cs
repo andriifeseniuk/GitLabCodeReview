@@ -70,7 +70,7 @@ namespace GitLabCodeReview.Services
             }
         }
 
-        public async Task<GitLabDiscussion[]> GetDiscussionsAsync()
+        public async Task<DiscussionDto[]> GetDiscussionsAsync()
         {
             try
             {
@@ -95,7 +95,7 @@ namespace GitLabCodeReview.Services
                 this.errorService.AddError(ex.ToString());
             }
 
-            return new GitLabDiscussion[0];
+            return new DiscussionDto[0];
         }
 
         public void RefreshOptions()
@@ -134,7 +134,7 @@ namespace GitLabCodeReview.Services
             }
         }
 
-        public async Task<IEnumerable<GitLabProject>> GetProjectsAsync()
+        public async Task<IEnumerable<ProjectDto>> GetProjectsAsync()
         {
             try
             {
@@ -152,11 +152,11 @@ namespace GitLabCodeReview.Services
             catch (Exception ex)
             {
                 this.errorService.AddError(ex.ToString());
-                return new GitLabProject[0];
+                return new ProjectDto[0];
             }
         }
 
-        public async Task<IEnumerable<GitLabMergeRequest>> GetMergeRequestsAsync()
+        public async Task<IEnumerable<MergeRequestDto>> GetMergeRequestsAsync()
         {
             try
             {
@@ -174,11 +174,11 @@ namespace GitLabCodeReview.Services
             catch (Exception ex)
             {
                 this.errorService.AddError(ex.ToString());
-                return new GitLabMergeRequest[0];
+                return new MergeRequestDto[0];
             }
         }
 
-        public async Task<GitLabMergeRequestDetails> GetMergeRequestDetailsAsync()
+        public async Task<MergeRequestDetailsDto> GetMergeRequestDetailsAsync()
         {
             try
             {

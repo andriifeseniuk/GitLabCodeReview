@@ -3,7 +3,7 @@
 namespace GitLabCodeReview.DTO
 {
     [JsonObject(MemberSerialization.OptIn)]
-    public class GitLabFile
+    public class FileDto
     {
         [JsonProperty(PropertyName = "size")]
         public long Size { get; set; }

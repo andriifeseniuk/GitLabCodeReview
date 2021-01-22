@@ -3,12 +3,12 @@
 namespace GitLabCodeReview.DTO
 {
     [JsonObject(MemberSerialization.OptIn)]
-    public class GitLabDiscussion
+    public class DiscussionDto
     {
         [JsonProperty(PropertyName = "id")]
         public string Id { get; set; }
 
         [JsonProperty(PropertyName = "notes")]
-        public GitLabNote[] Notes { get; set; }
+        public NoteDto[] Notes { get; set; }
     }
 }

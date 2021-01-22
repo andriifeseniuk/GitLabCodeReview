@@ -3,7 +3,7 @@
 namespace GitLabCodeReview.DTO
 {
     [JsonObject(MemberSerialization.OptIn)]
-    public class GitLabChange
+    public class ChangeDto
     {
         [JsonProperty(PropertyName = "old_path")]
         public string OldPath { get; set; }

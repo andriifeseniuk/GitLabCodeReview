@@ -8,14 +8,14 @@ namespace GitLabCodeReview.ViewModels
         private string[] sourceFileLines;
         private string[] targetFileLines;
 
-        public GitLabDiscussionViewModel(GitLabDiscussion gitLabDiscussion, string[] sourceFileLines, string[] targetFileLines)
+        public GitLabDiscussionViewModel(DiscussionDto gitLabDiscussion, string[] sourceFileLines, string[] targetFileLines)
         {
             this.Discussion = gitLabDiscussion;
             this.sourceFileLines = sourceFileLines;
             this.targetFileLines = targetFileLines;
         }
 
-        public GitLabDiscussion Discussion { get; }
+        public DiscussionDto Discussion { get; }
 
         public string Title => this.GetTitle();
 

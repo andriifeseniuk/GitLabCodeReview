@@ -15,16 +15,16 @@ namespace GitLabCodeReview.ViewModels
     {
         private const string MoreText = "more";
         private const string LessText = "less";
-        private readonly GitLabChange change;
-        private readonly GitLabMergeRequestDetails mergeRequest;
+        private readonly ChangeDto change;
+        private readonly MergeRequestDetailsDto mergeRequest;
         private readonly GitLabService service;
         private readonly ErrorService errorService;
         private Visibility moreSectionVisibility = Visibility.Collapsed;
         private string moreLessText = MoreText;
 
         public GitLabChangeViewModel(
-            GitLabChange gitLabChange,
-            GitLabMergeRequestDetails gitLabMergeRequest,
+            ChangeDto gitLabChange,
+            MergeRequestDetailsDto gitLabMergeRequest,
             GitLabService service,
             ErrorService globalErrorService)
         {
@@ -215,7 +215,7 @@ namespace GitLabCodeReview.ViewModels
             }
         }
 
-        public async Task<GitLabDiscussion[]> GetDiscussions()
+        public async Task<DiscussionDto[]> GetDiscussions()
         {
             var discussions = await service.GetDiscussionsAsync();
             return discussions;

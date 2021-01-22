@@ -46,57 +46,57 @@ namespace GitLabCodeReview.Client
             return user;
         }
 
-        public async Task<IEnumerable<GitLabProject>> GetProjectsAsync(long userId)
+        public async Task<IEnumerable<ProjectDto>> GetProjectsAsync(long userId)
         {
             var uri = $"{this.apiUrl}/users/{userId}/projects";
             var response = await client.GetAsync(uri);
             var responseAsString = await response.Content.ReadAsStringAsync();
-            var projects = (GitLabProject[])JsonConvert.DeserializeObject(responseAsString, typeof(GitLabProject[]));
+            var projects = (ProjectDto[])JsonConvert.DeserializeObject(responseAsString, typeof(ProjectDto[]));
             return projects;
         }
 
-        public async Task<IEnumerable<GitLabMergeRequest>> GetMergeRequestsAsync(long projectId)
+        public async Task<IEnumerable<MergeRequestDto>> GetMergeRequestsAsync(long projectId)
         {
             var uri = $"{this.apiUrl}/projects/{projectId}/merge_requests?state=opened";
             var response = await client.GetAsync(uri);
             var responseAsString = await response.Content.ReadAsStringAsync();
-            var requests = (GitLabMergeRequest[])JsonConvert.DeserializeObject(responseAsString, typeof(GitLabMergeRequest[]));
+            var requests = (MergeRequestDto[])JsonConvert.DeserializeObject(responseAsString, typeof(MergeRequestDto[]));
             return requests;
         }
 
-        public async Task<GitLabMergeRequestDetails> GetMergeRequestDetailsAsync(long projectId, long mergeRequestInternalId)
+        public async Task<MergeRequestDetailsDto> GetMergeRequestDetailsAsync(long projectId, long mergeRequestInternalId)
         {
             var uri = $"{this.apiUrl}/projects/{projectId}/merge_requests/{mergeRequestInternalId}/changes";
             var response = await client.GetAsync(uri);
             var responseAsString = await response.Content.ReadAsStringAsync();
-            var changes = (GitLabMergeRequestDetails)JsonConvert.DeserializeObject(responseAsString, typeof(GitLabMergeRequestDetails));
+            var changes = (MergeRequestDetailsDto)JsonConvert.DeserializeObject(responseAsString, typeof(MergeRequestDetailsDto));
             return changes;
         }
 
-        public async Task<GitLabFile> GetFileAsync(long projectId, string branch, string path)
+        public async Task<FileDto> GetFileAsync(long projectId, string branch, string path)
         {
             var uri = $"{this.apiUrl}/projects/{projectId}/repository/files/{HttpUtility.UrlEncode(path)}?ref={branch}";
             var response = await client.GetAsync(uri);
             var responseAsString = await response.Content.ReadAsStringAsync();
-            var file = (GitLabFile)JsonConvert.DeserializeObject(responseAsString, typeof(GitLabFile));
+            var file = (FileDto)JsonConvert.DeserializeObject(responseAsString, typeof(FileDto));
             return file;
         }
 
-        public async Task<GitLabBlob> GetFileBlobAsync(long projectId, string blobId)
+        public async Task<BlobDto> GetFileBlobAsync(long projectId, string blobId)
         {
             var uri = $"{this.apiUrl}/projects/{projectId}/repository/blobs/{blobId}";
             var response = await client.GetAsync(uri);
             var responseAsString = await response.Content.ReadAsStringAsync();
-            var blob = (GitLabBlob)JsonConvert.DeserializeObject(responseAsString, typeof(GitLabBlob));
+            var blob = (BlobDto)JsonConvert.DeserializeObject(responseAsString, typeof(BlobDto));
             return blob;
         }
 
-        public async Task<GitLabDiscussion[]> GetDiscussionsAsync(long projectId, long mergeRequestInternalId)
+        public async Task<DiscussionDto[]> GetDiscussionsAsync(long projectId, long mergeRequestInternalId)
         {
             var uri = $"{this.apiUrl}/projects/{projectId}/merge_requests/{mergeRequestInternalId}/discussions";
             var response = await client.GetAsync(uri);
             var responseAsString = await response.Content.ReadAsStringAsync();
-            var discussions = (GitLabDiscussion[])JsonConvert.DeserializeObject(responseAsString, typeof(GitLabDiscussion[]));
+            var discussions = (DiscussionDto[])JsonConvert.DeserializeObject(responseAsString, typeof(DiscussionDto[]));
             return discussions;
         }
     }

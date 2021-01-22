@@ -3,7 +3,7 @@
 namespace GitLabCodeReview.DTO
 {
     [JsonObject(MemberSerialization.OptIn)]
-    public class GitLabNote
+    public class NoteDto
     {
         [JsonProperty(PropertyName = "id")]
         public long Id { get; set; }
@@ -15,6 +15,6 @@ namespace GitLabCodeReview.DTO
         public GitLabUser Author { get; set; }
 
         [JsonProperty(PropertyName = "position")]
-        public GitLabPosition Position { get; set; }
+        public PositionDto Position { get; set; }
     }
 }
