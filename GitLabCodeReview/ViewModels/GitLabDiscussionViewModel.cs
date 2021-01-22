@@ -1,4 +1,4 @@
-﻿using GitLabCodeReview.Models;
+﻿using GitLabCodeReview.DTO;
 using System.Linq;
 
 namespace GitLabCodeReview.ViewModels

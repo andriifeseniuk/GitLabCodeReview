@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 using GitLabCodeReview.Common.Commands;
-using GitLabCodeReview.Models;
+using GitLabCodeReview.DTO;
 using System.Threading.Tasks;
 using GitLabCodeReview.Services;
 using System.Linq;

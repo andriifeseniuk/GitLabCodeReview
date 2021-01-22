@@ -59,16 +59,16 @@
     <Compile Include="GitLabOptions.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Models\GitLabBlob.cs" />
-    <Compile Include="Models\GitLabChange.cs" />
-    <Compile Include="Models\GitLabFile.cs" />
-    <Compile Include="Models\GitLabMergeRequest.cs" />
-    <Compile Include="Models\GitLabMergeRequestDetails.cs" />
-    <Compile Include="Models\GitLabDiscussion.cs" />
-    <Compile Include="Models\GitLabPosition.cs" />
-    <Compile Include="Models\GitLabProject.cs" />
-    <Compile Include="Models\GitLabNote.cs" />
-    <Compile Include="Models\GitLabUser.cs" />
+    <Compile Include="DTO\GitLabBlob.cs" />
+    <Compile Include="DTO\GitLabChange.cs" />
+    <Compile Include="DTO\GitLabFile.cs" />
+    <Compile Include="DTO\GitLabMergeRequest.cs" />
+    <Compile Include="DTO\GitLabMergeRequestDetails.cs" />
+    <Compile Include="DTO\GitLabDiscussion.cs" />
+    <Compile Include="DTO\GitLabPosition.cs" />
+    <Compile Include="DTO\GitLabProject.cs" />
+    <Compile Include="DTO\GitLabNote.cs" />
+    <Compile Include="DTO\GitLabUser.cs" />
     <Compile Include="Services\ErrorService.cs" />
     <Compile Include="Services\GitLabService.cs" />
     <Compile Include="ViewModels\FolderViewModel.cs" />

@@ -1,6 +1,6 @@
 ﻿using EnvDTE;
 using GitLabCodeReview.Common.Commands;
-using GitLabCodeReview.Models;
+using GitLabCodeReview.DTO;
 using GitLabCodeReview.Services;
 using System;
 using System.Collections.ObjectModel;

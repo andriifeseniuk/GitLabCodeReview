@@ -1,6 +1,6 @@
 ﻿using GitLabCodeReview.ViewModels;
 
-namespace GitLabCodeReview.Models
+namespace GitLabCodeReview.DTO
 {
     public class GitLabMergeRequestViewModel : BaseViewModel
     {

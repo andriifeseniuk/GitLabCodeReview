@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace GitLabCodeReview.Models
+namespace GitLabCodeReview.DTO
 {
     [JsonObject(MemberSerialization.OptIn)]
     public class GitLabFile

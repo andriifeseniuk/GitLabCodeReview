@@ -1,6 +1,6 @@
 ﻿using EnvDTE;
 using GitLabCodeReview.Client;
-using GitLabCodeReview.Models;
+using GitLabCodeReview.DTO;
 using System;
 using System.Collections.Generic;
 using System.Text;

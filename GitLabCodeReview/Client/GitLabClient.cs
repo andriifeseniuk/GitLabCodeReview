@@ -1,4 +1,4 @@
-﻿using GitLabCodeReview.Models;
+﻿using GitLabCodeReview.DTO;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
