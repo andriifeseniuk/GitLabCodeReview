@@ -3,7 +3,7 @@
 namespace GitLabCodeReview.DTO
 {
     [JsonObject(MemberSerialization.OptIn)]
-    public class GitLabUser
+    public class UserDto
     {
         [JsonProperty(PropertyName = "id")]
         public long Id { get; set; }

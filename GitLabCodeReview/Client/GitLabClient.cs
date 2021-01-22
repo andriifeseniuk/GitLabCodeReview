@@ -37,12 +37,12 @@ namespace GitLabCodeReview.Client
             this.client.Dispose();
         }
 
-        public async Task<GitLabUser> GetUserAsync()
+        public async Task<UserDto> GetUserAsync()
         {
             var uri = $"{this.apiUrl}/user";
             var response = await client.GetAsync(uri);
             var responseAsString = await response.Content.ReadAsStringAsync();
-            var user = (GitLabUser)JsonConvert.DeserializeObject(responseAsString, typeof(GitLabUser));
+            var user = (UserDto)JsonConvert.DeserializeObject(responseAsString, typeof(UserDto));
             return user;
         }
 

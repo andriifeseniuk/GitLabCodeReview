@@ -12,7 +12,7 @@ namespace GitLabCodeReview.DTO
         public string Body { get; set; }
 
         [JsonProperty(PropertyName = "author")]
-        public GitLabUser Author { get; set; }
+        public UserDto Author { get; set; }
 
         [JsonProperty(PropertyName = "position")]
         public PositionDto Position { get; set; }

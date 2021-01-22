@@ -68,7 +68,7 @@
     <Compile Include="DTO\PositionDto.cs" />
     <Compile Include="DTO\ProjectDto.cs" />
     <Compile Include="DTO\NoteDto.cs" />
-    <Compile Include="DTO\GitLabUser.cs" />
+    <Compile Include="DTO\UserDto.cs" />
     <Compile Include="Services\ErrorService.cs" />
     <Compile Include="Services\GitLabService.cs" />
     <Compile Include="ViewModels\FolderViewModel.cs" />
