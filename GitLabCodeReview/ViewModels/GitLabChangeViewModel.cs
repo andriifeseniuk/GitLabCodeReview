@@ -3,8 +3,11 @@ using GitLabCodeReview.Common.Commands;
 using GitLabCodeReview.DTO;
 using GitLabCodeReview.Services;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -116,39 +119,25 @@ namespace GitLabCodeReview.ViewModels
 
         private async Task RefreshDiscussions()
         {
-            if (change.IsNewFile)
-            {
-                // TODO
-                return;
-            }
+            var sourceFileContent = await this.GetSourceFileContentAsync(this.change);
+            var targetFileContent = await this.GetTargetFileContentAsync(this.change);
 
-            if (change.IsDeletedFile)
-            {
-                // TODO
-                return;
-            }
+            var sourceFileLines = this.GetLineViewModels(sourceFileContent, true);
+            var targetFileLines = this.GetLineViewModels(targetFileContent, false);
 
-            if (change.IsRenamedFile)
-            {
-                // TODO
-                return;
-            }
-
-            var sourceFileContent = await this.service.GetFileContentAsync(mergeRequest.SourceBranch, change.NewPath);
-            var targetFileContent = await this.service.GetFileContentAsync(mergeRequest.TargetBranch, change.NewPath);
-
-            var sourceFileLines = sourceFileContent.Split('\n');
-            var targetFileLines = targetFileContent.Split('\n');
-
+            // TODO join lines and discussions
             this.Discussions.Clear();
             var discussions = await this.GetDiscussions();
             foreach(var discussion in discussions)
             {
-                this.Discussions.Add(new GitLabDiscussionViewModel(discussion, sourceFileLines, targetFileLines));
+                this.Discussions.Add(new GitLabDiscussionViewModel(
+                    discussion,
+                    sourceFileLines.Select(l => l.Text).ToArray(),
+                    targetFileLines.Select(l => l.Text).ToArray()));
             }
         }
 
-        public async void ExecuteDiff()
+        private async void ExecuteDiff()
         {
             try
             {
@@ -215,10 +204,41 @@ namespace GitLabCodeReview.ViewModels
             }
         }
 
-        public async Task<DiscussionDto[]> GetDiscussions()
+        private async Task<DiscussionDto[]> GetDiscussions()
         {
             var discussions = await service.GetDiscussionsAsync();
             return discussions;
         }
+
+        private IEnumerable<LineViewModel> GetLineViewModels(string fileContent, bool isSourceBranch)
+        {
+            var lines = fileContent == null ? new string[0] : fileContent.Split('\n');
+            var viewModels = lines.Select((l, i) => new LineViewModel(i, l, isSourceBranch)).ToArray();
+            return viewModels;
+        }
+
+        private async Task<string> GetSourceFileContentAsync(ChangeDto change)
+        {
+            if (change.IsDeletedFile)
+            {
+                return null;
+            }
+
+            var sourceFileContent = await this.service.GetFileContentAsync(this.mergeRequest.SourceBranch, change.NewPath);
+            return sourceFileContent;
+        }
+
+
+        private async Task<string> GetTargetFileContentAsync(ChangeDto change)
+        {
+            if (change.IsNewFile)
+            {
+                return null;
+            }
+
+            var targetFileContent = await this.service.GetFileContentAsync(this.mergeRequest.TargetBranch, change.OldPath);
+            return targetFileContent;
+        }
+
     }
 }

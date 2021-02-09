@@ -80,6 +80,7 @@
     <Compile Include="ViewModels\GitLabOptionsViewModel.cs" />
     <Compile Include="ViewModels\IParentTreeNode.cs" />
     <Compile Include="ViewModels\ITreeNode.cs" />
+    <Compile Include="ViewModels\LineViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="Views\GitLabMainWindowControl.xaml.cs">
       <DependentUpon>GitLabMainWindowControl.xaml</DependentUpon>
