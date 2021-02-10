@@ -1,6 +1,7 @@
 ﻿using EnvDTE;
 using GitLabCodeReview.Common.Commands;
 using GitLabCodeReview.DTO;
+using GitLabCodeReview.Enums;
 using GitLabCodeReview.Services;
 using System;
 using System.Collections;
@@ -24,6 +25,9 @@ namespace GitLabCodeReview.ViewModels
         private readonly ErrorService errorService;
         private Visibility moreSectionVisibility = Visibility.Collapsed;
         private string moreLessText = MoreText;
+        private LinesFilterOptions showLinesOption = LinesFilterOptions.Discussions;
+        private LineViewModel[] sourceFileLines;
+        private LineViewModel[] targetFileLines;
 
         public GitLabChangeViewModel(
             ChangeDto gitLabChange,
@@ -100,7 +104,20 @@ namespace GitLabCodeReview.ViewModels
             }
         }
 
-        public ObservableCollection<GitLabDiscussionViewModel> Discussions { get; } = new ObservableCollection<GitLabDiscussionViewModel>();
+        public LinesFilterOptions LinesFilterOption
+        {
+            get
+            {
+                return this.showLinesOption;
+            }
+            set
+            {
+                this.showLinesOption = value;
+                this.SchedulePropertyChanged();
+            }
+        }
+
+        public ObservableCollection<LineViewModel> FilteredLines { get; } = new ObservableCollection<LineViewModel>();
 
         private void ExecuteMoreLess()
         {
@@ -122,18 +139,35 @@ namespace GitLabCodeReview.ViewModels
             var sourceFileContent = await this.GetSourceFileContentAsync(this.change);
             var targetFileContent = await this.GetTargetFileContentAsync(this.change);
 
-            var sourceFileLines = this.GetLineViewModels(sourceFileContent, true);
-            var targetFileLines = this.GetLineViewModels(targetFileContent, false);
+            this.sourceFileLines = this.GetLineViewModels(sourceFileContent, true).ToArray();
+            this.targetFileLines = this.GetLineViewModels(targetFileContent, false).ToArray();
 
-            // TODO join lines and discussions
-            this.Discussions.Clear();
             var discussions = await this.GetDiscussions();
-            foreach(var discussion in discussions)
+            foreach (var diss in discussions)
             {
-                this.Discussions.Add(new GitLabDiscussionViewModel(
-                    discussion,
-                    sourceFileLines.Select(l => l.Text).ToArray(),
-                    targetFileLines.Select(l => l.Text).ToArray()));
+                var dissViewModel = new GitLabDiscussionViewModel(diss);
+                foreach(var noteDto in diss.Notes)
+                {
+                    var noteViewModel = new NoteViewModel(noteDto);
+                    dissViewModel.Notes.Add(noteViewModel);
+                }
+
+                var firstNote = diss.Notes.First();
+                if (firstNote.Position.NewLine != null)
+                {
+                    this.sourceFileLines[firstNote.Position.NewLine.Value].Discussions.Add(dissViewModel);
+                }
+                else
+                {
+                    this.targetFileLines[firstNote.Position.OldLine.Value].Discussions.Add(dissViewModel);
+                }
+            }
+
+            this.FilteredLines.Clear();
+            var filteredLines = this.GetFilteredLines();
+            foreach (var line in filteredLines)
+            {
+                this.FilteredLines.Add(line);
             }
         }
 
@@ -240,5 +274,27 @@ namespace GitLabCodeReview.ViewModels
             return targetFileContent;
         }
 
+        private IEnumerable<LineViewModel> GetFilteredLines()
+        {
+            switch(this.LinesFilterOption)
+            {
+                case LinesFilterOptions.All:
+                    return this.targetFileLines.Concat(this.sourceFileLines);
+
+                case LinesFilterOptions.Source:
+                    return this.sourceFileLines;
+
+                case LinesFilterOptions.Target:
+                    return this.targetFileLines;
+
+                case LinesFilterOptions.Discussions:
+                    var linesWithDiscussions = this.targetFileLines.Where(l => l.Discussions.Any())
+                        .Concat(this.sourceFileLines.Where(l => l.Discussions.Any())).ToArray();
+                    return linesWithDiscussions;
+
+                default:
+                    throw new ArgumentOutOfRangeException($"Option {this.LinesFilterOption} is out of range.");
+            }
+        }
     }
 }

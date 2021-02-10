@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModels="clr-namespace:GitLabCodeReview.ViewModels"
+             xmlns:converters="clr-namespace:GitLabCodeReview.Converters"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
@@ -35,6 +36,8 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
     </UserControl.Resources>
     
     <Grid>
@@ -163,7 +166,7 @@
                                         <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
 
-                                    <ItemsControl Grid.Row="0" ItemsSource="{Binding Discussions}">
+                                    <ItemsControl Grid.Row="0" ItemsSource="{Binding FilteredLines}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
                                                 <Grid>
@@ -171,11 +174,23 @@
                                                         <RowDefinition Height="Auto"/>
                                                         <RowDefinition Height="Auto"/>
                                                     </Grid.RowDefinitions>
-                                                    <TextBlock Grid.Row="0" Text="{Binding Title}"/>
-                                                    <ItemsControl Grid.Row="1" ItemsSource="{Binding Discussion.Notes}">
+                                                    <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                                        <TextBlock Text="[s]" Visibility="{Binding IsSourceBranch, Converter={StaticResource BoolToVisibilityConverter}}" Margin="0,0,5,0"/>
+                                                        <TextBlock Text="[t]" Visibility="{Binding IsSourceBranch, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverse}" Margin="0,0,5,0"/>
+                                                        <TextBlock Text="{Binding Number}" Margin="0,0,5,0"/>
+                                                        <TextBlock Text="{Binding Text}"/>
+                                                    </StackPanel>
+                                                    
+                                                    <ItemsControl Grid.Row="1" ItemsSource="{Binding Discussions}">
                                                         <ItemsControl.ItemTemplate>
                                                             <DataTemplate>
-                                                                <TextBlock Text="{Binding Body}"/>
+                                                                <ItemsControl ItemsSource="{Binding Notes}">
+                                                                    <ItemsControl.ItemTemplate>
+                                                                        <DataTemplate>
+                                                                            <TextBlock Text="{Binding Note.Body}"/>
+                                                                        </DataTemplate>
+                                                                    </ItemsControl.ItemTemplate>
+                                                                </ItemsControl>
                                                             </DataTemplate>
                                                         </ItemsControl.ItemTemplate>
                                                     </ItemsControl>

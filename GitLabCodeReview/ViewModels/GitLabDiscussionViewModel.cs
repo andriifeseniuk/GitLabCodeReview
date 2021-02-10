@@ -1,35 +1,17 @@
 ﻿using GitLabCodeReview.DTO;
-using System.Linq;
+using System.Collections.ObjectModel;
 
 namespace GitLabCodeReview.ViewModels
 {
     public class GitLabDiscussionViewModel : BaseViewModel
     {
-        private string[] sourceFileLines;
-        private string[] targetFileLines;
-
-        public GitLabDiscussionViewModel(DiscussionDto gitLabDiscussion, string[] sourceFileLines, string[] targetFileLines)
+        public GitLabDiscussionViewModel(DiscussionDto gitLabDiscussion)
         {
             this.Discussion = gitLabDiscussion;
-            this.sourceFileLines = sourceFileLines;
-            this.targetFileLines = targetFileLines;
         }
 
         public DiscussionDto Discussion { get; }
 
-        public string Title => this.GetTitle();
-
-        private string GetTitle()
-        {
-            var position = this.Discussion.Notes.First().Position;
-            if (position.NewLine != null)
-            {
-                return $"+{position.NewLine.Value}: {sourceFileLines[position.NewLine.Value - 1]}";
-            }
-            else
-            {
-                return $"-{position.OldLine.Value}: {targetFileLines[position.OldLine.Value - 1]}";
-            }
-        }
+        public ObservableCollection<NoteViewModel> Notes { get; } = new ObservableCollection<NoteViewModel>();
     }
 }

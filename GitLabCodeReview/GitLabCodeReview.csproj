@@ -54,6 +54,8 @@
     <Compile Include="Client\GitLabClient.cs" />
     <Compile Include="Common\Commands\DelegateCommandT.cs" />
     <Compile Include="Common\Commands\DelegateCommand.cs" />
+    <Compile Include="Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="Enums\LinesFilterOptions.cs" />
     <Compile Include="GitLabMainWindow.cs" />
     <Compile Include="GitLabMainWindowCommand.cs" />
     <Compile Include="GitLabOptions.cs">
@@ -80,6 +82,7 @@
     <Compile Include="ViewModels\GitLabOptionsViewModel.cs" />
     <Compile Include="ViewModels\IParentTreeNode.cs" />
     <Compile Include="ViewModels\ITreeNode.cs" />
+    <Compile Include="ViewModels\NoteViewModel.cs" />
     <Compile Include="ViewModels\LineViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="Views\GitLabMainWindowControl.xaml.cs">
