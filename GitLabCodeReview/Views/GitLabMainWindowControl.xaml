@@ -140,7 +140,7 @@
                         <HierarchicalDataTemplate DataType="{x:Type viewModels:FolderViewModel}" ItemsSource="{Binding Items}">
                             <TextBlock Text="{Binding DisplayName}"/>
                         </HierarchicalDataTemplate>
-                        <HierarchicalDataTemplate DataType="{x:Type viewModels:GitLabChangeViewModel}">
+                        <HierarchicalDataTemplate DataType="{x:Type viewModels:ChangeViewModel}">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
@@ -160,7 +160,7 @@
                                     <Button Grid.Row="0" Grid.Column="3" Content="{Binding MoreLessText}" Command="{Binding MoreLessCommand}" Width="35"  Style="{StaticResource VisibleOnMouseOverParent}"/>
                                 </Grid>
 
-                                <Grid Grid.Row="1" Visibility="{Binding MoreSectionVisibility}" Margin="20,0,0,0">
+                                <Grid Grid.Row="1" Visibility="{Binding IsMoreSectionVisible, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}" Margin="20,0,0,0">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>

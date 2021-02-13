@@ -74,12 +74,12 @@
     <Compile Include="Services\ErrorService.cs" />
     <Compile Include="Services\GitLabService.cs" />
     <Compile Include="ViewModels\FolderViewModel.cs" />
-    <Compile Include="ViewModels\GitLabChangeViewModel.cs" />
-    <Compile Include="ViewModels\GitLabDiscussionViewModel.cs" />
-    <Compile Include="ViewModels\GitLabMergeRequestViewModel.cs" />
-    <Compile Include="ViewModels\GitLabProjectViewModel.cs" />
+    <Compile Include="ViewModels\ChangeViewModel.cs" />
+    <Compile Include="ViewModels\DiscussionViewModel.cs" />
+    <Compile Include="ViewModels\MergeRequestViewModel.cs" />
+    <Compile Include="ViewModels\ProjectViewModel.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
-    <Compile Include="ViewModels\GitLabOptionsViewModel.cs" />
+    <Compile Include="ViewModels\OptionsViewModel.cs" />
     <Compile Include="ViewModels\IParentTreeNode.cs" />
     <Compile Include="ViewModels\ITreeNode.cs" />
     <Compile Include="ViewModels\NoteViewModel.cs" />

@@ -2,11 +2,11 @@
 
 namespace GitLabCodeReview.DTO
 {
-    public class GitLabMergeRequestViewModel : BaseViewModel
+    public class MergeRequestViewModel : BaseViewModel
     {
         private bool isSelected;
             
-        public GitLabMergeRequestViewModel(long id, long iid, string title, string srcBranch, string tgtBranch)
+        public MergeRequestViewModel(long id, long iid, string title, string srcBranch, string tgtBranch)
         {
             this.Id = id;
             this.InternalId = iid;

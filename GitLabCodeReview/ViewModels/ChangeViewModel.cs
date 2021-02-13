@@ -4,18 +4,16 @@ using GitLabCodeReview.DTO;
 using GitLabCodeReview.Enums;
 using GitLabCodeReview.Services;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 
 namespace GitLabCodeReview.ViewModels
 {
-    public class GitLabChangeViewModel : BaseViewModel, ITreeNode
+    public class ChangeViewModel : BaseViewModel, ITreeNode
     {
         private const string MoreText = "more";
         private const string LessText = "less";
@@ -23,13 +21,13 @@ namespace GitLabCodeReview.ViewModels
         private readonly MergeRequestDetailsDto mergeRequest;
         private readonly GitLabService service;
         private readonly ErrorService errorService;
-        private Visibility moreSectionVisibility = Visibility.Collapsed;
+        private bool isMoreSectionVisible = false;
         private string moreLessText = MoreText;
         private LinesFilterOptions showLinesOption = LinesFilterOptions.Discussions;
         private LineViewModel[] sourceFileLines;
         private LineViewModel[] targetFileLines;
 
-        public GitLabChangeViewModel(
+        public ChangeViewModel(
             ChangeDto gitLabChange,
             MergeRequestDetailsDto gitLabMergeRequest,
             GitLabService service,
@@ -47,15 +45,15 @@ namespace GitLabCodeReview.ViewModels
 
         public ICommand MoreLessCommand { get; }
 
-        public Visibility MoreSectionVisibility
+        public bool IsMoreSectionVisible
         {
             get
             {
-                return this.moreSectionVisibility;
+                return this.isMoreSectionVisible;
             }
             set
             {
-                this.moreSectionVisibility = value;
+                this.isMoreSectionVisible = value;
                 this.SchedulePropertyChanged();
             }
         }
@@ -121,14 +119,14 @@ namespace GitLabCodeReview.ViewModels
 
         private void ExecuteMoreLess()
         {
-            if (this.MoreSectionVisibility == Visibility.Visible)
+            if (this.IsMoreSectionVisible)
             {
-                this.MoreSectionVisibility = Visibility.Collapsed;
+                this.IsMoreSectionVisible = false;
                 this.MoreLessText = MoreText;
             }
             else
             {
-                this.MoreSectionVisibility = Visibility.Visible;
+                this.IsMoreSectionVisible = true;
                 this.MoreLessText = LessText;
                 this.RefreshDiscussions().ConfigureAwait(false);
             }
@@ -145,7 +143,7 @@ namespace GitLabCodeReview.ViewModels
             var discussions = await this.GetDiscussions();
             foreach (var diss in discussions)
             {
-                var dissViewModel = new GitLabDiscussionViewModel(diss);
+                var dissViewModel = new DiscussionViewModel(diss);
                 foreach(var noteDto in diss.Notes)
                 {
                     var noteViewModel = new NoteViewModel(noteDto);

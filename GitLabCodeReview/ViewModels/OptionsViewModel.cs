@@ -1,6 +1,6 @@
 ﻿namespace GitLabCodeReview.ViewModels
 {
-    public class GitLabOptionsViewModel : BaseViewModel
+    public class OptionsViewModel : BaseViewModel
     {
         private GitLabOptions options;
 

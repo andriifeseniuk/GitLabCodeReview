@@ -22,13 +22,13 @@ namespace GitLabCodeReview.ViewModels
             this.RefreshOptionsCommand = new DelegateCommand(obj => this.RefreshOptions());
         }
 
-        public GitLabOptionsViewModel GitOptions { get; set; } = new GitLabOptionsViewModel();
+        public OptionsViewModel GitOptions { get; set; } = new OptionsViewModel();
 
         public long? UserId => this.gitLabService.UserId;
 
         public string UserName => this.gitLabService.UserName;
 
-        public ObservableCollection<GitLabProjectViewModel> Projects { get; } = new ObservableCollection<GitLabProjectViewModel>();
+        public ObservableCollection<ProjectViewModel> Projects { get; } = new ObservableCollection<ProjectViewModel>();
 
         public long? SelectedProjectId
         {
@@ -44,7 +44,7 @@ namespace GitLabCodeReview.ViewModels
             }
         }
 
-        public ObservableCollection<GitLabMergeRequestViewModel> MergeRequests { get; } = new ObservableCollection<GitLabMergeRequestViewModel>();
+        public ObservableCollection<MergeRequestViewModel> MergeRequests { get; } = new ObservableCollection<MergeRequestViewModel>();
 
         public long? SelectedMergeRequestInternalId
         {
@@ -105,7 +105,7 @@ namespace GitLabCodeReview.ViewModels
             var projects = await gitLabService.GetProjectsAsync();
             foreach (var project in projects)
             {
-                this.Projects.Add(new GitLabProjectViewModel(project.Id, project.Name));
+                this.Projects.Add(new ProjectViewModel(project.Id, project.Name));
             }
 
             foreach (var project in this.Projects)
@@ -126,7 +126,7 @@ namespace GitLabCodeReview.ViewModels
             var requests = await this.gitLabService.GetMergeRequestsAsync();
             foreach (var request in requests)
             {
-                this.MergeRequests.Add(new GitLabMergeRequestViewModel(request.Id, request.InternalId, request.Title, request.SourceBranch, request.TargetBranch));
+                this.MergeRequests.Add(new MergeRequestViewModel(request.Id, request.InternalId, request.Title, request.SourceBranch, request.TargetBranch));
             }
 
             foreach (var request in this.MergeRequests)
@@ -160,7 +160,7 @@ namespace GitLabCodeReview.ViewModels
             var details = await this.gitLabService.GetMergeRequestDetailsAsync();
             foreach (var change in details.Changes)
             {
-                var leaf = new GitLabChangeViewModel(change, details, this.gitLabService, this.errorService);
+                var leaf = new ChangeViewModel(change, details, this.gitLabService, this.errorService);
                 var pathSplitList = leaf.FullPath.Split(new char[] { '\\', '/' }, StringSplitOptions.RemoveEmptyEntries).ToList();
                 pathSplitList.RemoveAt(pathSplitList.Count - 1);
                 this.AddNode(this.ChangesRoot, leaf, pathSplitList.ToArray());
@@ -169,7 +169,7 @@ namespace GitLabCodeReview.ViewModels
 
         private void OnProjectPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            var project = sender as GitLabProjectViewModel;
+            var project = sender as ProjectViewModel;
             if (project == null)
             {
                 return;
@@ -177,7 +177,7 @@ namespace GitLabCodeReview.ViewModels
 
             switch (e.PropertyName)
             {
-                case nameof(GitLabProjectViewModel.IsSelected):
+                case nameof(ProjectViewModel.IsSelected):
                 {
                     if (project.IsSelected)
                     {
@@ -191,7 +191,7 @@ namespace GitLabCodeReview.ViewModels
 
         private void OnMergeRequestPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            var MergeRequest = sender as GitLabMergeRequestViewModel;
+            var MergeRequest = sender as MergeRequestViewModel;
             if (MergeRequest == null)
             {
                 return;
@@ -199,7 +199,7 @@ namespace GitLabCodeReview.ViewModels
 
             switch (e.PropertyName)
             {
-                case nameof(GitLabMergeRequestViewModel.IsSelected):
+                case nameof(MergeRequestViewModel.IsSelected):
                     {
                         if (MergeRequest.IsSelected)
                         {

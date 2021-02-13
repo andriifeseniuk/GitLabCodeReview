@@ -4,7 +4,7 @@ namespace GitLabCodeReview.ViewModels
 {
     public class LineViewModel : BaseViewModel
     {
-        private readonly ObservableCollection<GitLabDiscussionViewModel> discussions = new ObservableCollection<GitLabDiscussionViewModel>();
+        private readonly ObservableCollection<DiscussionViewModel> discussions = new ObservableCollection<DiscussionViewModel>();
 
         public LineViewModel (int number, string text, bool isSourceBranch)
         {
@@ -19,7 +19,7 @@ namespace GitLabCodeReview.ViewModels
 
         public bool IsSourceBranch { get; private set; }
 
-        public ObservableCollection<GitLabDiscussionViewModel> Discussions
+        public ObservableCollection<DiscussionViewModel> Discussions
         {
             get
             {

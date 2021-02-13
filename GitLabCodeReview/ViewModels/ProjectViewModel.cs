@@ -2,11 +2,11 @@
 
 namespace GitLabCodeReview.DTO
 {
-    public class GitLabProjectViewModel : BaseViewModel
+    public class ProjectViewModel : BaseViewModel
     {
         private bool isSelected;
             
-        public GitLabProjectViewModel(long id, string name)
+        public ProjectViewModel(long id, string name)
         {
             this.Id = id;
             this.Name = name;

@@ -3,9 +3,9 @@ using System.Collections.ObjectModel;
 
 namespace GitLabCodeReview.ViewModels
 {
-    public class GitLabDiscussionViewModel : BaseViewModel
+    public class DiscussionViewModel : BaseViewModel
     {
-        public GitLabDiscussionViewModel(DiscussionDto gitLabDiscussion)
+        public DiscussionViewModel(DiscussionDto gitLabDiscussion)
         {
             this.Discussion = gitLabDiscussion;
         }
