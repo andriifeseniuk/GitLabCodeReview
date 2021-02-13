@@ -39,8 +39,8 @@
 
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
     </UserControl.Resources>
-    
-    <Grid>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
         <StackPanel Orientation="Vertical">
             <Expander Header="Options">
                 <Grid>
@@ -166,7 +166,11 @@
                                         <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
 
-                                    <ItemsControl Grid.Row="0" ItemsSource="{Binding FilteredLines}">
+                                    <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                        <TextBlock Text="Lines to show:" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                                        <ComboBox ItemsSource="{Binding ShowLinesOptions}" SelectedValue="{Binding LinesFilterOption}" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                    <ItemsControl Grid.Row="1" ItemsSource="{Binding FilteredLines}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
                                                 <Grid>
@@ -209,5 +213,5 @@
                 </ItemsControl>
             </Expander>
         </StackPanel>
-    </Grid>
+    </ScrollViewer>
 </UserControl>

@@ -21,6 +21,7 @@ namespace GitLabCodeReview.ViewModels
         private readonly MergeRequestDetailsDto mergeRequest;
         private readonly GitLabService service;
         private readonly ErrorService errorService;
+        private readonly LinesFilterOptions[] showLinesOptions;
         private bool isMoreSectionVisible = false;
         private string moreLessText = MoreText;
         private LinesFilterOptions showLinesOption = LinesFilterOptions.Discussions;
@@ -39,6 +40,7 @@ namespace GitLabCodeReview.ViewModels
             this.errorService = globalErrorService;
             this.DiffCommand = new DelegateCommand(x => this.ExecuteDiff());
             this.MoreLessCommand = new DelegateCommand(x => this.ExecuteMoreLess());
+            this.showLinesOptions = Enum.GetValues(typeof(LinesFilterOptions)).Cast<LinesFilterOptions>().ToArray();
         }
 
         public ICommand DiffCommand { get; }
@@ -112,8 +114,11 @@ namespace GitLabCodeReview.ViewModels
             {
                 this.showLinesOption = value;
                 this.SchedulePropertyChanged();
+                this.RefreshLines();
             }
         }
+
+        public LinesFilterOptions[] ShowLinesOptions => this.showLinesOptions;
 
         public ObservableCollection<LineViewModel> FilteredLines { get; } = new ObservableCollection<LineViewModel>();
 
@@ -161,12 +166,7 @@ namespace GitLabCodeReview.ViewModels
                 }
             }
 
-            this.FilteredLines.Clear();
-            var filteredLines = this.GetFilteredLines();
-            foreach (var line in filteredLines)
-            {
-                this.FilteredLines.Add(line);
-            }
+            this.RefreshLines();
         }
 
         private async void ExecuteDiff()
@@ -270,6 +270,16 @@ namespace GitLabCodeReview.ViewModels
 
             var targetFileContent = await this.service.GetFileContentAsync(this.mergeRequest.TargetBranch, change.OldPath);
             return targetFileContent;
+        }
+
+        private void RefreshLines()
+        {
+            this.FilteredLines.Clear();
+            var filteredLines = this.GetFilteredLines();
+            foreach (var line in filteredLines)
+            {
+                this.FilteredLines.Add(line);
+            }
         }
 
         private IEnumerable<LineViewModel> GetFilteredLines()
