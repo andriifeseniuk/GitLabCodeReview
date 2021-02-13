@@ -185,7 +185,7 @@
                                                         <TextBlock Text="{Binding Text}"/>
                                                     </StackPanel>
                                                     
-                                                    <ItemsControl Grid.Row="1" ItemsSource="{Binding Discussions}">
+                                                    <ItemsControl Grid.Row="1" ItemsSource="{Binding Discussions}" Margin="20,0,0,0">
                                                         <ItemsControl.ItemTemplate>
                                                             <DataTemplate>
                                                                 <ItemsControl ItemsSource="{Binding Notes}">
