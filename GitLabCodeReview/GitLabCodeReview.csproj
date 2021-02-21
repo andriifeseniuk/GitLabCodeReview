@@ -73,6 +73,7 @@
     <Compile Include="DTO\UserDto.cs" />
     <Compile Include="Services\ErrorService.cs" />
     <Compile Include="Services\GitLabService.cs" />
+    <Compile Include="ViewModels\DummyTreeNode.cs" />
     <Compile Include="ViewModels\FolderViewModel.cs" />
     <Compile Include="ViewModels\ChangeViewModel.cs" />
     <Compile Include="ViewModels\DiscussionViewModel.cs" />

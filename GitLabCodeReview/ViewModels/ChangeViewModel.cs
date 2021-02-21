@@ -13,7 +13,7 @@ using System.Windows.Input;
 
 namespace GitLabCodeReview.ViewModels
 {
-    public class ChangeViewModel : BaseViewModel, ITreeNode
+    public class ChangeViewModel : BaseViewModel, IParentTreeNode
     {
         private const string MoreText = "more";
         private const string LessText = "less";
@@ -27,6 +27,8 @@ namespace GitLabCodeReview.ViewModels
         private LinesFilterOptions showLinesOption = LinesFilterOptions.Discussions;
         private LineViewModel[] sourceFileLines;
         private LineViewModel[] targetFileLines;
+        private bool isExpanded;
+        private DummyTreeNode dummyTreeNode = new DummyTreeNode { DisplayName = "No lines to show" };
 
         public ChangeViewModel(
             ChangeDto gitLabChange,
@@ -39,39 +41,14 @@ namespace GitLabCodeReview.ViewModels
             this.service = service;
             this.errorService = globalErrorService;
             this.DiffCommand = new DelegateCommand(x => this.ExecuteDiff());
-            this.MoreLessCommand = new DelegateCommand(x => this.ExecuteMoreLess());
+            this.LoadLinesCommand = new DelegateCommand(x => this.ExecuteLoadLines());
             this.showLinesOptions = Enum.GetValues(typeof(LinesFilterOptions)).Cast<LinesFilterOptions>().ToArray();
+            this.Items.Add(this.dummyTreeNode);
         }
 
         public ICommand DiffCommand { get; }
 
-        public ICommand MoreLessCommand { get; }
-
-        public bool IsMoreSectionVisible
-        {
-            get
-            {
-                return this.isMoreSectionVisible;
-            }
-            set
-            {
-                this.isMoreSectionVisible = value;
-                this.SchedulePropertyChanged();
-            }
-        }
-
-        public string MoreLessText
-        {
-            get
-            {
-                return this.moreLessText;
-            }
-            set
-            {
-                this.moreLessText = value;
-                this.SchedulePropertyChanged();
-            }
-        }
+        public ICommand LoadLinesCommand { get; }
 
         public string DisplayName
         {
@@ -120,21 +97,25 @@ namespace GitLabCodeReview.ViewModels
 
         public LinesFilterOptions[] ShowLinesOptions => this.showLinesOptions;
 
-        public ObservableCollection<LineViewModel> FilteredLines { get; } = new ObservableCollection<LineViewModel>();
-
-        private void ExecuteMoreLess()
+        public bool IsExpanded
         {
-            if (this.IsMoreSectionVisible)
+            get
             {
-                this.IsMoreSectionVisible = false;
-                this.MoreLessText = MoreText;
+                return this.isExpanded;
             }
-            else
+
+            set
             {
-                this.IsMoreSectionVisible = true;
-                this.MoreLessText = LessText;
-                this.RefreshDiscussions().ConfigureAwait(false);
+                this.isExpanded = value;
+                this.SchedulePropertyChanged();
             }
+        }
+
+        public ObservableCollection<ITreeNode> Items { get; private set; } = new ObservableCollection<ITreeNode>();
+
+        private void ExecuteLoadLines()
+        {
+            this.RefreshDiscussions().ConfigureAwait(false);
         }
 
         private async Task RefreshDiscussions()
@@ -274,11 +255,18 @@ namespace GitLabCodeReview.ViewModels
 
         private void RefreshLines()
         {
-            this.FilteredLines.Clear();
+            this.Items.Clear();
             var filteredLines = this.GetFilteredLines();
-            foreach (var line in filteredLines)
+            if (filteredLines.Any())
             {
-                this.FilteredLines.Add(line);
+                foreach (var line in filteredLines)
+                {
+                    this.Items.Add(line);
+                }
+            }
+            else
+            {
+                Items.Add(this.dummyTreeNode);
             }
         }
 

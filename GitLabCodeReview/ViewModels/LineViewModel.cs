@@ -1,10 +1,12 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 
 namespace GitLabCodeReview.ViewModels
 {
-    public class LineViewModel : BaseViewModel
+    public class LineViewModel : BaseViewModel, IParentTreeNode
     {
         private readonly ObservableCollection<DiscussionViewModel> discussions = new ObservableCollection<DiscussionViewModel>();
+        private bool isExpanded;
 
         public LineViewModel (int number, string text, bool isSourceBranch)
         {
@@ -24,6 +26,30 @@ namespace GitLabCodeReview.ViewModels
             get
             {
                 return this.discussions;
+            }
+        }
+
+        public bool IsExpanded
+        {
+            get
+            {
+                return this.isExpanded;
+            }
+
+            set
+            {
+                this.isExpanded = value;
+                this.SchedulePropertyChanged();
+            }
+        }
+
+        public ObservableCollection<ITreeNode> Items { get; private set; } = new ObservableCollection<ITreeNode>();
+
+        public string DisplayName
+        {
+            get
+            {
+                return this.Text;
             }
         }
     }

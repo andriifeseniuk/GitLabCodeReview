@@ -136,73 +136,69 @@
             </Expander>
             <Expander Header="Changes">
                 <TreeView ItemsSource="{Binding ChangesRoot.Items}">
+                    <TreeView.ItemContainerStyle>
+                        <Style TargetType="{x:Type TreeViewItem}">
+                            <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </Style>
+                    </TreeView.ItemContainerStyle>
                     <TreeView.Resources>
-                        <HierarchicalDataTemplate DataType="{x:Type viewModels:FolderViewModel}" ItemsSource="{Binding Items}">
+                        <HierarchicalDataTemplate DataType="{x:Type viewModels:DummyTreeNode}">
                             <TextBlock Text="{Binding DisplayName}"/>
                         </HierarchicalDataTemplate>
-                        <HierarchicalDataTemplate DataType="{x:Type viewModels:ChangeViewModel}">
+                        <HierarchicalDataTemplate DataType="{x:Type viewModels:FolderViewModel}"
+                                                  ItemsSource="{Binding Items}">
+                            <TextBlock Text="{Binding DisplayName}"/>
+                        </HierarchicalDataTemplate>
+                        <HierarchicalDataTemplate DataType="{x:Type viewModels:ChangeViewModel}"
+                                                  ItemsSource="{Binding Items}">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
 
-                                <Grid Grid.Row="0">
+                                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding DisplayName}"/>
+                                <Grid Grid.Row="1" Visibility="{Binding IsExpanded, Converter={StaticResource BoolToVisibilityConverter}}">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
 
-                                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding DisplayName}"/>
-                                    <Button Grid.Row="0" Grid.Column="2" Content="diff" Command="{Binding DiffCommand}" Width="35" Style="{StaticResource VisibleOnMouseOverParent}"/>
-                                    <Button Grid.Row="0" Grid.Column="3" Content="{Binding MoreLessText}" Command="{Binding MoreLessCommand}" Width="35"  Style="{StaticResource VisibleOnMouseOverParent}"/>
+                                    <Button Grid.Row="0" Grid.Column="0" Content="Diff" Command="{Binding DiffCommand}" Width="35"/>
+                                    <Button Grid.Row="0" Grid.Column="1" Content="Load" Command="{Binding LoadLinesCommand}" Width="35"/>
+                                    <TextBlock Grid.Row="0" Grid.Column="2" Text="Lines to show:" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                                    <ComboBox Grid.Row="0" Grid.Column="3" ItemsSource="{Binding ShowLinesOptions}" SelectedValue="{Binding LinesFilterOption}" VerticalAlignment="Center"/>
                                 </Grid>
+                            </Grid>
+                        </HierarchicalDataTemplate>
+                        <HierarchicalDataTemplate DataType="{x:Type viewModels:LineViewModel}" ItemsSource="{Binding Items}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                    <TextBlock Text="[s]" Visibility="{Binding IsSourceBranch, Converter={StaticResource BoolToVisibilityConverter}}" Margin="0,0,5,0"/>
+                                    <TextBlock Text="[t]" Visibility="{Binding IsSourceBranch, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverse}" Margin="0,0,5,0"/>
+                                    <TextBlock Text="{Binding Number}" Margin="0,0,5,0"/>
+                                    <TextBlock Text="{Binding Text}"/>
+                                </StackPanel>
 
-                                <Grid Grid.Row="1" Visibility="{Binding IsMoreSectionVisible, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}" Margin="20,0,0,0">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
-
-                                    <StackPanel Grid.Row="0" Orientation="Horizontal">
-                                        <TextBlock Text="Lines to show:" Margin="0,0,5,0" VerticalAlignment="Center"/>
-                                        <ComboBox ItemsSource="{Binding ShowLinesOptions}" SelectedValue="{Binding LinesFilterOption}" VerticalAlignment="Center"/>
-                                    </StackPanel>
-                                    <ItemsControl Grid.Row="1" ItemsSource="{Binding FilteredLines}">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <Grid>
-                                                    <Grid.RowDefinitions>
-                                                        <RowDefinition Height="Auto"/>
-                                                        <RowDefinition Height="Auto"/>
-                                                    </Grid.RowDefinitions>
-                                                    <StackPanel Grid.Row="0" Orientation="Horizontal">
-                                                        <TextBlock Text="[s]" Visibility="{Binding IsSourceBranch, Converter={StaticResource BoolToVisibilityConverter}}" Margin="0,0,5,0"/>
-                                                        <TextBlock Text="[t]" Visibility="{Binding IsSourceBranch, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverse}" Margin="0,0,5,0"/>
-                                                        <TextBlock Text="{Binding Number}" Margin="0,0,5,0"/>
-                                                        <TextBlock Text="{Binding Text}"/>
-                                                    </StackPanel>
-                                                    
-                                                    <ItemsControl Grid.Row="1" ItemsSource="{Binding Discussions}" Margin="20,0,0,0">
-                                                        <ItemsControl.ItemTemplate>
-                                                            <DataTemplate>
-                                                                <ItemsControl ItemsSource="{Binding Notes}">
-                                                                    <ItemsControl.ItemTemplate>
-                                                                        <DataTemplate>
-                                                                            <TextBlock Text="{Binding Note.Body}"/>
-                                                                        </DataTemplate>
-                                                                    </ItemsControl.ItemTemplate>
-                                                                </ItemsControl>
-                                                            </DataTemplate>
-                                                        </ItemsControl.ItemTemplate>
-                                                    </ItemsControl>
-                                                </Grid>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </Grid>
+                                <ItemsControl Grid.Row="1" ItemsSource="{Binding Discussions}" Margin="20,0,0,0">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate DataType="{x:Type viewModels:DiscussionViewModel}">
+                                            <ItemsControl ItemsSource="{Binding Notes}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate DataType="{x:Type viewModels:NoteViewModel}">
+                                                        <TextBlock Text="{Binding Note.Body}"/>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
                             </Grid>
                         </HierarchicalDataTemplate>
                     </TreeView.Resources>
