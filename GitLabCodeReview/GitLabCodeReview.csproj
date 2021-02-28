@@ -56,6 +56,7 @@
     <Compile Include="Common\Commands\DelegateCommand.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Enums\LinesFilterOptions.cs" />
+    <Compile Include="Extensions\CollectionHelper.cs" />
     <Compile Include="GitLabMainWindow.cs" />
     <Compile Include="GitLabMainWindowCommand.cs" />
     <Compile Include="GitLabOptions.cs">

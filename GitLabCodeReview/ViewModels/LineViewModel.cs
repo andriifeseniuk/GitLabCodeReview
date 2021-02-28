@@ -1,5 +1,7 @@
-﻿using System;
+﻿using GitLabCodeReview.Extensions;
+using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 
 namespace GitLabCodeReview.ViewModels
 {
@@ -13,6 +15,13 @@ namespace GitLabCodeReview.ViewModels
             this.Number = number;
             this.Text = text;
             this.IsSourceBranch = isSourceBranch;
+            this.discussions.CollectionChanged += this.OnDiscussionsCollectionChanged;
+        }
+
+        private void OnDiscussionsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            this.Items.Clear();
+            this.Items.AddRange(this.discussions);
         }
 
         public int Number { get; private set; }

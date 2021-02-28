@@ -185,20 +185,16 @@
                                     <TextBlock Text="{Binding Number}" Margin="0,0,5,0"/>
                                     <TextBlock Text="{Binding Text}"/>
                                 </StackPanel>
-
-                                <ItemsControl Grid.Row="1" ItemsSource="{Binding Discussions}" Margin="20,0,0,0">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate DataType="{x:Type viewModels:DiscussionViewModel}">
-                                            <ItemsControl ItemsSource="{Binding Notes}">
-                                                <ItemsControl.ItemTemplate>
-                                                    <DataTemplate DataType="{x:Type viewModels:NoteViewModel}">
-                                                        <TextBlock Text="{Binding Note.Body}"/>
-                                                    </DataTemplate>
-                                                </ItemsControl.ItemTemplate>
-                                            </ItemsControl>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
+                            </Grid>
+                        </HierarchicalDataTemplate>
+                        <HierarchicalDataTemplate DataType="{x:Type viewModels:DiscussionViewModel}" ItemsSource="{Binding Items}">
+                            <Grid>
+                                <TextBlock Text="{Binding DisplayName}"/>
+                            </Grid>
+                        </HierarchicalDataTemplate>
+                        <HierarchicalDataTemplate DataType="{x:Type viewModels:NoteViewModel}" ItemsSource="{Binding Items}">
+                            <Grid>
+                                <TextBlock Text="{Binding DisplayName}"/>
                             </Grid>
                         </HierarchicalDataTemplate>
                     </TreeView.Resources>
