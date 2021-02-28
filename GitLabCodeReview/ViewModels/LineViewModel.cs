@@ -1,4 +1,5 @@
-﻿using GitLabCodeReview.Extensions;
+﻿using GitLabCodeReview.Common.Commands;
+using GitLabCodeReview.Extensions;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -9,6 +10,7 @@ namespace GitLabCodeReview.ViewModels
     {
         private readonly ObservableCollection<DiscussionViewModel> discussions = new ObservableCollection<DiscussionViewModel>();
         private bool isExpanded;
+        private string newDiscussionText;
 
         public LineViewModel (int number, string text, bool isSourceBranch)
         {
@@ -16,12 +18,7 @@ namespace GitLabCodeReview.ViewModels
             this.Text = text;
             this.IsSourceBranch = isSourceBranch;
             this.discussions.CollectionChanged += this.OnDiscussionsCollectionChanged;
-        }
-
-        private void OnDiscussionsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            this.Items.Clear();
-            this.Items.AddRange(this.discussions);
+            this.NewDiscussionCommand = new DelegateCommand(this.ExecuteNewDiscussion);
         }
 
         public int Number { get; private set; }
@@ -60,6 +57,37 @@ namespace GitLabCodeReview.ViewModels
             {
                 return this.Text;
             }
+        }
+
+        public string NewDiscussionText
+        {
+            get
+            {
+                return this.newDiscussionText;
+            }
+            set
+            {
+                this.newDiscussionText = value;
+                this.SchedulePropertyChanged();
+            }
+        }
+
+        public DelegateCommand NewDiscussionCommand { get; private set; }
+
+        private void OnDiscussionsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            this.Items.Clear();
+            this.Items.AddRange(this.discussions);
+
+            if (this.Items.Count == 0)
+            {
+                this.Items.Add(new DummyTreeNode { DisplayName = "No discussions to show" });
+            }
+        }
+
+        private void ExecuteNewDiscussion(object obj)
+        {
+            // todo
         }
     }
 }

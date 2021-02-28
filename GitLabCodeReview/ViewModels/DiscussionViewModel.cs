@@ -1,29 +1,23 @@
-﻿using GitLabCodeReview.DTO;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System;
-using System.Collections.Specialized;
+﻿using GitLabCodeReview.Common.Commands;
+using GitLabCodeReview.DTO;
 using GitLabCodeReview.Extensions;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Linq;
 
 namespace GitLabCodeReview.ViewModels
 {
     public class DiscussionViewModel : BaseViewModel, IParentTreeNode
     {
         private bool isExpanded;
+        private string newNoteText;
 
         public DiscussionViewModel(DiscussionDto gitLabDiscussion)
         {
             this.Discussion = gitLabDiscussion;
             this.Notes.CollectionChanged += this.OnNotesCollectionChanged;
+            this.NewNoteCommand = new DelegateCommand(this.ExecuteNewNote);
         }
-
-        private void OnNotesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            this.Items.Clear();
-            this.Items.AddRange(this.Notes.Skip(1));
-        }
-
-        public DiscussionDto Discussion { get; }
 
         public string DisplayName
         {
@@ -49,6 +43,34 @@ namespace GitLabCodeReview.ViewModels
 
         public ObservableCollection<ITreeNode> Items { get; private set; } = new ObservableCollection<ITreeNode>();
 
+        public DiscussionDto Discussion { get; }
+
         public ObservableCollection<NoteViewModel> Notes { get; } = new ObservableCollection<NoteViewModel>();
+
+        public string NewNoteText
+        {
+            get
+            {
+                return this.newNoteText;
+            }
+            set
+            {
+                this.newNoteText = value;
+                this.SchedulePropertyChanged();
+            }
+        }
+
+        public DelegateCommand NewNoteCommand { get; private set; }
+
+        private void OnNotesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            this.Items.Clear();
+            this.Items.AddRange(this.Notes.Skip(1));
+        }
+
+        private void ExecuteNewNote(object obj)
+        {
+            //todo
+        }
     }
 }
