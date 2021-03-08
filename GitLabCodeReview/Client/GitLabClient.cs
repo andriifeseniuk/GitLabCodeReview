@@ -99,5 +99,11 @@ namespace GitLabCodeReview.Client
             var discussions = (DiscussionDto[])JsonConvert.DeserializeObject(responseAsString, typeof(DiscussionDto[]));
             return discussions;
         }
+
+        public async Task AddNote(long projectId, long mergeRequestInternalId, string discussionId, string body)
+        {
+            var uri = $"{this.apiUrl}/projects/{projectId}/merge_requests/{mergeRequestInternalId}/discussions/{discussionId}/notes?body={body}";
+            await client.PostAsync(uri, new StringContent(string.Empty));
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using GitLabCodeReview.Common.Commands;
 using GitLabCodeReview.DTO;
 using GitLabCodeReview.Extensions;
+using GitLabCodeReview.Services;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
@@ -11,10 +12,12 @@ namespace GitLabCodeReview.ViewModels
     {
         private bool isExpanded;
         private string newNoteText;
+        private GitLabService service;
 
-        public DiscussionViewModel(DiscussionDto gitLabDiscussion)
+        public DiscussionViewModel(DiscussionDto gitLabDiscussion, GitLabService gitLabService)
         {
             this.Discussion = gitLabDiscussion;
+            this.service = gitLabService;
             this.Notes.CollectionChanged += this.OnNotesCollectionChanged;
             this.NewNoteCommand = new DelegateCommand(this.ExecuteNewNote);
         }
@@ -70,7 +73,7 @@ namespace GitLabCodeReview.ViewModels
 
         private void ExecuteNewNote(object obj)
         {
-            //todo
+            this.service.AddNote(this.Discussion.Id, this.NewNoteText).ConfigureAwait(false);
         }
     }
 }

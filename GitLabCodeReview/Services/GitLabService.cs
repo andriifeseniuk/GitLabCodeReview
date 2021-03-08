@@ -204,5 +204,30 @@ namespace GitLabCodeReview.Services
                 return null;
             }
         }
+
+        public async Task AddNote(string discussionId, string body)
+        {
+            try
+            {
+                if (this.SelectedProjectId == null)
+                {
+                    throw new InvalidOperationException("SelectedProjectId is null");
+                }
+
+                if (this.SelectedMergeRequestInternalId == null)
+                {
+                    throw new InvalidOperationException("SelectedMergeRequestInternalId is null");
+                }
+
+                using (var client = new GitLabClient(this.GitOptions.ApiUrl, this.GitOptions.PrivateToken))
+                {
+                    await client.AddNote(this.GitOptions.SelectedProjectId.Value, this.SelectedMergeRequestInternalId.Value, discussionId, body);
+                }
+            }
+            catch (Exception ex)
+            {
+                this.errorService.AddError(ex.ToString());
+            }
+        }
     }
 }

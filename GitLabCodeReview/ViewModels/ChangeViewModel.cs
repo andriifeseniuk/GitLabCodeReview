@@ -129,7 +129,7 @@ namespace GitLabCodeReview.ViewModels
             var discussions = await this.GetDiscussions();
             foreach (var diss in discussions)
             {
-                var dissViewModel = new DiscussionViewModel(diss);
+                var dissViewModel = new DiscussionViewModel(diss, this.service);
                 foreach(var noteDto in diss.Notes)
                 {
                     var noteViewModel = new NoteViewModel(noteDto);
