@@ -229,5 +229,30 @@ namespace GitLabCodeReview.Services
                 this.errorService.AddError(ex.ToString());
             }
         }
+
+        public async Task AddDiscussion(CreateDiscussionDto createDiscussionDto, string body)
+        {
+            try
+            {
+                if (this.SelectedProjectId == null)
+                {
+                    throw new InvalidOperationException("SelectedProjectId is null");
+                }
+
+                if (this.SelectedMergeRequestInternalId == null)
+                {
+                    throw new InvalidOperationException("SelectedMergeRequestInternalId is null");
+                }
+
+                using (var client = new GitLabClient(this.GitOptions.ApiUrl, this.GitOptions.PrivateToken))
+                {
+                    await client.AddDiscussion(this.GitOptions.SelectedProjectId.Value, this.SelectedMergeRequestInternalId.Value, createDiscussionDto, body);
+                }
+            }
+            catch (Exception ex)
+            {
+                this.errorService.AddError(ex.ToString());
+            }
+        }
     }
 }

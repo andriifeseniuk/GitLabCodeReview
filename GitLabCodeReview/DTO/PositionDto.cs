@@ -2,17 +2,20 @@
 
 namespace GitLabCodeReview.DTO
 {
-    [JsonObject(MemberSerialization.OptIn)]
+    //[JsonObject(MemberSerialization.OptIn)]
     public class PositionDto
     {
         [JsonProperty(PropertyName = "base_sha")]
-        public string Body { get; set; }
+        public string BaseSha { get; set; }
 
         [JsonProperty(PropertyName = "start_sha")]
         public string StartSha { get; set; }
 
         [JsonProperty(PropertyName = "head_sha")]
         public string HeadSha { get; set; }
+
+        [JsonProperty(PropertyName = "position_type")]
+        public string PositionType { get; set; }
 
         [JsonProperty(PropertyName = "old_path")]
         public string OldPath { get; set; }

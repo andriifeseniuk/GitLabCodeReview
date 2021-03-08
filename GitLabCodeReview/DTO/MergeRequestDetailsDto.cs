@@ -19,5 +19,8 @@ namespace GitLabCodeReview.DTO
 
         [JsonProperty(PropertyName = "changes")]
         public ChangeDto[] Changes { get; set; }
+
+        [JsonProperty(PropertyName = "diff_refs")]
+        public DiffRefsDto DiffRefs { get; set; }
     }
 }

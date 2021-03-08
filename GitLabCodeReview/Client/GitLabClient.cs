@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -100,10 +101,23 @@ namespace GitLabCodeReview.Client
             return discussions;
         }
 
-        public async Task AddNote(long projectId, long mergeRequestInternalId, string discussionId, string body)
+        public async Task<NoteDto> AddNote(long projectId, long mergeRequestInternalId, string discussionId, string body)
         {
             var uri = $"{this.apiUrl}/projects/{projectId}/merge_requests/{mergeRequestInternalId}/discussions/{discussionId}/notes?body={body}";
-            await client.PostAsync(uri, new StringContent(string.Empty));
+            var response = await client.PostAsync(uri, new StringContent(string.Empty, Encoding.UTF8, "application/json"));
+            var responseAsString = await response.Content.ReadAsStringAsync();
+            var note = (NoteDto)JsonConvert.DeserializeObject(responseAsString, typeof(NoteDto));
+            return note;
+        }
+
+        public async Task<DiscussionDto> AddDiscussion(long projectId, long mergeRequestInternalId, CreateDiscussionDto createDiscussionDto, string body)
+        {
+            var uri = $"{this.apiUrl}/projects/{projectId}/merge_requests/{mergeRequestInternalId}/discussions?body={body}";
+            var content = JsonConvert.SerializeObject(createDiscussionDto);
+            var response = await client.PostAsync(uri, new StringContent(content, Encoding.UTF8, "application/json"));
+            var responseAsString = await response.Content.ReadAsStringAsync();
+            var discussion = (DiscussionDto)JsonConvert.DeserializeObject(responseAsString, typeof(DiscussionDto));
+            return discussion;
         }
     }
 }

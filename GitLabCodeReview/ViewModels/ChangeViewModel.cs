@@ -226,7 +226,7 @@ namespace GitLabCodeReview.ViewModels
         private IEnumerable<LineViewModel> GetLineViewModels(string fileContent, bool isSourceBranch)
         {
             var lines = fileContent == null ? new string[0] : fileContent.Split('\n');
-            var viewModels = lines.Select((l, i) => new LineViewModel(i, l, isSourceBranch)).ToArray();
+            var viewModels = lines.Select((l, i) => new LineViewModel(i, l, isSourceBranch, this.mergeRequest, this.change, this.service)).ToArray();
             return viewModels;
         }
 
