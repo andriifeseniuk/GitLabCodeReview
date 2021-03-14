@@ -14,6 +14,7 @@ namespace GitLabCodeReview.Client
     {
         private readonly string apiUrl;
         private readonly HttpClient client;
+        private readonly JsonSerializerSettings settings;
 
         public GitLabClient(string apiUrl, string privateToken)
         {
@@ -31,6 +32,11 @@ namespace GitLabCodeReview.Client
             ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
             this.client = new HttpClient();
             this.client.DefaultRequestHeaders.Add("PRIVATE-TOKEN", privateToken);
+
+            this.settings = new JsonSerializerSettings
+            {
+                DefaultValueHandling = DefaultValueHandling.Ignore
+            };
         }
 
         public void Dispose()
@@ -113,7 +119,7 @@ namespace GitLabCodeReview.Client
         public async Task<DiscussionDto> AddDiscussion(long projectId, long mergeRequestInternalId, CreateDiscussionDto createDiscussionDto, string body)
         {
             var uri = $"{this.apiUrl}/projects/{projectId}/merge_requests/{mergeRequestInternalId}/discussions?body={body}";
-            var content = JsonConvert.SerializeObject(createDiscussionDto);
+            var content = JsonConvert.SerializeObject(createDiscussionDto, this.settings);
             var response = await client.PostAsync(uri, new StringContent(content, Encoding.UTF8, "application/json"));
             var responseAsString = await response.Content.ReadAsStringAsync();
             var discussion = (DiscussionDto)JsonConvert.DeserializeObject(responseAsString, typeof(DiscussionDto));

@@ -115,7 +115,15 @@ namespace GitLabCodeReview.ViewModels
 
         private void ExecuteLoadLines()
         {
-            this.RefreshDiscussions().ConfigureAwait(false);
+            try
+            {
+                this.RefreshDiscussions().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                this.errorService.AddError(ex.ToString());
+            }
+
         }
 
         private async Task RefreshDiscussions()
@@ -137,6 +145,11 @@ namespace GitLabCodeReview.ViewModels
                 }
 
                 var firstNote = diss.Notes.First();
+                if (firstNote.Position == null)
+                {
+                    continue;
+                }
+
                 if (firstNote.Position.NewLine != null)
                 {
                     this.sourceFileLines[firstNote.Position.NewLine.Value].Discussions.Add(dissViewModel);
