@@ -152,11 +152,11 @@ namespace GitLabCodeReview.ViewModels
 
                 if (firstNote.Position.NewLine != null)
                 {
-                    this.sourceFileLines[firstNote.Position.NewLine.Value].Discussions.Add(dissViewModel);
+                    this.sourceFileLines[firstNote.Position.NewLine.Value - 1].Discussions.Add(dissViewModel);
                 }
                 else
                 {
-                    this.targetFileLines[firstNote.Position.OldLine.Value].Discussions.Add(dissViewModel);
+                    this.targetFileLines[firstNote.Position.OldLine.Value - 1].Discussions.Add(dissViewModel);
                 }
             }
 
@@ -239,7 +239,7 @@ namespace GitLabCodeReview.ViewModels
         private IEnumerable<LineViewModel> GetLineViewModels(string fileContent, bool isSourceBranch)
         {
             var lines = fileContent == null ? new string[0] : fileContent.Split('\n');
-            var viewModels = lines.Select((l, i) => new LineViewModel(i, l, isSourceBranch, this.mergeRequest, this.change, this.service)).ToArray();
+            var viewModels = lines.Select((l, i) => new LineViewModel(i + 1, l, isSourceBranch, this.mergeRequest, this.change, this.service)).ToArray();
             return viewModels;
         }
 
