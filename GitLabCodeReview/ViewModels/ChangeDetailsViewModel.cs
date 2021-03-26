@@ -21,8 +21,8 @@ namespace GitLabCodeReview.ViewModels
         private readonly ErrorService errorService;
         private readonly LinesFilterOptions[] showLinesOptions;
         private LinesFilterOptions showLinesOption = LinesFilterOptions.Discussions;
-        private LineViewModel[] sourceFileLines;
-        private LineViewModel[] targetFileLines;
+        private LineViewModel[] sourceFileLines = new LineViewModel[0];
+        private LineViewModel[] targetFileLines = new LineViewModel[0];
         private bool isExpanded;
 
         public ChangeDetailsViewModel(
@@ -36,13 +36,10 @@ namespace GitLabCodeReview.ViewModels
             this.service = service;
             this.errorService = globalErrorService;
             this.DiffCommand = new DelegateCommand(x => this.ExecuteDiff());
-            this.LoadLinesCommand = new DelegateCommand(x => this.ExecuteLoadLines());
             this.showLinesOptions = Enum.GetValues(typeof(LinesFilterOptions)).Cast<LinesFilterOptions>().ToArray();
         }
 
         public ICommand DiffCommand { get; }
-
-        public ICommand LoadLinesCommand { get; }
 
         public string DisplayName => null;
 
@@ -62,23 +59,9 @@ namespace GitLabCodeReview.ViewModels
 
         public LinesFilterOptions[] ShowLinesOptions => this.showLinesOptions;
 
-        public bool IsExpanded
-        {
-            get
-            {
-                return this.isExpanded;
-            }
-
-            set
-            {
-                this.isExpanded = value;
-                this.SchedulePropertyChanged();
-            }
-        }
-
         public ObservableCollection<ITreeNode> Items { get; private set; } = new ObservableCollection<ITreeNode>();
 
-        private void ExecuteLoadLines()
+        public void ExecuteLoadLines()
         {
             try
             {

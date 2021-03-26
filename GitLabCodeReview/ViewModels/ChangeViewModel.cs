@@ -11,6 +11,7 @@ namespace GitLabCodeReview.ViewModels
         private readonly ChangeDto change;
         private readonly GitLabService service;
         private bool isExpanded;
+        private readonly ChangeDetailsViewModel details;
 
         public ChangeViewModel(
             ChangeDto gitLabChange,
@@ -20,8 +21,8 @@ namespace GitLabCodeReview.ViewModels
         {
             this.change = gitLabChange;
             this.service = service;
-            var details = new ChangeDetailsViewModel(gitLabChange, gitLabMergeRequest, service, globalErrorService);
-            this.Items.Add(details);
+            this.details = new ChangeDetailsViewModel(gitLabChange, gitLabMergeRequest, service, globalErrorService);
+            this.Items.Add(this.details);
         }
 
         public ICommand DiffCommand { get; }
@@ -70,6 +71,11 @@ namespace GitLabCodeReview.ViewModels
             {
                 this.isExpanded = value;
                 this.SchedulePropertyChanged();
+
+                if (this.isExpanded)
+                {
+                    this.details.ExecuteLoadLines();
+                }
             }
         }
 
