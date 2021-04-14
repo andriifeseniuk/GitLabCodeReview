@@ -22,13 +22,13 @@
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-
-            <TextBlock Grid.Row="0" Grid.Column="0" Text="Lines to show:" Margin="0,0,5,0" VerticalAlignment="Center"/>
-            <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding ShowLinesOptions}" SelectedValue="{Binding LinesFilterOption}" VerticalAlignment="Center"/>
+            <ListBox ItemsSource="{Binding ShowLinesOptions}" SelectedValue="{Binding LinesFilterOption}" HorizontalAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel IsItemsHost="True" />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+            </ListBox>
         </Grid>
 
         <TreeView Grid.Row="1" ItemsSource="{Binding Items}">
