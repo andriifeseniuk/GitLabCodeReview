@@ -18,6 +18,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         
         <TreeView Grid.Row="0" ItemsSource="{Binding Discussions}">
@@ -56,17 +57,10 @@
                 </HierarchicalDataTemplate>
             </TreeView.Resources>
         </TreeView>
-        
-        <Grid Grid.Row="1" MinWidth="200" MaxWidth="400" >
-            <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition />
-            </Grid.RowDefinitions>
-            <TextBox Grid.Row="0" TextWrapping="Wrap" Text="{Binding NewDiscussionText}"/>
-            <Button Grid.Row="1" Content="New Discussion"
-                    Command="{Binding NewDiscussionCommand}" 
-                    Visibility="{Binding IsAnyText, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}"
-                    Width="Auto"/>
-        </Grid>
+
+        <TextBox Grid.Row="1" MinWidth="200" MaxWidth="400" TextWrapping="Wrap" Text="{Binding NewDiscussionText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        <Button Grid.Row="2" Content="New Discussion" Width="120" HorizontalAlignment="Left"
+                Command="{Binding NewDiscussionCommand}" 
+                Visibility="{Binding IsAnyText, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}"/>
     </Grid>
 </UserControl>
