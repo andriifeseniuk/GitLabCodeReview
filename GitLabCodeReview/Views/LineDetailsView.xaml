@@ -1,0 +1,72 @@
+﻿<UserControl x:Class="GitLabCodeReview.Views.LineDetailsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GitLabCodeReview.Views"
+             xmlns:viewModels="clr-namespace:GitLabCodeReview.ViewModels"
+             xmlns:converters="clr-namespace:GitLabCodeReview.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+
+    </UserControl.Resources>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <TreeView Grid.Row="0" ItemsSource="{Binding Discussions}">
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="{x:Type TreeViewItem}">
+                    <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                </Style>
+            </TreeView.ItemContainerStyle>
+            <TreeView.Resources>
+                <HierarchicalDataTemplate DataType="{x:Type viewModels:DummyTreeNode}">
+                    <TextBlock Text="{Binding DisplayName}"/>
+                </HierarchicalDataTemplate>
+                <HierarchicalDataTemplate DataType="{x:Type viewModels:DiscussionViewModel}" ItemsSource="{Binding Items}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Text="{Binding DisplayName}"/>
+                        <Grid Grid.Row="1" MinWidth="200" MaxWidth="400"
+                                      Visibility="{Binding IsExpanded, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox Grid.Column="0" TextWrapping="Wrap" Text="{Binding NewNoteText}"/>
+                            <Button Grid.Column="1" Content="New Note" Margin="5,0,0,0"
+                                            Command="{Binding NewNoteCommand}"/>
+                        </Grid>
+                    </Grid>
+                </HierarchicalDataTemplate>
+                <HierarchicalDataTemplate DataType="{x:Type viewModels:NoteViewModel}" ItemsSource="{Binding Items}">
+                    <Grid>
+                        <TextBlock Text="{Binding DisplayName}"/>
+                    </Grid>
+                </HierarchicalDataTemplate>
+            </TreeView.Resources>
+        </TreeView>
+        
+        <Grid Grid.Row="1" MinWidth="200" MaxWidth="400" >
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBox Grid.Row="0" TextWrapping="Wrap" Text="{Binding NewDiscussionText}"/>
+            <Button Grid.Row="1" Content="New Discussion"
+                    Command="{Binding NewDiscussionCommand}" 
+                    Visibility="{Binding IsAnyText, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}"
+                    Width="Auto"/>
+        </Grid>
+    </Grid>
+</UserControl>

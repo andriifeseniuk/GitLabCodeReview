@@ -100,11 +100,11 @@ namespace GitLabCodeReview.ViewModels
 
                 if (firstNote.Position.NewLine != null)
                 {
-                    this.sourceFileLines[firstNote.Position.NewLine.Value - 1].Discussions.Add(dissViewModel);
+                    this.sourceFileLines[firstNote.Position.NewLine.Value - 1].Details.Discussions.Add(dissViewModel);
                 }
                 else
                 {
-                    this.targetFileLines[firstNote.Position.OldLine.Value - 1].Discussions.Add(dissViewModel);
+                    this.targetFileLines[firstNote.Position.OldLine.Value - 1].Details.Discussions.Add(dissViewModel);
                 }
             }
 
@@ -241,8 +241,8 @@ namespace GitLabCodeReview.ViewModels
                     return this.targetFileLines;
 
                 case LinesFilterOptions.Discussions:
-                    var linesWithDiscussions = this.targetFileLines.Where(l => l.Discussions.Any())
-                        .Concat(this.sourceFileLines.Where(l => l.Discussions.Any())).ToArray();
+                    var linesWithDiscussions = this.targetFileLines.Where(l => l.Details.Discussions.Any())
+                        .Concat(this.sourceFileLines.Where(l => l.Details.Discussions.Any())).ToArray();
                     return linesWithDiscussions;
 
                 default:

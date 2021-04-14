@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GitLabCodeReview.Views"
              xmlns:viewModels="clr-namespace:GitLabCodeReview.ViewModels"
+             xmlns:views="clr-namespace:GitLabCodeReview.Views"
              xmlns:converters="clr-namespace:GitLabCodeReview.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
@@ -38,55 +39,17 @@
                 </Style>
             </TreeView.ItemContainerStyle>
             <TreeView.Resources>
-                <HierarchicalDataTemplate DataType="{x:Type viewModels:DummyTreeNode}">
-                    <TextBlock Text="{Binding DisplayName}"/>
-                </HierarchicalDataTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type viewModels:LineViewModel}" ItemsSource="{Binding Items}">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        <StackPanel Grid.Row="0" Orientation="Horizontal">
-                            <TextBlock Text="[s]" Visibility="{Binding IsSourceBranch, Converter={StaticResource BoolToVisibilityConverter}}" Margin="0,0,5,0"/>
-                            <TextBlock Text="[t]" Visibility="{Binding IsSourceBranch, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverse}" Margin="0,0,5,0"/>
-                            <TextBlock Text="{Binding Number}" Margin="0,0,5,0"/>
-                            <TextBlock Text="{Binding Text}"/>
-                        </StackPanel>
-                        <Grid Grid.Row="1" MinWidth="200" MaxWidth="400"
-                                      Visibility="{Binding IsExpanded, Converter={StaticResource BoolToVisibilityConverter}}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBox Grid.Column="0" TextWrapping="Wrap" Text="{Binding NewDiscussionText}"/>
-                            <Button Grid.Column="1" Content="New Discussion" Margin="5,0,0,0"
-                                            Command="{Binding NewDiscussionCommand}"/>
-                        </Grid>
-                    </Grid>
+                    <StackPanel Grid.Row="0" Orientation="Horizontal">
+                        <TextBlock Text="[s]" Visibility="{Binding IsSourceBranch, Converter={StaticResource BoolToVisibilityConverter}}" Margin="0,0,5,0"/>
+                        <TextBlock Text="[t]" Visibility="{Binding IsSourceBranch, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverse}" Margin="0,0,5,0"/>
+                        <TextBlock Text="{Binding Number}" Margin="0,0,5,0"/>
+                        <TextBlock Text="{Binding Text}"/>
+                    </StackPanel>
                 </HierarchicalDataTemplate>
-                <HierarchicalDataTemplate DataType="{x:Type viewModels:DiscussionViewModel}" ItemsSource="{Binding Items}">
+                <HierarchicalDataTemplate DataType="{x:Type viewModels:LineDetailsViewModel}" ItemsSource="{Binding Items}">
                     <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Text="{Binding DisplayName}"/>
-                        <Grid Grid.Row="1" MinWidth="200" MaxWidth="400"
-                                      Visibility="{Binding IsExpanded, Converter={StaticResource BoolToVisibilityConverter}}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBox Grid.Column="0" TextWrapping="Wrap" Text="{Binding NewNoteText}"/>
-                            <Button Grid.Column="1" Content="New Note" Margin="5,0,0,0"
-                                            Command="{Binding NewNoteCommand}"/>
-                        </Grid>
-                    </Grid>
-                </HierarchicalDataTemplate>
-                <HierarchicalDataTemplate DataType="{x:Type viewModels:NoteViewModel}" ItemsSource="{Binding Items}">
-                    <Grid>
-                        <TextBlock Text="{Binding DisplayName}"/>
+                        <views:LineDetailsView DataContext="{Binding}"></views:LineDetailsView>
                     </Grid>
                 </HierarchicalDataTemplate>
             </TreeView.Resources>
