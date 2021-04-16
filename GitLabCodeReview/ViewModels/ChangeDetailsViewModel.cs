@@ -89,7 +89,7 @@ namespace GitLabCodeReview.ViewModels
                 foreach(var noteDto in diss.Notes)
                 {
                     var noteViewModel = new NoteViewModel(noteDto);
-                    dissViewModel.Notes.Add(noteViewModel);
+                    dissViewModel.Details.Notes.Add(noteViewModel);
                 }
 
                 var firstNote = diss.Notes.First();

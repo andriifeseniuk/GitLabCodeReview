@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GitLabCodeReview.Views"
+             xmlns:views="clr-namespace:GitLabCodeReview.Views"
              xmlns:viewModels="clr-namespace:GitLabCodeReview.ViewModels"
              xmlns:converters="clr-namespace:GitLabCodeReview.Converters"
              mc:Ignorable="d" 
@@ -28,31 +29,14 @@
                 </Style>
             </TreeView.ItemContainerStyle>
             <TreeView.Resources>
-                <HierarchicalDataTemplate DataType="{x:Type viewModels:DummyTreeNode}">
-                    <TextBlock Text="{Binding DisplayName}"/>
-                </HierarchicalDataTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type viewModels:DiscussionViewModel}" ItemsSource="{Binding Items}">
                     <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
                         <TextBlock Grid.Row="0" Text="{Binding DisplayName}"/>
-                        <Grid Grid.Row="1" MinWidth="200" MaxWidth="400"
-                                      Visibility="{Binding IsExpanded, Converter={StaticResource BoolToVisibilityConverter}}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBox Grid.Column="0" TextWrapping="Wrap" Text="{Binding NewNoteText}"/>
-                            <Button Grid.Column="1" Content="New Note" Margin="5,0,0,0"
-                                            Command="{Binding NewNoteCommand}"/>
-                        </Grid>
                     </Grid>
                 </HierarchicalDataTemplate>
-                <HierarchicalDataTemplate DataType="{x:Type viewModels:NoteViewModel}" ItemsSource="{Binding Items}">
+                <HierarchicalDataTemplate DataType="{x:Type viewModels:DiscussionDetailsViewModel}">
                     <Grid>
-                        <TextBlock Text="{Binding DisplayName}"/>
+                        <views:DiscussionDetailsView DataContext="{Binding}"/>
                     </Grid>
                 </HierarchicalDataTemplate>
             </TreeView.Resources>

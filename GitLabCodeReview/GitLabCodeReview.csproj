@@ -77,6 +77,7 @@
     <Compile Include="Services\ErrorService.cs" />
     <Compile Include="Services\GitLabService.cs" />
     <Compile Include="ViewModels\ChangeDetailsViewModel.cs" />
+    <Compile Include="ViewModels\DiscussionDetailsViewModel.cs" />
     <Compile Include="ViewModels\DummyTreeNode.cs" />
     <Compile Include="ViewModels\FolderViewModel.cs" />
     <Compile Include="ViewModels\ChangeViewModel.cs" />
@@ -93,6 +94,9 @@
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="Views\ChangeDetailsView.xaml.cs">
       <DependentUpon>ChangeDetailsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DiscussionDetailsView.xaml.cs">
+      <DependentUpon>DiscussionDetailsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\GitLabMainWindowControl.xaml.cs">
       <DependentUpon>GitLabMainWindowControl.xaml</DependentUpon>
@@ -113,6 +117,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\ChangeDetailsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DiscussionDetailsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
