@@ -24,6 +24,7 @@ namespace GitLabCodeReview.ViewModels
             this.change = changeDto;
             this.service = gitLabService;
             this.NewDiscussionCommand = new DelegateCommand(this.ExecuteNewDiscussion);
+            this.CancelCommand = new DelegateCommand(this.ExecuteCancel);
         }
 
         public int Number { get; private set; }
@@ -80,6 +81,8 @@ namespace GitLabCodeReview.ViewModels
 
         public DelegateCommand NewDiscussionCommand { get; private set; }
 
+        public DelegateCommand CancelCommand { get; private set; }
+
         private void ExecuteNewDiscussion(object obj)
         {
             var position = new PositionDto
@@ -96,6 +99,11 @@ namespace GitLabCodeReview.ViewModels
 
             var createDiscussionDto = new CreateDiscussionDto { Position = position };
             this.service.AddDiscussion(createDiscussionDto, this.NewDiscussionText).ConfigureAwait(false);
+        }
+
+        private void ExecuteCancel(object obj)
+        {
+            this.NewDiscussionText = string.Empty;
         }
     }
 }

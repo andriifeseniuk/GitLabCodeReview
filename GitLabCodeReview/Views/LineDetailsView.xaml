@@ -58,9 +58,17 @@
             </TreeView.Resources>
         </TreeView>
 
-        <TextBox Grid.Row="1" MinWidth="200" MaxWidth="400" TextWrapping="Wrap" Text="{Binding NewDiscussionText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-        <Button Grid.Row="2" Content="New Discussion" Width="120" HorizontalAlignment="Left"
-                Command="{Binding NewDiscussionCommand}" 
-                Visibility="{Binding IsAnyText, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBox Grid.Row="1" MinWidth="200" MaxWidth="400" TextWrapping="Wrap" ToolTip="New Discussion"
+                 Text="{Binding NewDiscussionText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        <Grid Grid.Row="2" Visibility="{Binding IsAnyText, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0" Content="Send" Command="{Binding NewDiscussionCommand}" />
+            <Button Grid.Column="2" Content="Cancel" Command="{Binding CancelCommand}" />
+        </Grid>
     </Grid>
 </UserControl>
