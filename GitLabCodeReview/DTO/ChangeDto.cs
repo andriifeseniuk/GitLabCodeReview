@@ -19,5 +19,8 @@ namespace GitLabCodeReview.DTO
 
         [JsonProperty(PropertyName = "deleted_file")]
         public bool IsDeletedFile { get; set; }
+
+        [JsonProperty(PropertyName = "diff")]
+        public string Diff { get; set; }
     }
 }

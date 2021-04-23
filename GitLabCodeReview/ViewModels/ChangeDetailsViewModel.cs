@@ -85,17 +85,22 @@ namespace GitLabCodeReview.ViewModels
             var discussions = await this.GetDiscussions();
             foreach (var diss in discussions)
             {
+                var firstNote = diss.Notes.First();
+                if (firstNote.Position == null)
+                {
+                    continue;
+                }
+
+                if (firstNote.Position.OldPath != change.OldPath && firstNote.Position.NewPath != change.NewPath)
+                {
+                    continue;
+                }
+
                 var dissViewModel = new DiscussionViewModel(diss, this.service);
                 foreach(var noteDto in diss.Notes)
                 {
                     var noteViewModel = new NoteViewModel(noteDto);
                     dissViewModel.Details.Notes.Add(noteViewModel);
-                }
-
-                var firstNote = diss.Notes.First();
-                if (firstNote.Position == null)
-                {
-                    continue;
                 }
 
                 if (firstNote.Position.NewLine != null)
