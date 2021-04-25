@@ -55,6 +55,7 @@
     <Compile Include="Common\Commands\DelegateCommandT.cs" />
     <Compile Include="Common\Commands\DelegateCommand.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="Converters\LineBackgroundConverter.cs" />
     <Compile Include="DTO\CreateDiscussionDto.cs" />
     <Compile Include="DTO\DiffRefsDto.cs" />
     <Compile Include="Enums\LinesFilterOptions.cs" />

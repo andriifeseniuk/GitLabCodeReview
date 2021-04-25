@@ -13,6 +13,7 @@
     <UserControl.Resources>
 
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <converters:LineBackgroundConverter x:Key="LineBackgroundConverter" />
 
     </UserControl.Resources>
     
@@ -41,10 +42,10 @@
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type viewModels:LineViewModel}" ItemsSource="{Binding Items}">
                     <StackPanel Grid.Row="0" Orientation="Horizontal">
-                        <TextBlock Text="[s]" Visibility="{Binding IsSourceBranch, Converter={StaticResource BoolToVisibilityConverter}}" Margin="0,0,5,0"/>
-                        <TextBlock Text="[t]" Visibility="{Binding IsSourceBranch, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverse}" Margin="0,0,5,0"/>
-                        <TextBlock Text="{Binding Number}" Margin="0,0,5,0"/>
-                        <TextBlock Text="{Binding Text}"/>
+                        <TextBlock Text="[s]" Visibility="{Binding IsSourceBranch, Converter={StaticResource BoolToVisibilityConverter}}" Opacity="0.5" Margin="0,0,5,0"/>
+                        <TextBlock Text="[t]" Visibility="{Binding IsSourceBranch, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverse}" Opacity="0.5" Margin="0,0,5,0"/>
+                        <TextBlock Text="{Binding Number}" Opacity="0.5" Margin="0,0,5,0"/>
+                        <TextBlock Text="{Binding Text}" Background="{Binding Converter={StaticResource LineBackgroundConverter}}"/>
                     </StackPanel>
                 </HierarchicalDataTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type viewModels:LineDetailsViewModel}" ItemsSource="{Binding Items}">

@@ -21,6 +21,10 @@ namespace GitLabCodeReview.ViewModels
 
         public bool IsSourceBranch { get; private set; }
 
+        public bool IsAdded { get; set; }
+
+        public bool IsRemoved { get; set; }
+
         public bool IsExpanded
         {
             get

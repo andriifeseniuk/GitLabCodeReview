@@ -83,26 +83,61 @@ namespace GitLabCodeReview.ViewModels
             this.sourceFileLines = this.GetLineViewModels(sourceFileContent, true).ToArray();
             this.targetFileLines = this.GetLineViewModels(targetFileContent, false).ToArray();
 
-            var hunks = HunkHelper.ParseHunks(this.change.Diff);
-            foreach(var hunk in hunks)
+            var linesCanBeCommented = new List<LineViewModel>();
+            if (change.IsDeletedFile)
             {
-                for (var i = 0; i < hunk.LengthInSourceFile; i++)
+                foreach(var lineVm in this.targetFileLines)
                 {
-                    var number = hunk.StartInSourceFile + i;
-                    var lineVm = this.sourceFileLines[number - 1];
-                    var details = new LineDetailsViewModel(lineVm.Number, lineVm.Text, lineVm.IsSourceBranch, this.mergeRequest, this.change, this.service);
-                    lineVm.Details = details;
-                    lineVm.Items.Add(details);
+                    linesCanBeCommented.Add(lineVm);
+                    lineVm.IsRemoved = true;
                 }
+            }
+            else if (change.IsNewFile)
+            {
+                foreach(var lineVm in this.sourceFileLines)
+                {
+                    linesCanBeCommented.Add(lineVm);
+                    lineVm.IsAdded = true;
+                }
+            }
+            else
+            {
+                var hunks = HunkHelper.ParseHunks(this.change.Diff);
+                foreach (var hunk in hunks)
+                {
+                    for (var i = 0; i < hunk.LengthInSourceFile; i++)
+                    {
+                        var number = hunk.StartInSourceFile + i;
+                        var lineVm = this.sourceFileLines[number - 1];
+                        linesCanBeCommented.Add(lineVm);
+                    }
 
-                for (var i = 0; i < hunk.LenghtInTargetFile; i++)
-                {
-                    var number = hunk.StartInTargetFile + i;
-                    var lineVm = this.targetFileLines[number - 1];
-                    var details = new LineDetailsViewModel(lineVm.Number, lineVm.Text, lineVm.IsSourceBranch, this.mergeRequest, this.change, this.service);
-                    lineVm.Details = details;
-                    lineVm.Items.Add(details);
+                    for (var i = 0; i < hunk.LenghtInTargetFile; i++)
+                    {
+                        var number = hunk.StartInTargetFile + i;
+                        var lineVm = this.targetFileLines[number - 1];
+                        linesCanBeCommented.Add(lineVm);
+                    }
+
+                    foreach(var hunkLine in hunk.Lines)
+                    {
+                        if (hunkLine.IsLineAdded)
+                        {
+                            this.sourceFileLines[hunkLine.NumberInSourceFile.Value - 1].IsAdded = true;
+                        }
+                        else if (hunkLine.IsLineRemoved)
+                        {
+                            this.targetFileLines[hunkLine.NumberInTargetFile.Value - 1].IsRemoved = true;
+                        }
+                    }
                 }
+            }
+
+            foreach(var lineVm in linesCanBeCommented)
+            {
+                var details = new LineDetailsViewModel(lineVm.Number, lineVm.Text, lineVm.IsSourceBranch, this.mergeRequest, this.change, this.service);
+                lineVm.Details = details;
+                lineVm.Items.Add(details);
             }
 
             var discussions = await this.GetDiscussions();
