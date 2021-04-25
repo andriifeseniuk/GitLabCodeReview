@@ -2,6 +2,7 @@
 using GitLabCodeReview.Common.Commands;
 using GitLabCodeReview.DTO;
 using GitLabCodeReview.Enums;
+using GitLabCodeReview.Helpers;
 using GitLabCodeReview.Services;
 using System;
 using System.Collections.Generic;
@@ -81,6 +82,28 @@ namespace GitLabCodeReview.ViewModels
 
             this.sourceFileLines = this.GetLineViewModels(sourceFileContent, true).ToArray();
             this.targetFileLines = this.GetLineViewModels(targetFileContent, false).ToArray();
+
+            var hunks = HunkHelper.ParseHunks(this.change.Diff);
+            foreach(var hunk in hunks)
+            {
+                for (var i = 0; i < hunk.LengthInSourceFile; i++)
+                {
+                    var number = hunk.StartInSourceFile + i;
+                    var lineVm = this.sourceFileLines[number - 1];
+                    var details = new LineDetailsViewModel(lineVm.Number, lineVm.Text, lineVm.IsSourceBranch, this.mergeRequest, this.change, this.service);
+                    lineVm.Details = details;
+                    lineVm.Items.Add(details);
+                }
+
+                for (var i = 0; i < hunk.LenghtInTargetFile; i++)
+                {
+                    var number = hunk.StartInTargetFile + i;
+                    var lineVm = this.targetFileLines[number - 1];
+                    var details = new LineDetailsViewModel(lineVm.Number, lineVm.Text, lineVm.IsSourceBranch, this.mergeRequest, this.change, this.service);
+                    lineVm.Details = details;
+                    lineVm.Items.Add(details);
+                }
+            }
 
             var discussions = await this.GetDiscussions();
             foreach (var diss in discussions)
@@ -246,8 +269,8 @@ namespace GitLabCodeReview.ViewModels
                     return this.targetFileLines;
 
                 case LinesFilterOptions.Discussions:
-                    var linesWithDiscussions = this.targetFileLines.Where(l => l.Details.Discussions.Any())
-                        .Concat(this.sourceFileLines.Where(l => l.Details.Discussions.Any())).ToArray();
+                    var linesWithDiscussions = this.targetFileLines.Where(l => l.Details != null && l.Details.Discussions.Any())
+                        .Concat(this.sourceFileLines.Where(l => l.Details != null && l.Details.Discussions.Any())).ToArray();
                     return linesWithDiscussions;
 
                 default:

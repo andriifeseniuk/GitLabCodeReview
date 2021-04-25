@@ -13,8 +13,6 @@ namespace GitLabCodeReview.ViewModels
             this.Number = number;
             this.Text = text;
             this.IsSourceBranch = isSourceBranch;
-            this.Details = new LineDetailsViewModel(number, text, isSourceBranch, mergeRequestDto, changeDto, gitLabService);
-            this.Items.Add(this.Details);
         }
 
         public int Number { get; private set; }
@@ -37,7 +35,7 @@ namespace GitLabCodeReview.ViewModels
             }
         }
 
-        public LineDetailsViewModel Details { get; private set; }
+        public LineDetailsViewModel Details { get; set; }
 
         public ObservableCollection<ITreeNode> Items { get; private set; } = new ObservableCollection<ITreeNode>();
 

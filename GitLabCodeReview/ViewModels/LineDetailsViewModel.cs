@@ -13,7 +13,6 @@ namespace GitLabCodeReview.ViewModels
         private MergeRequestDetailsDto mergeRequest;
         private GitLabService service;
         private ChangeDto change;
-        private ITreeNode dummyItem = new DummyTreeNode { DisplayName = "No discussions to show" };
 
         public LineDetailsViewModel (int number, string text, bool isSourceBranch, MergeRequestDetailsDto mergeRequestDto, ChangeDto changeDto, GitLabService gitLabService)
         {

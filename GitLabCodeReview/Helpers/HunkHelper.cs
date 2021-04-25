@@ -47,10 +47,10 @@ namespace GitLabCodeReview.Helpers
                     var start2 = hunkMatch.Groups["start2"].Value;
                     var lenght2 = hunkMatch.Groups["length2"].Value;
 
-                    currentHunk.StartInSourceFile = int.Parse(start1);
-                    currentHunk.LengthInSourceFile = int.Parse(lenght1);
-                    currentHunk.StartInTargetFile = int.Parse(start2);
-                    currentHunk.LenghtInTargetFile = int.Parse(lenght2);
+                    currentHunk.StartInTargetFile = int.Parse(start1);
+                    currentHunk.LenghtInTargetFile = int.Parse(lenght1);
+                    currentHunk.StartInSourceFile = int.Parse(start2);
+                    currentHunk.LengthInSourceFile = int.Parse(lenght2);
 
                     hunks.Add(currentHunk);
                     numberInSourceFile = currentHunk.StartInSourceFile;
@@ -64,12 +64,12 @@ namespace GitLabCodeReview.Helpers
                 }
 
                 var line = new HunkLine();
-                if (rawLine.StartsWith("+"))
+                if (rawLine.StartsWith("-"))
                 {
                     line.NumberInTargetFile = numberInTargetFile;
                     numberInTargetFile++;
                 }
-                else if (rawLine.StartsWith("-"))
+                else if (rawLine.StartsWith("+"))
                 {
                     line.NumberInSourceFile = numberInSourceFile;
                     numberInSourceFile++;
