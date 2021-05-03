@@ -64,6 +64,7 @@ namespace GitLabCodeReview.Helpers
                 }
 
                 var line = new HunkLine();
+                line.Text = rawLine;
                 if (rawLine.StartsWith("-"))
                 {
                     line.NumberInTargetFile = numberInTargetFile;
