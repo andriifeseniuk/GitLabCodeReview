@@ -21,7 +21,7 @@ namespace GitLabCodeReview.ViewModels
         private readonly GitLabService service;
         private readonly ErrorService errorService;
         private readonly LinesFilterOptions[] showLinesOptions;
-        private LinesFilterOptions showLinesOption = LinesFilterOptions.Discussions;
+        private LinesFilterOptions showLinesOption = LinesFilterOptions.Changes;
         private LineViewModel[] sourceFileLines = new LineViewModel[0];
         private LineViewModel[] targetFileLines = new LineViewModel[0];
         private bool isExpanded;
@@ -307,6 +307,11 @@ namespace GitLabCodeReview.ViewModels
                     var linesWithDiscussions = this.targetFileLines.Where(l => l.Details != null && l.Details.Discussions.Any())
                         .Concat(this.sourceFileLines.Where(l => l.Details != null && l.Details.Discussions.Any())).ToArray();
                     return linesWithDiscussions;
+
+                case LinesFilterOptions.Changes:
+                    var linesWithDetails = this.targetFileLines.Where(l => l.Details != null)
+                        .Concat(this.sourceFileLines.Where(l => l.Details != null)).ToArray();
+                    return linesWithDetails;
 
                 default:
                     throw new ArgumentOutOfRangeException($"Option {this.LinesFilterOption} is out of range.");

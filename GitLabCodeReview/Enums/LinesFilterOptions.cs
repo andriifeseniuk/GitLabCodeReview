@@ -5,6 +5,7 @@
         All,
         Source,
         Target,
-        Discussions
+        Discussions,
+        Changes
     }
 }
