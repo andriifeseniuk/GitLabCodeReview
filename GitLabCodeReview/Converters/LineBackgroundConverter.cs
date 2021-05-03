@@ -25,8 +25,9 @@ namespace GitLabCodeReview.Converters
 
             if (lineVm.IsRemoved)
             {
-                var lightRed = Color.FromRgb(255, 100, 50);
-                var removedBrush = new SolidColorBrush(lightRed);
+                var red = Color.FromRgb(255, 0, 0);
+                var removedBrush = new SolidColorBrush(red);
+                removedBrush.Opacity = 0.5;
                 return removedBrush;
             }
 
