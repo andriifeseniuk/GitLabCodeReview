@@ -76,6 +76,7 @@
     <Compile Include="DTO\NoteDto.cs" />
     <Compile Include="DTO\UserDto.cs" />
     <Compile Include="Helpers\HunkHelper.cs" />
+    <Compile Include="Models\Gap.cs" />
     <Compile Include="Models\Hunk.cs" />
     <Compile Include="Models\HunkLine.cs" />
     <Compile Include="Services\ErrorService.cs" />

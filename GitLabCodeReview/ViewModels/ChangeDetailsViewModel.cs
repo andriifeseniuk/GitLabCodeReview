@@ -3,6 +3,7 @@ using GitLabCodeReview.Common.Commands;
 using GitLabCodeReview.DTO;
 using GitLabCodeReview.Enums;
 using GitLabCodeReview.Helpers;
+using GitLabCodeReview.Models;
 using GitLabCodeReview.Services;
 using System;
 using System.Collections.Generic;
@@ -22,9 +23,7 @@ namespace GitLabCodeReview.ViewModels
         private readonly ErrorService errorService;
         private readonly LinesFilterOptions[] showLinesOptions;
         private LinesFilterOptions showLinesOption = LinesFilterOptions.Changes;
-        private LineViewModel[] sourceFileLines = new LineViewModel[0];
-        private LineViewModel[] targetFileLines = new LineViewModel[0];
-        private bool isExpanded;
+        private LineViewModel[] lineViewModels = new LineViewModel[0];
 
         public ChangeDetailsViewModel(
             ChangeDto gitLabChange,
@@ -77,70 +76,30 @@ namespace GitLabCodeReview.ViewModels
 
         private async Task RefreshDiscussions()
         {
+            var discussions = await this.GetDiscussions();
             var sourceFileContent = await this.GetSourceFileContentAsync(this.change);
             var targetFileContent = await this.GetTargetFileContentAsync(this.change);
-
-            this.sourceFileLines = this.GetLineViewModels(sourceFileContent, true).ToArray();
-            this.targetFileLines = this.GetLineViewModels(targetFileContent, false).ToArray();
+            var sourceFileLines = this.GetLines(sourceFileContent);
+            var targetFileLines = this.GetLines(targetFileContent);
 
             var linesCanBeCommented = new List<LineViewModel>();
             if (change.IsDeletedFile)
             {
-                foreach(var lineVm in this.targetFileLines)
-                {
-                    linesCanBeCommented.Add(lineVm);
-                    lineVm.IsRemoved = true;
-                }
+                this.lineViewModels = this.GetLineViewModelsFromSource(targetFileLines);
             }
             else if (change.IsNewFile)
             {
-                foreach(var lineVm in this.sourceFileLines)
-                {
-                    linesCanBeCommented.Add(lineVm);
-                    lineVm.IsAdded = true;
-                }
+                this.lineViewModels = this.GetLineViewModelsFromTarget(sourceFileLines);
             }
             else
             {
-                var hunks = HunkHelper.ParseHunks(this.change.Diff);
-                foreach (var hunk in hunks)
-                {
-                    for (var i = 0; i < hunk.LengthInSourceFile; i++)
-                    {
-                        var number = hunk.StartInSourceFile + i;
-                        var lineVm = this.sourceFileLines[number - 1];
-                        linesCanBeCommented.Add(lineVm);
-                    }
-
-                    for (var i = 0; i < hunk.LenghtInTargetFile; i++)
-                    {
-                        var number = hunk.StartInTargetFile + i;
-                        var lineVm = this.targetFileLines[number - 1];
-                        linesCanBeCommented.Add(lineVm);
-                    }
-
-                    foreach(var hunkLine in hunk.Lines)
-                    {
-                        if (hunkLine.IsLineAdded)
-                        {
-                            this.sourceFileLines[hunkLine.NumberInSourceFile.Value - 1].IsAdded = true;
-                        }
-                        else if (hunkLine.IsLineRemoved)
-                        {
-                            this.targetFileLines[hunkLine.NumberInTargetFile.Value - 1].IsRemoved = true;
-                        }
-                    }
-                }
+                Gap[] gaps;
+                var hunks = HunkHelper.ParseHunks(this.change.Diff, out gaps);
+                var lineViewModelsFromHunks = this.GetLineViewModelsFromHunks(hunks);
+                var lineViewModelsFromGaps = this.GetLineViewModelsFromGaps(gaps, sourceFileLines);
+                this.lineViewModels = lineViewModelsFromHunks.Concat(lineViewModelsFromGaps).ToArray();
             }
 
-            foreach(var lineVm in linesCanBeCommented)
-            {
-                var details = new LineDetailsViewModel(lineVm.Number, lineVm.Text, lineVm.IsSourceBranch, this.mergeRequest, this.change, this.service);
-                lineVm.Details = details;
-                lineVm.Items.Add(details);
-            }
-
-            var discussions = await this.GetDiscussions();
             foreach (var diss in discussions)
             {
                 var firstNote = diss.Notes.First();
@@ -161,14 +120,10 @@ namespace GitLabCodeReview.ViewModels
                     dissViewModel.Details.Notes.Add(noteViewModel);
                 }
 
-                if (firstNote.Position.NewLine != null)
-                {
-                    this.sourceFileLines[firstNote.Position.NewLine.Value - 1].Details.Discussions.Add(dissViewModel);
-                }
-                else
-                {
-                    this.targetFileLines[firstNote.Position.OldLine.Value - 1].Details.Discussions.Add(dissViewModel);
-                }
+                var correspondentLine = firstNote.Position.NewLine != null
+                    ? this.lineViewModels.First(line => line.NumberInSourceFile == firstNote.Position.NewLine.Value)
+                    : this.lineViewModels.First(line => line.NumberInTargetFile == firstNote.Position.OldLine.Value);
+                correspondentLine.Details.Discussions.Add(dissViewModel);
             }
 
             this.RefreshLines();
@@ -247,11 +202,73 @@ namespace GitLabCodeReview.ViewModels
             return discussions;
         }
 
-        private IEnumerable<LineViewModel> GetLineViewModels(string fileContent, bool isSourceBranch)
+        private IEnumerable<LineViewModel> GetLineViewModelsFromHunks(Hunk[] hunks)
+        {
+            var lines = new List<LineViewModel>();
+            foreach (var hunk in hunks)
+            {
+                foreach (var hunkLine in hunk.Lines)
+                {
+                    var details = new LineDetailsViewModel(
+                        hunkLine.NumberInSourceFile,
+                        hunkLine.NumberInTargetFile,
+                        this.mergeRequest,
+                        this.change,
+                        this.service);
+
+                    var lineVm = new LineViewModel(
+                        hunkLine.NumberInChanges,
+                        hunkLine.NumberInSourceFile,
+                        hunkLine.NumberInTargetFile,
+                        hunkLine.Text,
+                        details);
+                    lines.Add(lineVm);
+                }
+            }
+
+            return lines;
+        }
+
+        private IEnumerable<LineViewModel> GetLineViewModelsFromGaps(Gap[] gaps, string[] sourceLines)
+        {
+            var viewModelsFromGaps = new List<LineViewModel>();
+            foreach (var gap in gaps)
+            {
+                for (var i = 0; i < gap.Length; i++)
+                {
+                    var numberInSourceFile = gap.StartInSourceFile + i;
+                    var numberInTargetFile = gap.StartInTargetFile + i;
+                    var numberInChanges = gap.StartInChanges + i;
+                    var indexInSourceFile = numberInSourceFile - 1;
+                    var line = sourceLines[indexInSourceFile];
+                    var lineVm = new LineViewModel(numberInChanges, numberInSourceFile, numberInTargetFile, line);
+                    viewModelsFromGaps.Add(lineVm);
+                }
+            }
+
+            return viewModelsFromGaps;
+        }
+
+        private string[] GetLines(string fileContent)
         {
             var lines = fileContent == null ? new string[0] : fileContent.Split('\n');
-            var viewModels = lines.Select((l, i) => new LineViewModel(i + 1, l, isSourceBranch, this.mergeRequest, this.change, this.service)).ToArray();
-            return viewModels;
+            return lines;
+        }
+
+        private LineViewModel[] GetLineViewModelsFromSource(IEnumerable<string> sourceLines)
+        {
+            var lineViewModelsFromSource = sourceLines
+                .Select((line, i) => new LineViewModel(i + 1, i + 1, null, line, new LineDetailsViewModel(i, null, this.mergeRequest, this.change, this.service)))
+                .ToArray();
+            return lineViewModelsFromSource;
+        }
+
+        private LineViewModel[] GetLineViewModelsFromTarget(IEnumerable<string> targetLines)
+        {
+            lineViewModels = targetLines
+                .Select((line, i) => new LineViewModel(i + 1, null, i + 1, line, new LineDetailsViewModel(null, i, this.mergeRequest, this.change, this.service)))
+                .ToArray();
+            return lineViewModels;
         }
 
         private async Task<string> GetSourceFileContentAsync(ChangeDto change)
@@ -295,22 +312,34 @@ namespace GitLabCodeReview.ViewModels
             switch(this.LinesFilterOption)
             {
                 case LinesFilterOptions.All:
-                    return this.targetFileLines.Concat(this.sourceFileLines);
+                    return this.lineViewModels
+                        .OrderBy(l => l.NumberInChanges)
+                        .ToArray();
 
                 case LinesFilterOptions.Source:
-                    return this.sourceFileLines;
+                    return this.lineViewModels
+                        .Where(l => l.NumberInSourceFile != null)
+                        .OrderBy(l => l.NumberInChanges)
+                        .ToArray();
 
                 case LinesFilterOptions.Target:
-                    return this.targetFileLines;
+                    return this.lineViewModels
+                        .Where(l => l.NumberInTargetFile != null)
+                        .OrderBy(l => l.NumberInChanges)
+                        .ToArray();
 
                 case LinesFilterOptions.Discussions:
-                    var linesWithDiscussions = this.targetFileLines.Where(l => l.Details != null && l.Details.Discussions.Any())
-                        .Concat(this.sourceFileLines.Where(l => l.Details != null && l.Details.Discussions.Any())).ToArray();
+                    var linesWithDiscussions = this.lineViewModels
+                        .Where(l => l.Details != null && l.Details.Discussions.Any())
+                        .OrderBy(l => l.NumberInChanges)
+                        .ToArray();
                     return linesWithDiscussions;
 
                 case LinesFilterOptions.Changes:
-                    var linesWithDetails = this.targetFileLines.Where(l => l.Details != null)
-                        .Concat(this.sourceFileLines.Where(l => l.Details != null)).ToArray();
+                    var linesWithDetails = this.lineViewModels
+                        .Where(l => l.Details != null)
+                        .OrderBy(l => l.NumberInChanges)
+                        .ToArray();
                     return linesWithDetails;
 
                 default:

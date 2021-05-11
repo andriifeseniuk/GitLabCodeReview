@@ -14,11 +14,10 @@ namespace GitLabCodeReview.ViewModels
         private GitLabService service;
         private ChangeDto change;
 
-        public LineDetailsViewModel (int number, string text, bool isSourceBranch, MergeRequestDetailsDto mergeRequestDto, ChangeDto changeDto, GitLabService gitLabService)
+        public LineDetailsViewModel (int? numberInSourceFile, int? numberInTargetFile, MergeRequestDetailsDto mergeRequestDto, ChangeDto changeDto, GitLabService gitLabService)
         {
-            this.Number = number;
-            this.Text = text;
-            this.IsSourceBranch = isSourceBranch;
+            this.NumberInSourceFile = numberInSourceFile;
+            this.NumberInTargetFile = numberInTargetFile;
             this.mergeRequest = mergeRequestDto;
             this.change = changeDto;
             this.service = gitLabService;
@@ -26,11 +25,10 @@ namespace GitLabCodeReview.ViewModels
             this.CancelCommand = new DelegateCommand(this.ExecuteCancel);
         }
 
-        public int Number { get; private set; }
 
-        public string Text { get; private set; }
+        public int? NumberInSourceFile { get; private set; }
 
-        public bool IsSourceBranch { get; private set; }
+        public int? NumberInTargetFile { get; private set; }
 
         public ObservableCollection<DiscussionViewModel> Discussions
         {
@@ -58,7 +56,7 @@ namespace GitLabCodeReview.ViewModels
         {
             get
             {
-                return this.Text;
+                return string.Empty;
             }
         }
 
@@ -92,8 +90,8 @@ namespace GitLabCodeReview.ViewModels
                 HeadSha = this.mergeRequest.DiffRefs.HeadSha,
                 NewPath = this.change.NewPath,
                 OldPath = this.change.OldPath,
-                NewLine = this.IsSourceBranch ? (int?)this.Number : null,
-                OldLine = this.IsSourceBranch ? null : (int?)this.Number
+                NewLine = this.NumberInSourceFile,
+                OldLine = this.NumberInTargetFile
             };
 
             var createDiscussionDto = new CreateDiscussionDto { Position = position };
