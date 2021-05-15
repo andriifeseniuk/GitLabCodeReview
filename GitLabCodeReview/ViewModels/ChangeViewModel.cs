@@ -25,7 +25,7 @@ namespace GitLabCodeReview.ViewModels
             this.Items.Add(this.details);
         }
 
-        public ICommand DiffCommand { get; }
+        public ICommand DiffCommand => this.details.DiffCommand;
 
         public ICommand LoadLinesCommand { get; }
 

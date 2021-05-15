@@ -114,7 +114,7 @@ namespace GitLabCodeReview.ViewModels
                 }
 
                 var dissViewModel = new DiscussionViewModel(diss, this.service);
-                foreach(var noteDto in diss.Notes)
+                foreach (var noteDto in diss.Notes)
                 {
                     var noteViewModel = new NoteViewModel(noteDto);
                     dissViewModel.Details.Notes.Add(noteViewModel);
@@ -133,26 +133,20 @@ namespace GitLabCodeReview.ViewModels
         {
             try
             {
-                if (change.IsNewFile)
-                {
-                    // TODO
-                    return;
-                }
+                string targetFileName = string.Empty;
+                string sourceFileName = string.Empty;
 
-                if (change.IsDeletedFile)
-                {
-                    // TODO
-                    return;
-                }
+                string sourceFileExtension = string.Empty;
+                string targetFileExtension = string.Empty;
 
-                if (change.IsRenamedFile)
-                {
-                    // TODO
-                    return;
-                }
+                string sourceFileShortName = string.Empty;
+                string targetFileShortName = string.Empty;
 
-                var sourceFileContent = await this.service.GetFileContentAsync(mergeRequest.SourceBranch, change.NewPath);
-                var targetFileContent = await this.service.GetFileContentAsync(mergeRequest.TargetBranch, change.NewPath);
+                string sourceHash = string.Empty;
+                string targetHash = string.Empty;
+
+                bool needLoadSource = false;
+                bool needLoadTarget = false;
 
                 var dir = Path.Combine(this.service.GitOptions.WorkingDirectory, $"MergeRequest{mergeRequest.Id}");
                 if (!Directory.Exists(dir))
@@ -160,30 +154,77 @@ namespace GitLabCodeReview.ViewModels
                     Directory.CreateDirectory(dir);
                 }
 
-                var changeDir = Path.GetDirectoryName(change.NewPath);
-                var fileName = Path.GetFileNameWithoutExtension(change.NewPath);
-                var extension = Path.GetExtension(change.NewPath);
+                if (change.IsNewFile)
+                {
+                    var path = change.NewPath;
+                    needLoadSource = true;
 
-                var sourceFileName = $"{fileName}_source_{extension}";
-                var targetFileName = $"{fileName}_target_{extension}";
+                    sourceFileShortName = Path.GetFileNameWithoutExtension(path);
+                    targetFileShortName = sourceFileShortName;
+
+                    sourceFileExtension = Path.GetExtension(path);
+                    targetFileExtension = sourceFileExtension;
+
+                    sourceHash = this.GetFileHash(mergeRequest.SourceBranch, path, mergeRequest);
+                    targetHash = this.GetFileHash(mergeRequest.TargetBranch, path, mergeRequest);
+                }
+                else if (change.IsDeletedFile)
+                {
+                    var path = change.OldPath;
+                    needLoadTarget = true;
+
+                    targetFileShortName = Path.GetFileNameWithoutExtension(path);
+                    sourceFileShortName = targetFileShortName;
+
+                    targetFileExtension = Path.GetExtension(path);
+                    sourceFileExtension = targetFileExtension;
+
+                    sourceHash = this.GetFileHash(mergeRequest.SourceBranch, path, mergeRequest);
+                    targetHash = this.GetFileHash(mergeRequest.TargetBranch, path, mergeRequest);
+                }
+                else
+                {
+                    needLoadSource = true;
+                    needLoadTarget = true;
+
+                    sourceFileShortName = Path.GetFileNameWithoutExtension(change.NewPath);
+                    targetFileShortName = Path.GetFileNameWithoutExtension(change.OldPath);
+
+                    sourceFileExtension = Path.GetExtension(change.NewPath);
+                    targetFileExtension = Path.GetExtension(change.OldPath);
+
+                    sourceHash = this.GetFileHash(mergeRequest.SourceBranch, change.NewPath, mergeRequest);
+                    targetHash = this.GetFileHash(mergeRequest.TargetBranch, change.OldPath, mergeRequest);
+                }
+
+                sourceFileName = $"{sourceFileShortName}_{sourceHash}_source{sourceFileExtension}";
+                targetFileName = $"{targetFileShortName}_{targetHash}_target{targetFileExtension}";
 
                 var sourceFileLocalPath = Path.Combine(dir, sourceFileName);
-                var sourceFileLocalDir = Path.GetDirectoryName(sourceFileLocalPath);
-                if (!Directory.Exists(sourceFileLocalDir))
-                {
-                    Directory.CreateDirectory(sourceFileLocalDir);
-                }
-
-                File.WriteAllText(sourceFileLocalPath, sourceFileContent);
-
                 var targetFileLocaPath = Path.Combine(dir, targetFileName);
-                var targetFileLocalDir = Path.GetDirectoryName(targetFileLocaPath);
-                if (!Directory.Exists(targetFileLocalDir))
+
+                var sourceFileContent = string.Empty;
+                var targetFileContent = string.Empty;
+
+                if (!File.Exists(sourceFileLocalPath))
                 {
-                    Directory.CreateDirectory(targetFileLocalDir);
+                    if (needLoadSource)
+                    {
+                        sourceFileContent = await this.service.GetFileContentAsync(mergeRequest.SourceBranch, change.NewPath);
+                    }
+
+                    File.WriteAllText(sourceFileLocalPath, sourceFileContent);
                 }
 
-                File.WriteAllText(targetFileLocaPath, targetFileContent);
+                if (!File.Exists(targetFileLocaPath))
+                {
+                    if (needLoadTarget)
+                    {
+                        targetFileContent = await this.service.GetFileContentAsync(mergeRequest.TargetBranch, change.OldPath);
+                    }
+
+                    File.WriteAllText(targetFileLocaPath, targetFileContent);
+                }
 
                 var serviceProvoder = GitLabMainWindowCommand.Instance.ServiceProvider;
                 var dte = (DTE)serviceProvoder.GetService(typeof(DTE));
@@ -309,7 +350,7 @@ namespace GitLabCodeReview.ViewModels
 
         private IEnumerable<LineViewModel> GetFilteredLines()
         {
-            switch(this.LinesFilterOption)
+            switch (this.LinesFilterOption)
             {
                 case LinesFilterOptions.All:
                     return this.lineViewModels
@@ -345,6 +386,12 @@ namespace GitLabCodeReview.ViewModels
                 default:
                     throw new ArgumentOutOfRangeException($"Option {this.LinesFilterOption} is out of range.");
             }
+        }
+
+        private string GetFileHash(string branch, string path, MergeRequestDetailsDto request)
+        {
+            var hash = $"{branch}/{path}-sha{request.DiffRefs.HeadSha}".GetHashCode().ToString("X8");
+            return hash;
         }
     }
 }
