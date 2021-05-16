@@ -128,11 +128,19 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
+                                    
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
 
-                                    <RadioButton Grid.Column="0" IsChecked="{Binding IsSelected}"/>
-                                    <TextBlock Grid.Column="1" Text="{Binding InternalId}"/>
-                                    <TextBlock Grid.Column="2" Text=": "/>
-                                    <TextBlock Grid.Column="3" Text="{Binding Title}"/>
+                                    <RadioButton Grid.Column="0" Grid.Row="0" IsChecked="{Binding IsSelected}"/>
+                                    <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding InternalId}"/>
+                                    <TextBlock Grid.Column="2" Grid.Row="0" Text=": "/>
+                                    <TextBlock Grid.Column="3" Grid.Row="0" Text="{Binding Title}"/>
+                                    <TextBlock Grid.Column="3" Grid.Row="1" Text="{Binding Author.Name}" Opacity="0.5"/>
+                                    <TextBlock Grid.Column="3" Grid.Row="2" Text="{Binding CreatedAt}" Opacity="0.5"/>
                                 </Grid>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
@@ -162,7 +170,7 @@
                                     </Grid.ColumnDefinitions>
 
                                     <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding DisplayName}"/>
-                                    <Button Grid.Row="0" Grid.Column="1" Content="Diff" Command="{Binding DiffCommand}" Width="35"/>
+                                    <Button Grid.Row="0" Grid.Column="1" Content="Diff" Command="{Binding DiffCommand}" Width="35" Margin="5,0,0,0"/>
                                 </Grid>
                             </HierarchicalDataTemplate>
                             <HierarchicalDataTemplate DataType="{x:Type viewModels:ChangeDetailsViewModel}">

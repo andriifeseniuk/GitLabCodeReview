@@ -157,7 +157,7 @@ namespace GitLabCodeReview.Services
                 {
                     var user = await client.GetUserAsync();
                     this.userId = user.Id;
-                    this.userName = user.UserName;
+                    this.userName = user.Name;
                 }
             }
             catch (Exception ex)

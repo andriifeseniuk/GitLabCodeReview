@@ -130,7 +130,7 @@ namespace GitLabCodeReview.ViewModels
             var requests = await this.gitLabService.GetMergeRequestsAsync();
             foreach (var request in requests)
             {
-                this.MergeRequests.Add(new MergeRequestViewModel(request.Id, request.InternalId, request.Title, request.SourceBranch, request.TargetBranch));
+                this.MergeRequests.Add(new MergeRequestViewModel(request.Id, request.InternalId, request.Title, request.CreatedAt, request.Author, request.SourceBranch, request.TargetBranch));
             }
 
             foreach (var request in this.MergeRequests)

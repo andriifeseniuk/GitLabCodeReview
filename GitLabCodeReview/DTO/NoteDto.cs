@@ -11,6 +11,9 @@ namespace GitLabCodeReview.DTO
         [JsonProperty(PropertyName = "body")]
         public string Body { get; set; }
 
+        [JsonProperty(PropertyName = "created_at")]
+        public string CreatedAt { get; set; }
+
         [JsonProperty(PropertyName = "author")]
         public UserDto Author { get; set; }
 
