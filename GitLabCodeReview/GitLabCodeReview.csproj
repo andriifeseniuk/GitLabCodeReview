@@ -54,6 +54,7 @@
     <Compile Include="Client\GitLabClient.cs" />
     <Compile Include="Common\Commands\DelegateCommandT.cs" />
     <Compile Include="Common\Commands\DelegateCommand.cs" />
+    <Compile Include="Converters\BoolInversionConverter.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\LineBackgroundConverter.cs" />
     <Compile Include="DTO\CreateDiscussionDto.cs" />
@@ -108,6 +109,9 @@
     </Compile>
     <Compile Include="GitLabMainWindowPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Views\HadesSpinner.xaml.cs">
+      <DependentUpon>HadesSpinner.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\LineDetailsView.xaml.cs">
       <DependentUpon>LineDetailsView.xaml</DependentUpon>
     </Compile>
@@ -130,6 +134,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\GitLabMainWindowControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\HadesSpinner.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

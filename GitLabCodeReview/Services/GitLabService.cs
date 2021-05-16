@@ -13,10 +13,26 @@ namespace GitLabCodeReview.Services
         private long? userId;
         private string userName;
         private ErrorService errorService;
+        bool isPending;
 
         public GitLabService(ErrorService globalErrorService)
         {
             this.errorService = globalErrorService;
+        }
+
+        public event Action<bool> IsPendingChanged;
+
+        public bool IsPending
+        {
+            get
+            {
+                return this.isPending;
+            }
+            set
+            {
+                this.isPending = value;
+                this.IsPendingChanged?.Invoke(value);
+            }
         }
 
         public GitLabOptions GitOptions { get; } = new GitLabOptions();
@@ -43,6 +59,7 @@ namespace GitLabCodeReview.Services
 
         public async Task<string> GetFileContentAsync(string branch, string path)
         {
+            this.IsPending = true;
             try
             {
                 if (string.IsNullOrWhiteSpace(branch))
@@ -68,10 +85,15 @@ namespace GitLabCodeReview.Services
                 this.errorService.AddError(ex.ToString());
                 return null;
             }
+            finally
+            {
+                this.IsPending = false;
+            }
         }
 
         public async Task<DiscussionDto[]> GetDiscussionsAsync()
         {
+            this.IsPending = true;
             try
             {
                 if (this.SelectedProjectId == null)
@@ -94,12 +116,17 @@ namespace GitLabCodeReview.Services
             {
                 this.errorService.AddError(ex.ToString());
             }
+            finally
+            {
+                this.IsPending = false;
+            }
 
             return new DiscussionDto[0];
         }
 
         public void RefreshOptions()
         {
+            this.IsPending = true;
             try
             {
                 var serviceProvoder = GitLabMainWindowCommand.Instance.ServiceProvider;
@@ -115,10 +142,15 @@ namespace GitLabCodeReview.Services
             {
                 this.errorService.AddError(ex.ToString());
             }
+            finally
+            {
+                this.IsPending = false;
+            }
         }
 
         public async Task RefreshUserInfo()
         {
+            this.IsPending = true;
             try
             {
                 using (var client = new GitLabClient(this.GitOptions.ApiUrl, this.GitOptions.PrivateToken))
@@ -132,10 +164,15 @@ namespace GitLabCodeReview.Services
             {
                 this.errorService.AddError(ex.ToString());
             }
+            finally
+            {
+                this.IsPending = false;
+            }
         }
 
         public async Task<IEnumerable<ProjectDto>> GetProjectsAsync()
         {
+            this.IsPending = true;
             try
             {
                 if (this.UserId == null)
@@ -154,10 +191,15 @@ namespace GitLabCodeReview.Services
                 this.errorService.AddError(ex.ToString());
                 return new ProjectDto[0];
             }
+            finally
+            {
+                this.IsPending = false;
+            }
         }
 
         public async Task<IEnumerable<MergeRequestDto>> GetMergeRequestsAsync()
         {
+            this.IsPending = true;
             try
             {
                 if (this.SelectedProjectId == null)
@@ -176,10 +218,15 @@ namespace GitLabCodeReview.Services
                 this.errorService.AddError(ex.ToString());
                 return new MergeRequestDto[0];
             }
+            finally
+            {
+                this.IsPending = false;
+            }
         }
 
         public async Task<MergeRequestDetailsDto> GetMergeRequestDetailsAsync()
         {
+            this.IsPending = true;
             try
             {
                 if (this.SelectedProjectId == null)
@@ -203,10 +250,15 @@ namespace GitLabCodeReview.Services
                 this.errorService.AddError(ex.ToString());
                 return null;
             }
+            finally
+            {
+                this.IsPending = false;
+            }
         }
 
         public async Task AddNote(string discussionId, string body)
         {
+            this.IsPending = true;
             try
             {
                 if (this.SelectedProjectId == null)
@@ -228,10 +280,15 @@ namespace GitLabCodeReview.Services
             {
                 this.errorService.AddError(ex.ToString());
             }
+            finally
+            {
+                this.IsPending = false;
+            }
         }
 
         public async Task AddDiscussion(CreateDiscussionDto createDiscussionDto, string body)
         {
+            this.IsPending = true;
             try
             {
                 if (this.SelectedProjectId == null)
@@ -252,6 +309,10 @@ namespace GitLabCodeReview.Services
             catch (Exception ex)
             {
                 this.errorService.AddError(ex.ToString());
+            }
+            finally
+            {
+                this.IsPending = false;
             }
         }
     }

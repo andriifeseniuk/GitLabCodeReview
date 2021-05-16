@@ -39,141 +39,149 @@
         </Style>
 
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <converters:BoolInversionConverter x:Key="BoolInversionConverter"/>
     </UserControl.Resources>
+    <Grid>
+        <ScrollViewer IsEnabled="{Binding IsBusy, Converter={StaticResource BoolInversionConverter}}"
+            VerticalScrollBarVisibility="Auto" 
+            HorizontalScrollBarVisibility="Auto">
+            <StackPanel Orientation="Vertical">
+                <Expander Header="Options">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-        <StackPanel Orientation="Vertical">
-            <Expander Header="Options">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="API URL: "/>
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding GitOptions.ApiUrl}"/>
 
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="API URL: "/>
-                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding GitOptions.ApiUrl}"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Selected Project Id: "/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding GitOptions.SelectedProjectId}"/>
 
-                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Selected Project Id: "/>
-                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding GitOptions.SelectedProjectId}"/>
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Repository Local Path: "/>
+                        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding GitOptions.RepositoryLocalPath}"/>
 
-                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Repository Local Path: "/>
-                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding GitOptions.RepositoryLocalPath}"/>
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Working Directory: "/>
+                        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding GitOptions.WorkingDirectory}"/>
 
-                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Working Directory: "/>
-                    <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding GitOptions.WorkingDirectory}"/>
+                        <Button Grid.Row="4" Grid.Column="0" Content="Refresh Options" Command="{Binding RefreshOptionsCommand}"/>
+                    </Grid>
+                </Expander>
+                <Expander Header="User Info">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
 
-                    <Button Grid.Row="4" Grid.Column="0" Content="Refresh Options" Command="{Binding RefreshOptionsCommand}"/>
-                </Grid>
-            </Expander>
-            <Expander Header="User Info">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="User ID: " />
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding UserId}" />
 
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="User ID: " />
-                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding UserId}" />
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Username: " />
+                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding UserName}" />
+                    </Grid>
+                </Expander>
+                <Expander Header="Projects">
+                    <ItemsControl ItemsSource="{Binding Projects}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
 
-                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Username: " />
-                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding UserName}" />
-                </Grid>
-            </Expander>
-            <Expander Header="Projects">
-                <ItemsControl ItemsSource="{Binding Projects}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
+                                    <RadioButton Grid.Column="0" IsChecked="{Binding IsSelected}"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding Id}"/>
+                                    <TextBlock Grid.Column="2" Text=": "/>
+                                    <TextBlock Grid.Column="3" Text="{Binding Name}"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Expander>
+                <Expander Header="Merge requests">
+                    <ItemsControl ItemsSource="{Binding MergeRequests}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
 
-                                <RadioButton Grid.Column="0" IsChecked="{Binding IsSelected}"/>
-                                <TextBlock Grid.Column="1" Text="{Binding Id}"/>
-                                <TextBlock Grid.Column="2" Text=": "/>
-                                <TextBlock Grid.Column="3" Text="{Binding Name}"/>
-                            </Grid>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </Expander>
-            <Expander Header="Merge requests">
-                <ItemsControl ItemsSource="{Binding MergeRequests}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
+                                    <RadioButton Grid.Column="0" IsChecked="{Binding IsSelected}"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding InternalId}"/>
+                                    <TextBlock Grid.Column="2" Text=": "/>
+                                    <TextBlock Grid.Column="3" Text="{Binding Title}"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Expander>
+                <Expander Header="Changes">
+                    <TreeView ItemsSource="{Binding ChangesRoot.Items}">
+                        <TreeView.ItemContainerStyle>
+                            <Style TargetType="{x:Type TreeViewItem}">
+                                <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            </Style>
+                        </TreeView.ItemContainerStyle>
+                        <TreeView.Resources>
+                            <HierarchicalDataTemplate DataType="{x:Type viewModels:DummyTreeNode}">
+                                <TextBlock Text="{Binding DisplayName}"/>
+                            </HierarchicalDataTemplate>
+                            <HierarchicalDataTemplate DataType="{x:Type viewModels:FolderViewModel}"
+                                                      ItemsSource="{Binding Items}">
+                                <TextBlock Text="{Binding DisplayName}"/>
+                            </HierarchicalDataTemplate>
+                            <HierarchicalDataTemplate DataType="{x:Type viewModels:ChangeViewModel}"
+                                                      ItemsSource="{Binding Items}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
 
-                                <RadioButton Grid.Column="0" IsChecked="{Binding IsSelected}"/>
-                                <TextBlock Grid.Column="1" Text="{Binding InternalId}"/>
-                                <TextBlock Grid.Column="2" Text=": "/>
-                                <TextBlock Grid.Column="3" Text="{Binding Title}"/>
-                            </Grid>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </Expander>
-            <Expander Header="Changes">
-                <TreeView ItemsSource="{Binding ChangesRoot.Items}">
-                    <TreeView.ItemContainerStyle>
-                        <Style TargetType="{x:Type TreeViewItem}">
-                            <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        </Style>
-                    </TreeView.ItemContainerStyle>
-                    <TreeView.Resources>
-                        <HierarchicalDataTemplate DataType="{x:Type viewModels:DummyTreeNode}">
-                            <TextBlock Text="{Binding DisplayName}"/>
-                        </HierarchicalDataTemplate>
-                        <HierarchicalDataTemplate DataType="{x:Type viewModels:FolderViewModel}"
-                                                  ItemsSource="{Binding Items}">
-                            <TextBlock Text="{Binding DisplayName}"/>
-                        </HierarchicalDataTemplate>
-                        <HierarchicalDataTemplate DataType="{x:Type viewModels:ChangeViewModel}"
-                                                  ItemsSource="{Binding Items}">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-
-                                <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding DisplayName}"/>
-                                <Button Grid.Row="0" Grid.Column="1" Content="Diff" Command="{Binding DiffCommand}" Width="35"/>
-                            </Grid>
-                        </HierarchicalDataTemplate>
-                        <HierarchicalDataTemplate DataType="{x:Type viewModels:ChangeDetailsViewModel}">
-                            <Grid>
-                                <views:ChangeDetailsView DataContext="{Binding}"></views:ChangeDetailsView>
-                            </Grid>
-                        </HierarchicalDataTemplate>
-                    </TreeView.Resources>
-                </TreeView>
-            </Expander>
-            <Expander Header="{Binding ErrorsHeader}">
-                <ItemsControl ItemsSource="{Binding Errors}">
-                </ItemsControl>
-            </Expander>
-        </StackPanel>
-    </ScrollViewer>
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding DisplayName}"/>
+                                    <Button Grid.Row="0" Grid.Column="1" Content="Diff" Command="{Binding DiffCommand}" Width="35"/>
+                                </Grid>
+                            </HierarchicalDataTemplate>
+                            <HierarchicalDataTemplate DataType="{x:Type viewModels:ChangeDetailsViewModel}">
+                                <Grid>
+                                    <views:ChangeDetailsView DataContext="{Binding}"></views:ChangeDetailsView>
+                                </Grid>
+                            </HierarchicalDataTemplate>
+                        </TreeView.Resources>
+                    </TreeView>
+                </Expander>
+                <Expander Header="{Binding ErrorsHeader}">
+                    <ItemsControl ItemsSource="{Binding Errors}">
+                    </ItemsControl>
+                </Expander>
+            </StackPanel>
+        </ScrollViewer>
+        
+        <views:HadesSpinner Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibilityConverter}}"
+            Width="250" Height="250"
+            HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    </Grid>
 </UserControl>

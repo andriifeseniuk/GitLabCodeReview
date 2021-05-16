@@ -17,10 +17,14 @@ namespace GitLabCodeReview.ViewModels
         public MainViewModel()
         {
             this.errorService = new ErrorService();
-            this.gitLabService = new GitLabService(this.errorService);
             this.errorService.Errors.CollectionChanged += Errors_CollectionChanged;
             this.RefreshOptionsCommand = new DelegateCommand(obj => this.RefreshOptions());
+            this.gitLabService = new GitLabService(this.errorService);
+
+            this.gitLabService.IsPendingChanged += OnIsPendingChanged;
         }
+
+        public bool IsBusy => this.gitLabService.IsPending;
 
         public OptionsViewModel GitOptions { get; set; } = new OptionsViewModel();
 
@@ -209,6 +213,11 @@ namespace GitLabCodeReview.ViewModels
                         break;
                     }
             }
+        }
+
+        private void OnIsPendingChanged(bool isPending)
+        {
+            this.SchedulePropertyChanged(nameof(this.IsBusy));
         }
     }
 }
