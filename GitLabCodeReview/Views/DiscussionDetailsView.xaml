@@ -23,7 +23,17 @@
         <ItemsControl Grid.Row="0" ItemsSource="{Binding Items}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding DisplayName}"/>
+                    <Grid Margin="0,0,0,5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Text="{Binding DisplayName}"/>
+                        <TextBlock Grid.Row="1" Text="{Binding Note.Author.Name}" Opacity="0.5"/>
+                        <TextBlock Grid.Row="2" Text="{Binding Note.CreatedAt}" Opacity="0.5"/>
+                    </Grid>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>

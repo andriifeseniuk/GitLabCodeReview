@@ -31,7 +31,15 @@
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type viewModels:DiscussionViewModel}" ItemsSource="{Binding Items}">
                     <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
                         <TextBlock Grid.Row="0" Text="{Binding DisplayName}"/>
+                        <TextBlock Grid.Row="1" Text="{Binding Author}" Opacity="0.5"/>
+                        <TextBlock Grid.Row="2" Text="{Binding CreatedAt}" Opacity="0.5"/>
                     </Grid>
                 </HierarchicalDataTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type viewModels:DiscussionDetailsViewModel}">

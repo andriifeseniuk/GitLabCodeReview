@@ -24,6 +24,22 @@ namespace GitLabCodeReview.ViewModels
             }
         }
 
+        public string CreatedAt
+        {
+            get
+            {
+                return this.Discussion.Notes.First().CreatedAt;
+            }
+        }
+
+        public string Author
+        {
+            get
+            {
+                return this.Discussion.Notes.First().Author.Name;
+            }
+        }
+
         public bool IsExpanded
         {
             get
