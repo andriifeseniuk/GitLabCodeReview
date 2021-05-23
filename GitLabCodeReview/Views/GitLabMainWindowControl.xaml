@@ -73,13 +73,12 @@
                         <TextBlock Grid.Row="3" Grid.Column="0" Text="Working Directory: "/>
                         <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding GitOptions.WorkingDirectory}"/>
 
-                        <Button Grid.Row="4" Grid.Column="0" Content="Refresh Options" Command="{Binding RefreshOptionsCommand}"/>
+                        <Button Grid.Row="4" Grid.Column="0" Content="Refresh All" Command="{Binding RefreshAllCommand}"/>
                     </Grid>
                 </Expander>
                 <Expander Header="User Info">
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>

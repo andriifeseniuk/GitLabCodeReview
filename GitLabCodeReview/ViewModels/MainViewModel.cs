@@ -18,7 +18,7 @@ namespace GitLabCodeReview.ViewModels
         {
             this.errorService = new ErrorService();
             this.errorService.Errors.CollectionChanged += Errors_CollectionChanged;
-            this.RefreshOptionsCommand = new DelegateCommand(obj => this.RefreshOptions());
+            this.RefreshAllCommand = new DelegateCommand(obj => this.RefreshAll());
             this.gitLabService = new GitLabService(this.errorService);
 
             this.gitLabService.IsPendingChanged += OnIsPendingChanged;
@@ -70,7 +70,7 @@ namespace GitLabCodeReview.ViewModels
 
         public ObservableCollection<string> Errors => this.errorService.Errors;
 
-        public ICommand RefreshOptionsCommand { get; }
+        public ICommand RefreshAllCommand { get; }
 
         public async void RefreshAll()
         {
@@ -116,6 +116,9 @@ namespace GitLabCodeReview.ViewModels
             {
                 project.PropertyChanged += this.OnProjectPropertyChanged;
             }
+
+            this.MergeRequests.Clear();
+            this.ChangesRoot.Items.Clear();
         }
 
         private async Task RefreshMergeRequests()
@@ -137,6 +140,8 @@ namespace GitLabCodeReview.ViewModels
             {
                 request.PropertyChanged += this.OnMergeRequestPropertyChanged;
             }
+
+            this.ChangesRoot.Items.Clear();
         }
 
         private void AddNode(FolderViewModel root, ITreeNode leaf, string[] parentsFolders)
