@@ -61,6 +61,7 @@
     <Compile Include="DTO\DiffRefsDto.cs" />
     <Compile Include="Enums\LinesFilterOptions.cs" />
     <Compile Include="Extensions\CollectionHelper.cs" />
+    <Compile Include="Helpers\DirectoryHelper.cs" />
     <Compile Include="GitLabMainWindow.cs" />
     <Compile Include="GitLabMainWindowCommand.cs" />
     <Compile Include="GitLabOptions.cs">

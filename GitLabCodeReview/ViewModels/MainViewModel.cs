@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using GitLabCodeReview.Services;
 using System.Linq;
 using System;
+using System.IO;
+using GitLabCodeReview.Helpers;
 
 namespace GitLabCodeReview.ViewModels
 {
@@ -77,6 +79,7 @@ namespace GitLabCodeReview.ViewModels
             this.RefreshOptions();
             await this.RefreshUserInfo();
             await this.RefreshProjects();
+            this.RemoveOldDirectories();
         }
 
         private void Errors_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -223,6 +226,33 @@ namespace GitLabCodeReview.ViewModels
         private void OnIsPendingChanged(bool isPending)
         {
             this.SchedulePropertyChanged(nameof(this.IsBusy));
+        }
+
+        private void RemoveOldDirectories()
+        {
+            if (!this.GitOptions.AutoCleanWorkingDirectory)
+            {
+                return;
+            }
+
+            try
+            {
+                var workingDirectory = this.gitLabService.GitOptions.GetWorkingOrTempDirectory();
+                if (!Directory.Exists(workingDirectory))
+                {
+                    return;
+                }
+
+                var directories = Directory.EnumerateDirectories(workingDirectory, DirectoryHelper.MergeRequestDirectoryName + "*");
+                foreach(var dir in directories)
+                {
+                    Directory.Delete(dir, true);
+                }
+            }
+            catch(Exception ex)
+            {
+                this.errorService.AddError(ex.ToString());
+            }
         }
     }
 }

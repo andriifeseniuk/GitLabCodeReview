@@ -29,5 +29,9 @@ namespace GitLabCodeReview
         [DisplayName("Working Directory")]
         [Description("The directory to keep temporary files used for diff. By default it is 'GitLabCodeReview' folder under your user directory. This field is optional.")]
         public string WorkingDirectory { get; set; }
+
+        [DisplayName("Auto-clean Working Directory")]
+        [Description("The flag indicating wheter to clean the working directory")]
+        public bool AutoCleanWorkingDirectory { get; set; }
     }
 }

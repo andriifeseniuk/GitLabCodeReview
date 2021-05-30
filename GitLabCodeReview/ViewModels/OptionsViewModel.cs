@@ -36,13 +36,22 @@
             }
         }
 
+        public bool AutoCleanWorkingDirectory
+        {
+            get
+            {
+                return this.options?.AutoCleanWorkingDirectory ?? false;
+            }
+        }
+
         public void RefreshOptions(GitLabOptions gitLabOptions)
         {
             this.options = gitLabOptions;
             this.SchedulePropertyChanged(nameof(this.ApiUrl));
             this.SchedulePropertyChanged(nameof(this.SelectedProjectId));
-            this.SchedulePropertyChanged(nameof(this.WorkingDirectory));
             this.SchedulePropertyChanged(nameof(this.RepositoryLocalPath));
+            this.SchedulePropertyChanged(nameof(this.WorkingDirectory));
+            this.SchedulePropertyChanged(nameof(this.AutoCleanWorkingDirectory));
         }
     }
 }

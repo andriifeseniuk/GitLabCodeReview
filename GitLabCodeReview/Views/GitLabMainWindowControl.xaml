@@ -54,6 +54,7 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
                         <Grid.ColumnDefinitions>
@@ -73,7 +74,10 @@
                         <TextBlock Grid.Row="3" Grid.Column="0" Text="Working Directory: "/>
                         <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding GitOptions.WorkingDirectory}"/>
 
-                        <Button Grid.Row="4" Grid.Column="0" Content="Refresh All" Command="{Binding RefreshAllCommand}"/>
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Auto-clean Working Directory: "/>
+                        <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding GitOptions.AutoCleanWorkingDirectory}"/>
+
+                        <Button Grid.Row="5" Grid.Column="0" Content="Refresh All" Command="{Binding RefreshAllCommand}"/>
                     </Grid>
                 </Expander>
                 <Expander Header="User Info">

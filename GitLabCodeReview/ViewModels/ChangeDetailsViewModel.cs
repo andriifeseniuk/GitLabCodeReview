@@ -2,6 +2,7 @@
 using GitLabCodeReview.Common.Commands;
 using GitLabCodeReview.DTO;
 using GitLabCodeReview.Enums;
+using GitLabCodeReview.Extensions;
 using GitLabCodeReview.Helpers;
 using GitLabCodeReview.Models;
 using GitLabCodeReview.Services;
@@ -148,7 +149,8 @@ namespace GitLabCodeReview.ViewModels
                 bool needLoadSource = false;
                 bool needLoadTarget = false;
 
-                var dir = Path.Combine(this.service.GitOptions.WorkingDirectory, $"MergeRequest{mergeRequest.Id}");
+                var workingDirectory = this.service.GitOptions.GetWorkingOrTempDirectory();
+                var dir = Path.Combine(workingDirectory, $"{DirectoryHelper.MergeRequestDirectoryName}{mergeRequest.Id}");
                 if (!Directory.Exists(dir))
                 {
                     Directory.CreateDirectory(dir);
