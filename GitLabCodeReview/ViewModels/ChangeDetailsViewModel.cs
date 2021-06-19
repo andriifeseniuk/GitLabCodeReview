@@ -20,6 +20,7 @@ namespace GitLabCodeReview.ViewModels
     {
         private readonly ChangeDto change;
         private readonly MergeRequestDetailsDto mergeRequest;
+        private readonly string projectName;
         private readonly GitLabService service;
         private readonly ErrorService errorService;
         private readonly LinesFilterOptions[] showLinesOptions;
@@ -29,11 +30,13 @@ namespace GitLabCodeReview.ViewModels
         public ChangeDetailsViewModel(
             ChangeDto gitLabChange,
             MergeRequestDetailsDto gitLabMergeRequest,
+            string gitLabProject,
             GitLabService service,
             ErrorService globalErrorService)
         {
             this.change = gitLabChange;
             this.mergeRequest = gitLabMergeRequest;
+            this.projectName = gitLabProject;
             this.service = service;
             this.errorService = globalErrorService;
             this.DiffCommand = new DelegateCommand(x => this.ExecuteDiff());
@@ -146,8 +149,8 @@ namespace GitLabCodeReview.ViewModels
                 string sourceHash = string.Empty;
                 string targetHash = string.Empty;
 
-                bool needLoadSource = false;
-                bool needLoadTarget = false;
+                bool needLoadSource;
+                bool needLoadTarget;
 
                 var workingDirectory = this.service.GitOptions.GetWorkingOrTempDirectory();
                 var dir = Path.Combine(workingDirectory, $"{DirectoryHelper.MergeRequestDirectoryName}{mergeRequest.Id}");
@@ -160,6 +163,7 @@ namespace GitLabCodeReview.ViewModels
                 {
                     var path = change.NewPath;
                     needLoadSource = true;
+                    needLoadTarget = false;
 
                     sourceFileShortName = Path.GetFileNameWithoutExtension(path);
                     targetFileShortName = sourceFileShortName;
@@ -173,6 +177,7 @@ namespace GitLabCodeReview.ViewModels
                 else if (change.IsDeletedFile)
                 {
                     var path = change.OldPath;
+                    needLoadSource = false;
                     needLoadTarget = true;
 
                     targetFileShortName = Path.GetFileNameWithoutExtension(path);
@@ -208,7 +213,21 @@ namespace GitLabCodeReview.ViewModels
                 var sourceFileContent = string.Empty;
                 var targetFileContent = string.Empty;
 
-                if (!File.Exists(sourceFileLocalPath))
+                string sourceFileLocalRepositoryPath = null;
+                if (!string.IsNullOrWhiteSpace(this.service.GitOptions.RepositoryLocalPath) && !change.IsDeletedFile)
+                {
+                    sourceFileLocalRepositoryPath = Path.Combine(
+                        this.service.GitOptions.RepositoryLocalPath,
+                        this.projectName,
+                        change.NewPath.Replace('/', '\\'));
+                }
+
+                if (!string.IsNullOrWhiteSpace(sourceFileLocalRepositoryPath)
+                    && File.Exists(sourceFileLocalRepositoryPath))
+                {
+                    sourceFileLocalPath = sourceFileLocalRepositoryPath;
+                }
+                else if (!File.Exists(sourceFileLocalPath))
                 {
                     if (needLoadSource)
                     {

@@ -168,11 +168,12 @@ namespace GitLabCodeReview.ViewModels
         private async Task RefreshChanges()
         {
             this.ChangesRoot.Items.Clear();
+            var projectName = this.Projects.First(p => p.Id == this.SelectedProjectId).Name;
 
             var details = await this.gitLabService.GetMergeRequestDetailsAsync();
             foreach (var change in details.Changes)
             {
-                var leaf = new ChangeViewModel(change, details, this.gitLabService, this.errorService);
+                var leaf = new ChangeViewModel(change, details, projectName, this.gitLabService, this.errorService);
                 var pathSplitList = leaf.FullPath.Split(new char[] { '\\', '/' }, StringSplitOptions.RemoveEmptyEntries).ToList();
                 pathSplitList.RemoveAt(pathSplitList.Count - 1);
                 this.AddNode(this.ChangesRoot, leaf, pathSplitList.ToArray());
