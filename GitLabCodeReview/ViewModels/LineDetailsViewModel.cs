@@ -80,7 +80,7 @@ namespace GitLabCodeReview.ViewModels
 
         public DelegateCommand CancelCommand { get; private set; }
 
-        private void ExecuteNewDiscussion(object obj)
+        private async void ExecuteNewDiscussion(object obj)
         {
             var position = new PositionDto
             {
@@ -95,7 +95,10 @@ namespace GitLabCodeReview.ViewModels
             };
 
             var createDiscussionDto = new CreateDiscussionDto { Position = position };
-            this.service.AddDiscussion(createDiscussionDto, this.NewDiscussionText).ConfigureAwait(false);
+            var dissDto = await this.service.AddDiscussion(createDiscussionDto, this.NewDiscussionText);
+            var dissVm = new DiscussionViewModel(dissDto, this.service);
+            this.Discussions.Add(dissVm);
+            this.NewDiscussionText = string.Empty;
         }
 
         private void ExecuteCancel(object obj)

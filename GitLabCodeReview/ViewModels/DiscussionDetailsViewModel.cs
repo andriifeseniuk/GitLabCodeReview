@@ -77,9 +77,12 @@ namespace GitLabCodeReview.ViewModels
             this.Items.AddRange(this.Notes.Skip(1));
         }
 
-        private void ExecuteNewNote(object obj)
+        private async void ExecuteNewNote(object obj)
         {
-            this.service.AddNote(this.Discussion.Id, this.NewNoteText).ConfigureAwait(false);
+            var noteDto = await this.service.AddNote(this.Discussion.Id, this.NewNoteText);
+            var noteVm = new NoteViewModel(noteDto);
+            this.Notes.Add(noteVm);
+            this.NewNoteText = string.Empty;
         }
 
         private void ExecuteCancel(object obj)

@@ -257,7 +257,7 @@ namespace GitLabCodeReview.Services
             }
         }
 
-        public async Task AddNote(string discussionId, string body)
+        public async Task<NoteDto> AddNote(string discussionId, string body)
         {
             this.IsPending = true;
             try
@@ -274,12 +274,13 @@ namespace GitLabCodeReview.Services
 
                 using (var client = new GitLabClient(this.GitOptions.ApiUrl, this.GitOptions.PrivateToken))
                 {
-                    await client.AddNote(this.GitOptions.SelectedProjectId.Value, this.SelectedMergeRequestInternalId.Value, discussionId, body);
+                    return await client.AddNote(this.GitOptions.SelectedProjectId.Value, this.SelectedMergeRequestInternalId.Value, discussionId, body);
                 }
             }
             catch (Exception ex)
             {
                 this.errorService.AddError(ex.ToString());
+                return null;
             }
             finally
             {
@@ -287,7 +288,7 @@ namespace GitLabCodeReview.Services
             }
         }
 
-        public async Task AddDiscussion(CreateDiscussionDto createDiscussionDto, string body)
+        public async Task<DiscussionDto> AddDiscussion(CreateDiscussionDto createDiscussionDto, string body)
         {
             this.IsPending = true;
             try
@@ -304,12 +305,13 @@ namespace GitLabCodeReview.Services
 
                 using (var client = new GitLabClient(this.GitOptions.ApiUrl, this.GitOptions.PrivateToken))
                 {
-                    await client.AddDiscussion(this.GitOptions.SelectedProjectId.Value, this.SelectedMergeRequestInternalId.Value, createDiscussionDto, body);
+                    return await client.AddDiscussion(this.GitOptions.SelectedProjectId.Value, this.SelectedMergeRequestInternalId.Value, createDiscussionDto, body);
                 }
             }
             catch (Exception ex)
             {
                 this.errorService.AddError(ex.ToString());
+                return null;
             }
             finally
             {

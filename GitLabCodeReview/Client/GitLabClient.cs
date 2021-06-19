@@ -100,7 +100,7 @@ namespace GitLabCodeReview.Client
 
         public async Task<DiscussionDto[]> GetDiscussionsAsync(long projectId, long mergeRequestInternalId)
         {
-            var uri = $"{this.apiUrl}/projects/{projectId}/merge_requests/{mergeRequestInternalId}/discussions";
+            var uri = $"{this.apiUrl}/projects/{projectId}/merge_requests/{mergeRequestInternalId}/discussions?per_page=100";
             var response = await client.GetAsync(uri);
             var responseAsString = await response.Content.ReadAsStringAsync();
             var discussions = (DiscussionDto[])JsonConvert.DeserializeObject(responseAsString, typeof(DiscussionDto[]));
