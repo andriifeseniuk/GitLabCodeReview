@@ -59,6 +59,7 @@
     <Compile Include="Converters\LineBackgroundConverter.cs" />
     <Compile Include="DTO\CreateDiscussionDto.cs" />
     <Compile Include="DTO\DiffRefsDto.cs" />
+    <Compile Include="Enums\ChangesDisplayOptions.cs" />
     <Compile Include="Enums\LinesFilterOptions.cs" />
     <Compile Include="Extensions\CollectionHelper.cs" />
     <Compile Include="Helpers\DirectoryHelper.cs" />

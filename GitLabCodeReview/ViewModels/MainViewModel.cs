@@ -8,6 +8,8 @@ using System.Linq;
 using System;
 using System.IO;
 using GitLabCodeReview.Helpers;
+using GitLabCodeReview.Enums;
+using System.Collections.Generic;
 
 namespace GitLabCodeReview.ViewModels
 {
@@ -15,6 +17,8 @@ namespace GitLabCodeReview.ViewModels
     {
         private readonly ErrorService errorService;
         private readonly GitLabService gitLabService;
+        ChangesDisplayOptions selectedChangeOption = ChangesDisplayOptions.Folders;
+        ChangesDisplayOptions[] changesOptions = Enum.GetValues(typeof(ChangesDisplayOptions)).Cast<ChangesDisplayOptions>().ToArray();
 
         public MainViewModel()
         {
@@ -73,6 +77,22 @@ namespace GitLabCodeReview.ViewModels
         public ObservableCollection<string> Errors => this.errorService.Errors;
 
         public ICommand RefreshAllCommand { get; }
+
+        public ChangesDisplayOptions[] ChangesOptions => this.changesOptions;
+
+        public ChangesDisplayOptions SelectedChangeOption
+        {
+            get
+            {
+                return this.selectedChangeOption;
+            }
+            set
+            {
+                this.selectedChangeOption = value;
+                this.SchedulePropertyChanged();
+                this.RefreshChanges().ConfigureAwait(false);
+            }
+        }
 
         public async void RefreshAll()
         {
@@ -174,9 +194,42 @@ namespace GitLabCodeReview.ViewModels
             foreach (var change in details.Changes)
             {
                 var leaf = new ChangeViewModel(change, details, projectName, this.gitLabService, this.errorService);
-                var pathSplitList = leaf.FullPath.Split(new char[] { '\\', '/' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-                pathSplitList.RemoveAt(pathSplitList.Count - 1);
+                var pathSplitList = this.GetPathSplitList(leaf.FullPath);
                 this.AddNode(this.ChangesRoot, leaf, pathSplitList.ToArray());
+            }
+        }
+
+        private string[] GetPathSplitList(string fullPath)
+        {
+            switch(this.SelectedChangeOption)
+            {
+                case ChangesDisplayOptions.Files:
+                    return new string[0];
+
+                case ChangesDisplayOptions.Folders:
+                    {
+                        var pathSplitList = fullPath.Split(new char[] { '\\', '/' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                        pathSplitList.RemoveAt(pathSplitList.Count - 1);
+                        if (pathSplitList.Count == 0)
+                        {
+                            return new string[0];
+                        }
+
+                        var folderName = pathSplitList.Last();
+                        var folderPath = string.Join("\\", pathSplitList);
+                        var folderDisplayName = $"{folderName} [{folderPath}]";
+                        return new[] { folderDisplayName };
+                    }
+
+                case ChangesDisplayOptions.Tree:
+                    {
+                        var pathSplitList = fullPath.Split(new char[] { '\\', '/' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                        pathSplitList.RemoveAt(pathSplitList.Count - 1);
+                        return pathSplitList.ToArray();
+                    }
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(this.SelectedChangeOption));
             }
         }
 

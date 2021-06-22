@@ -150,39 +150,56 @@
                     </ItemsControl>
                 </Expander>
                 <Expander Header="Changes">
-                    <TreeView ItemsSource="{Binding ChangesRoot.Items}">
-                        <TreeView.ItemContainerStyle>
-                            <Style TargetType="{x:Type TreeViewItem}">
-                                <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                            </Style>
-                        </TreeView.ItemContainerStyle>
-                        <TreeView.Resources>
-                            <HierarchicalDataTemplate DataType="{x:Type viewModels:DummyTreeNode}">
-                                <TextBlock Text="{Binding DisplayName}"/>
-                            </HierarchicalDataTemplate>
-                            <HierarchicalDataTemplate DataType="{x:Type viewModels:FolderViewModel}"
-                                                      ItemsSource="{Binding Items}">
-                                <TextBlock Text="{Binding DisplayName}"/>
-                            </HierarchicalDataTemplate>
-                            <HierarchicalDataTemplate DataType="{x:Type viewModels:ChangeViewModel}"
-                                                      ItemsSource="{Binding Items}">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
 
-                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding DisplayName}"/>
-                                    <Button Grid.Row="0" Grid.Column="1" Content="Diff" Command="{Binding DiffCommand}" Width="35" Margin="5,0,0,0"/>
-                                </Grid>
-                            </HierarchicalDataTemplate>
-                            <HierarchicalDataTemplate DataType="{x:Type viewModels:ChangeDetailsViewModel}">
-                                <Grid>
-                                    <views:ChangeDetailsView DataContext="{Binding}"></views:ChangeDetailsView>
-                                </Grid>
-                            </HierarchicalDataTemplate>
-                        </TreeView.Resources>
-                    </TreeView>
+                        <Grid Grid.Row="0">
+                            <ListBox ItemsSource="{Binding ChangesOptions}" SelectedValue="{Binding SelectedChangeOption}" HorizontalAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                <ListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel IsItemsHost="True" />
+                                    </ItemsPanelTemplate>
+                                </ListBox.ItemsPanel>
+                            </ListBox>
+                        </Grid>
+
+                        <TreeView Grid.Row="1"  ItemsSource="{Binding ChangesRoot.Items}">
+                            <TreeView.ItemContainerStyle>
+                                <Style TargetType="{x:Type TreeViewItem}">
+                                    <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                </Style>
+                            </TreeView.ItemContainerStyle>
+                            <TreeView.Resources>
+                                <HierarchicalDataTemplate DataType="{x:Type viewModels:DummyTreeNode}">
+                                    <TextBlock Text="{Binding DisplayName}"/>
+                                </HierarchicalDataTemplate>
+                                <HierarchicalDataTemplate DataType="{x:Type viewModels:FolderViewModel}"
+                                                            ItemsSource="{Binding Items}">
+                                    <TextBlock Text="{Binding DisplayName}" ToolTip="{Binding DisplayName}"/>
+                                </HierarchicalDataTemplate>
+                                <HierarchicalDataTemplate DataType="{x:Type viewModels:ChangeViewModel}"
+                                                            ItemsSource="{Binding Items}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding DisplayName}"/>
+                                        <Button Grid.Row="0" Grid.Column="1" Content="Diff" Command="{Binding DiffCommand}" Width="35" Margin="5,0,0,0"/>
+                                    </Grid>
+                                </HierarchicalDataTemplate>
+                                <HierarchicalDataTemplate DataType="{x:Type viewModels:ChangeDetailsViewModel}">
+                                    <Grid>
+                                        <views:ChangeDetailsView DataContext="{Binding}"></views:ChangeDetailsView>
+                                    </Grid>
+                                </HierarchicalDataTemplate>
+                            </TreeView.Resources>
+                        </TreeView>
+                    </Grid>
                 </Expander>
                 <Expander Header="{Binding ErrorsHeader}">
                     <ItemsControl ItemsSource="{Binding Errors}">
