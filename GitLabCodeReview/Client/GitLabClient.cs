@@ -1,4 +1,5 @@
 ﻿using GitLabCodeReview.DTO;
+using GitLabCodeReview.Helpers;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -49,7 +50,7 @@ namespace GitLabCodeReview.Client
             var uri = $"{this.apiUrl}/user";
             var response = await client.GetAsync(uri);
             var responseAsString = await response.Content.ReadAsStringAsync();
-            var user = (UserDto)JsonConvert.DeserializeObject(responseAsString, typeof(UserDto));
+            var user = JsonHelper.Deserialize<UserDto>(responseAsString);
             return user;
         }
 
@@ -58,7 +59,7 @@ namespace GitLabCodeReview.Client
             var uri = $"{this.apiUrl}/users/{userId}/projects";
             var response = await client.GetAsync(uri);
             var responseAsString = await response.Content.ReadAsStringAsync();
-            var projects = (ProjectDto[])JsonConvert.DeserializeObject(responseAsString, typeof(ProjectDto[]));
+            var projects = JsonHelper.Deserialize<ProjectDto[]>(responseAsString);
             return projects;
         }
 
@@ -67,7 +68,7 @@ namespace GitLabCodeReview.Client
             var uri = $"{this.apiUrl}/projects/{projectId}/merge_requests?state=opened";
             var response = await client.GetAsync(uri);
             var responseAsString = await response.Content.ReadAsStringAsync();
-            var requests = (MergeRequestDto[])JsonConvert.DeserializeObject(responseAsString, typeof(MergeRequestDto[]));
+            var requests = JsonHelper.Deserialize<MergeRequestDto[]>(responseAsString);
             return requests;
         }
 
@@ -76,8 +77,8 @@ namespace GitLabCodeReview.Client
             var uri = $"{this.apiUrl}/projects/{projectId}/merge_requests/{mergeRequestInternalId}/changes";
             var response = await client.GetAsync(uri);
             var responseAsString = await response.Content.ReadAsStringAsync();
-            var changes = (MergeRequestDetailsDto)JsonConvert.DeserializeObject(responseAsString, typeof(MergeRequestDetailsDto));
-            return changes;
+            var details = JsonHelper.Deserialize<MergeRequestDetailsDto>(responseAsString);
+            return details;
         }
 
         public async Task<FileDto> GetFileAsync(long projectId, string branch, string path)
@@ -85,7 +86,7 @@ namespace GitLabCodeReview.Client
             var uri = $"{this.apiUrl}/projects/{projectId}/repository/files/{HttpUtility.UrlEncode(path)}?ref={branch}";
             var response = await client.GetAsync(uri);
             var responseAsString = await response.Content.ReadAsStringAsync();
-            var file = (FileDto)JsonConvert.DeserializeObject(responseAsString, typeof(FileDto));
+            var file = JsonHelper.Deserialize<FileDto>(responseAsString);
             return file;
         }
 
@@ -94,7 +95,7 @@ namespace GitLabCodeReview.Client
             var uri = $"{this.apiUrl}/projects/{projectId}/repository/blobs/{blobId}";
             var response = await client.GetAsync(uri);
             var responseAsString = await response.Content.ReadAsStringAsync();
-            var blob = (BlobDto)JsonConvert.DeserializeObject(responseAsString, typeof(BlobDto));
+            var blob = JsonHelper.Deserialize<BlobDto>(responseAsString);
             return blob;
         }
 
@@ -103,7 +104,7 @@ namespace GitLabCodeReview.Client
             var uri = $"{this.apiUrl}/projects/{projectId}/merge_requests/{mergeRequestInternalId}/discussions?per_page=100";
             var response = await client.GetAsync(uri);
             var responseAsString = await response.Content.ReadAsStringAsync();
-            var discussions = (DiscussionDto[])JsonConvert.DeserializeObject(responseAsString, typeof(DiscussionDto[]));
+            var discussions = JsonHelper.Deserialize<DiscussionDto[]>(responseAsString);
             return discussions;
         }
 
@@ -112,7 +113,7 @@ namespace GitLabCodeReview.Client
             var uri = $"{this.apiUrl}/projects/{projectId}/merge_requests/{mergeRequestInternalId}/discussions/{discussionId}/notes?body={body}";
             var response = await client.PostAsync(uri, new StringContent(string.Empty, Encoding.UTF8, "application/json"));
             var responseAsString = await response.Content.ReadAsStringAsync();
-            var note = (NoteDto)JsonConvert.DeserializeObject(responseAsString, typeof(NoteDto));
+            var note = JsonHelper.Deserialize<NoteDto>(responseAsString);
             return note;
         }
 
@@ -122,7 +123,7 @@ namespace GitLabCodeReview.Client
             var content = JsonConvert.SerializeObject(createDiscussionDto, this.settings);
             var response = await client.PostAsync(uri, new StringContent(content, Encoding.UTF8, "application/json"));
             var responseAsString = await response.Content.ReadAsStringAsync();
-            var discussion = (DiscussionDto)JsonConvert.DeserializeObject(responseAsString, typeof(DiscussionDto));
+            var discussion = JsonHelper.Deserialize<DiscussionDto>(responseAsString);
             return discussion;
         }
     }

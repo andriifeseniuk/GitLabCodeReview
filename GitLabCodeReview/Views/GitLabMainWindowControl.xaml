@@ -203,6 +203,13 @@
                 </Expander>
                 <Expander Header="{Binding ErrorsHeader}">
                     <ItemsControl ItemsSource="{Binding Errors}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <TextBox Text="{Binding Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap" HorizontalAlignment="Stretch"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </Expander>
             </StackPanel>

@@ -82,7 +82,7 @@ namespace GitLabCodeReview.Services
             }
             catch (Exception ex)
             {
-                this.errorService.AddError(ex.ToString());
+                this.errorService.AddError(ex);
                 return null;
             }
             finally
@@ -114,7 +114,7 @@ namespace GitLabCodeReview.Services
             }
             catch (Exception ex)
             {
-                this.errorService.AddError(ex.ToString());
+                this.errorService.AddError(ex);
             }
             finally
             {
@@ -141,7 +141,7 @@ namespace GitLabCodeReview.Services
             }
             catch (Exception ex)
             {
-                this.errorService.AddError(ex.ToString());
+                this.errorService.AddError(ex);
             }
             finally
             {
@@ -163,7 +163,7 @@ namespace GitLabCodeReview.Services
             }
             catch (Exception ex)
             {
-                this.errorService.AddError(ex.ToString());
+                this.errorService.AddError(ex);
             }
             finally
             {
@@ -189,7 +189,7 @@ namespace GitLabCodeReview.Services
             }
             catch (Exception ex)
             {
-                this.errorService.AddError(ex.ToString());
+                this.errorService.AddError(ex);
                 return new ProjectDto[0];
             }
             finally
@@ -216,7 +216,7 @@ namespace GitLabCodeReview.Services
             }
             catch (Exception ex)
             {
-                this.errorService.AddError(ex.ToString());
+                this.errorService.AddError(ex);
                 return new MergeRequestDto[0];
             }
             finally
@@ -248,7 +248,7 @@ namespace GitLabCodeReview.Services
             }
             catch (Exception ex)
             {
-                this.errorService.AddError(ex.ToString());
+                this.errorService.AddError(ex);
                 return null;
             }
             finally
@@ -279,7 +279,7 @@ namespace GitLabCodeReview.Services
             }
             catch (Exception ex)
             {
-                this.errorService.AddError(ex.ToString());
+                this.errorService.AddError(ex);
                 return null;
             }
             finally
@@ -310,7 +310,7 @@ namespace GitLabCodeReview.Services
             }
             catch (Exception ex)
             {
-                this.errorService.AddError(ex.ToString());
+                this.errorService.AddError(ex);
                 return null;
             }
             finally

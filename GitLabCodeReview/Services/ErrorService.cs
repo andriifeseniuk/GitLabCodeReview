@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 
 namespace GitLabCodeReview.Services
 {
@@ -9,6 +10,11 @@ namespace GitLabCodeReview.Services
         public void AddError(string message)
         {
             this.Errors.Add(message);
+        }
+
+        public void AddError(Exception exception)
+        {
+            this.Errors.Add(exception.ToString());
         }
     }
 }
