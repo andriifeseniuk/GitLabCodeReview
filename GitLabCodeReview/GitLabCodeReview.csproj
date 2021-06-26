@@ -62,6 +62,7 @@
     <Compile Include="Enums\ChangesDisplayOptions.cs" />
     <Compile Include="Enums\LinesFilterOptions.cs" />
     <Compile Include="Extensions\CollectionHelper.cs" />
+    <Compile Include="Extensions\UriExtensions.cs" />
     <Compile Include="Helpers\DirectoryHelper.cs" />
     <Compile Include="GitLabMainWindow.cs" />
     <Compile Include="GitLabMainWindowCommand.cs" />

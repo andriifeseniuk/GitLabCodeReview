@@ -1,8 +1,10 @@
 ﻿using GitLabCodeReview.DTO;
+using GitLabCodeReview.Extensions;
 using GitLabCodeReview.Helpers;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -56,19 +58,15 @@ namespace GitLabCodeReview.Client
 
         public async Task<IEnumerable<ProjectDto>> GetProjectsAsync(long userId)
         {
-            var uri = $"{this.apiUrl}/users/{userId}/projects";
-            var response = await client.GetAsync(uri);
-            var responseAsString = await response.Content.ReadAsStringAsync();
-            var projects = JsonHelper.Deserialize<ProjectDto[]>(responseAsString);
+            var uri = $"{this.apiUrl}/projects?membership=true&simple=true";
+            var projects = await this.GetPaged<ProjectDto>(uri);
             return projects;
         }
 
         public async Task<IEnumerable<MergeRequestDto>> GetMergeRequestsAsync(long projectId)
         {
             var uri = $"{this.apiUrl}/projects/{projectId}/merge_requests?state=opened";
-            var response = await client.GetAsync(uri);
-            var responseAsString = await response.Content.ReadAsStringAsync();
-            var requests = JsonHelper.Deserialize<MergeRequestDto[]>(responseAsString);
+            var requests = await this.GetPaged<MergeRequestDto>(uri);
             return requests;
         }
 
@@ -101,10 +99,8 @@ namespace GitLabCodeReview.Client
 
         public async Task<DiscussionDto[]> GetDiscussionsAsync(long projectId, long mergeRequestInternalId)
         {
-            var uri = $"{this.apiUrl}/projects/{projectId}/merge_requests/{mergeRequestInternalId}/discussions?per_page=100";
-            var response = await client.GetAsync(uri);
-            var responseAsString = await response.Content.ReadAsStringAsync();
-            var discussions = JsonHelper.Deserialize<DiscussionDto[]>(responseAsString);
+            var uri = $"{this.apiUrl}/projects/{projectId}/merge_requests/{mergeRequestInternalId}/discussions";
+            var discussions = await this.GetPaged<DiscussionDto>(uri);
             return discussions;
         }
 
@@ -125,6 +121,43 @@ namespace GitLabCodeReview.Client
             var responseAsString = await response.Content.ReadAsStringAsync();
             var discussion = JsonHelper.Deserialize<DiscussionDto>(responseAsString);
             return discussion;
+        }
+
+        private async Task<T[]> GetPaged<T>(string uri)
+        {
+            var result = new List<T>();
+            var maxPerPage = 100;
+            var maxPages = 1000;
+            for(var i = 1; i <= maxPages; i++)
+            {
+                var uriPerPage = uri.Parameter("per_page", maxPerPage.ToString()).Parameter("page", i.ToString());
+                var response = await client.GetAsync(uri);
+                if (!response.IsSuccessStatusCode)
+                {
+                    break;
+                }
+
+                var responseAsString = await response.Content.ReadAsStringAsync();
+                var page = JsonHelper.Deserialize<T[]>(responseAsString);
+                if (page.Length == 0)
+                {
+                    break;
+                }
+
+                result.AddRange(page);
+
+                IEnumerable<string> values;
+                int totalPages;
+                if (response.Headers.TryGetValues("x-total-pages", out values)
+                    && values.Any()
+                    && int.TryParse(values.First(), out totalPages)
+                    && i == totalPages)
+                {
+                    break;
+                }
+            }
+
+            return result.ToArray();
         }
     }
 }
