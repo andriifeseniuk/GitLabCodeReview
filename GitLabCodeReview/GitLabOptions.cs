@@ -19,7 +19,7 @@ namespace GitLabCodeReview
         public string PrivateToken { get; set; }
 
         [DisplayName("Selected Project Id")]
-        [Description("The ID of GitLab project you are working with. If you don't know no worries you will be able to choose it from the projects list. This field is optional.")]
+        [Description("The ID of GitLab project you are working with. If you don't know you will be able to choose it from the projects list. This field is optional.")]
         public long? SelectedProjectId { get; set; }
 
         [DisplayName("Repository Local Path")]
@@ -33,5 +33,13 @@ namespace GitLabCodeReview
         [DisplayName("Auto-clean Working Directory")]
         [Description("The flag indicating wheter to clean the working directory")]
         public bool AutoCleanWorkingDirectory { get; set; }
+
+        [DisplayName("Max items per page")]
+        [Description("The maximum number of items that can be loaded in one request to endpoint that supports pagination. By default 100. This field is optional.")]
+        public int? MaxItemsPerPage { get; set; }
+
+        [DisplayName("Max pages")]
+        [Description("The maximum number of sequential requests to endpoint that supports pagination. By default 1000. This field is optional.")]
+        public int? MaxPages { get; set; }
     }
 }

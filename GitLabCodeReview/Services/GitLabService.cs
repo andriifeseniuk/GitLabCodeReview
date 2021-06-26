@@ -72,7 +72,7 @@ namespace GitLabCodeReview.Services
                     throw new ArgumentNullException(nameof(path));
                 }
 
-                using (var client = new GitLabClient(this.GitOptions.ApiUrl, this.GitOptions.PrivateToken))
+                using (var client = new GitLabClient(this.GitOptions))
                 {
                     var file = await client.GetFileAsync(this.SelectedProjectId.Value, branch, path);
                     var fileBlob = await client.GetFileBlobAsync(this.SelectedProjectId.Value, file.BlobId);
@@ -106,7 +106,7 @@ namespace GitLabCodeReview.Services
                     throw new InvalidOperationException("SelectedMergeRequestInternalId is null");
                 }
 
-                using (var client = new GitLabClient(this.GitOptions.ApiUrl, this.GitOptions.PrivateToken))
+                using (var client = new GitLabClient(this.GitOptions))
                 {
                     var discussions = await client.GetDiscussionsAsync(this.SelectedProjectId.Value, this.SelectedMergeRequestInternalId.Value);
                     return discussions;
@@ -138,6 +138,8 @@ namespace GitLabCodeReview.Services
                 this.GitOptions.RepositoryLocalPath = (string)props.Item(nameof(GitLabOptions.RepositoryLocalPath)).Value;
                 this.GitOptions.WorkingDirectory = (string)props.Item(nameof(GitLabOptions.WorkingDirectory)).Value;
                 this.GitOptions.AutoCleanWorkingDirectory = (bool)props.Item(nameof(GitLabOptions.AutoCleanWorkingDirectory)).Value;
+                this.GitOptions.MaxItemsPerPage = (int?)props.Item(nameof(GitLabOptions.MaxItemsPerPage)).Value;
+                this.GitOptions.MaxPages = (int?)props.Item(nameof(GitLabOptions.MaxPages)).Value;
             }
             catch (Exception ex)
             {
@@ -154,7 +156,7 @@ namespace GitLabCodeReview.Services
             this.IsPending = true;
             try
             {
-                using (var client = new GitLabClient(this.GitOptions.ApiUrl, this.GitOptions.PrivateToken))
+                using (var client = new GitLabClient(this.GitOptions))
                 {
                     var user = await client.GetUserAsync();
                     this.userId = user.Id;
@@ -181,7 +183,7 @@ namespace GitLabCodeReview.Services
                     throw new InvalidOperationException("UserId is null");
                 }
 
-                using (var client = new GitLabClient(this.GitOptions.ApiUrl, this.GitOptions.PrivateToken))
+                using (var client = new GitLabClient(this.GitOptions))
                 {
                     var projects = await client.GetProjectsAsync(this.UserId.Value);
                     return projects;
@@ -208,7 +210,7 @@ namespace GitLabCodeReview.Services
                     throw new InvalidOperationException("SelectedProjectId is null");
                 }
 
-                using (var client = new GitLabClient(this.GitOptions.ApiUrl, this.GitOptions.PrivateToken))
+                using (var client = new GitLabClient(this.GitOptions))
                 {
                     var requests = await client.GetMergeRequestsAsync(this.GitOptions.SelectedProjectId.Value);
                     return requests;
@@ -240,7 +242,7 @@ namespace GitLabCodeReview.Services
                     throw new InvalidOperationException("SelectedMergeRequestInternalId is null");
                 }
 
-                using (var client = new GitLabClient(this.GitOptions.ApiUrl, this.GitOptions.PrivateToken))
+                using (var client = new GitLabClient(this.GitOptions))
                 {
                     var details = await client.GetMergeRequestDetailsAsync(this.GitOptions.SelectedProjectId.Value, this.SelectedMergeRequestInternalId.Value);
                     return details;
@@ -272,7 +274,7 @@ namespace GitLabCodeReview.Services
                     throw new InvalidOperationException("SelectedMergeRequestInternalId is null");
                 }
 
-                using (var client = new GitLabClient(this.GitOptions.ApiUrl, this.GitOptions.PrivateToken))
+                using (var client = new GitLabClient(this.GitOptions))
                 {
                     return await client.AddNote(this.GitOptions.SelectedProjectId.Value, this.SelectedMergeRequestInternalId.Value, discussionId, body);
                 }
@@ -303,7 +305,7 @@ namespace GitLabCodeReview.Services
                     throw new InvalidOperationException("SelectedMergeRequestInternalId is null");
                 }
 
-                using (var client = new GitLabClient(this.GitOptions.ApiUrl, this.GitOptions.PrivateToken))
+                using (var client = new GitLabClient(this.GitOptions))
                 {
                     return await client.AddDiscussion(this.GitOptions.SelectedProjectId.Value, this.SelectedMergeRequestInternalId.Value, createDiscussionDto, body);
                 }

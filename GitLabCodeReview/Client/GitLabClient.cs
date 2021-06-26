@@ -15,26 +15,32 @@ namespace GitLabCodeReview.Client
 {
     public class GitLabClient : IDisposable
     {
-        private readonly string apiUrl;
         private readonly HttpClient client;
         private readonly JsonSerializerSettings settings;
+        private readonly GitLabOptions gitOptions;
 
-        public GitLabClient(string apiUrl, string privateToken)
+        public GitLabClient(GitLabOptions gitLabOptions)
         {
-            if (string.IsNullOrEmpty(apiUrl))
+            if (gitLabOptions == null)
             {
-                throw new ArgumentNullException(nameof(apiUrl));
+                throw new ArgumentNullException(nameof(gitLabOptions));
             }
 
-            if (string.IsNullOrEmpty(privateToken))
+            if (string.IsNullOrEmpty(gitLabOptions.ApiUrl))
             {
-                throw new ArgumentNullException(nameof(privateToken));
+                throw new ArgumentNullException(nameof(gitLabOptions.ApiUrl));
             }
 
-            this.apiUrl = apiUrl;
+            if (string.IsNullOrEmpty(gitLabOptions.PrivateToken))
+            {
+                throw new ArgumentNullException(nameof(gitLabOptions.PrivateToken));
+            }
+
+            this.gitOptions = gitLabOptions;
+
             ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
             this.client = new HttpClient();
-            this.client.DefaultRequestHeaders.Add("PRIVATE-TOKEN", privateToken);
+            this.client.DefaultRequestHeaders.Add("PRIVATE-TOKEN", gitOptions.PrivateToken);
 
             this.settings = new JsonSerializerSettings
             {
@@ -49,7 +55,7 @@ namespace GitLabCodeReview.Client
 
         public async Task<UserDto> GetUserAsync()
         {
-            var uri = $"{this.apiUrl}/user";
+            var uri = $"{this.gitOptions.ApiUrl}/user";
             var response = await client.GetAsync(uri);
             var responseAsString = await response.Content.ReadAsStringAsync();
             var user = JsonHelper.Deserialize<UserDto>(responseAsString);
@@ -58,21 +64,21 @@ namespace GitLabCodeReview.Client
 
         public async Task<IEnumerable<ProjectDto>> GetProjectsAsync(long userId)
         {
-            var uri = $"{this.apiUrl}/projects?membership=true&simple=true";
+            var uri = $"{this.gitOptions.ApiUrl}/projects?membership=true&simple=true";
             var projects = await this.GetPaged<ProjectDto>(uri);
             return projects;
         }
 
         public async Task<IEnumerable<MergeRequestDto>> GetMergeRequestsAsync(long projectId)
         {
-            var uri = $"{this.apiUrl}/projects/{projectId}/merge_requests?state=opened";
+            var uri = $"{this.gitOptions.ApiUrl}/projects/{projectId}/merge_requests?state=opened";
             var requests = await this.GetPaged<MergeRequestDto>(uri);
             return requests;
         }
 
         public async Task<MergeRequestDetailsDto> GetMergeRequestDetailsAsync(long projectId, long mergeRequestInternalId)
         {
-            var uri = $"{this.apiUrl}/projects/{projectId}/merge_requests/{mergeRequestInternalId}/changes";
+            var uri = $"{this.gitOptions.ApiUrl}/projects/{projectId}/merge_requests/{mergeRequestInternalId}/changes";
             var response = await client.GetAsync(uri);
             var responseAsString = await response.Content.ReadAsStringAsync();
             var details = JsonHelper.Deserialize<MergeRequestDetailsDto>(responseAsString);
@@ -81,7 +87,7 @@ namespace GitLabCodeReview.Client
 
         public async Task<FileDto> GetFileAsync(long projectId, string branch, string path)
         {
-            var uri = $"{this.apiUrl}/projects/{projectId}/repository/files/{HttpUtility.UrlEncode(path)}?ref={branch}";
+            var uri = $"{this.gitOptions.ApiUrl}/projects/{projectId}/repository/files/{HttpUtility.UrlEncode(path)}?ref={branch}";
             var response = await client.GetAsync(uri);
             var responseAsString = await response.Content.ReadAsStringAsync();
             var file = JsonHelper.Deserialize<FileDto>(responseAsString);
@@ -90,7 +96,7 @@ namespace GitLabCodeReview.Client
 
         public async Task<BlobDto> GetFileBlobAsync(long projectId, string blobId)
         {
-            var uri = $"{this.apiUrl}/projects/{projectId}/repository/blobs/{blobId}";
+            var uri = $"{this.gitOptions.ApiUrl}/projects/{projectId}/repository/blobs/{blobId}";
             var response = await client.GetAsync(uri);
             var responseAsString = await response.Content.ReadAsStringAsync();
             var blob = JsonHelper.Deserialize<BlobDto>(responseAsString);
@@ -99,14 +105,14 @@ namespace GitLabCodeReview.Client
 
         public async Task<DiscussionDto[]> GetDiscussionsAsync(long projectId, long mergeRequestInternalId)
         {
-            var uri = $"{this.apiUrl}/projects/{projectId}/merge_requests/{mergeRequestInternalId}/discussions";
+            var uri = $"{this.gitOptions.ApiUrl}/projects/{projectId}/merge_requests/{mergeRequestInternalId}/discussions";
             var discussions = await this.GetPaged<DiscussionDto>(uri);
             return discussions;
         }
 
         public async Task<NoteDto> AddNote(long projectId, long mergeRequestInternalId, string discussionId, string body)
         {
-            var uri = $"{this.apiUrl}/projects/{projectId}/merge_requests/{mergeRequestInternalId}/discussions/{discussionId}/notes?body={body}";
+            var uri = $"{this.gitOptions.ApiUrl}/projects/{projectId}/merge_requests/{mergeRequestInternalId}/discussions/{discussionId}/notes?body={body}";
             var response = await client.PostAsync(uri, new StringContent(string.Empty, Encoding.UTF8, "application/json"));
             var responseAsString = await response.Content.ReadAsStringAsync();
             var note = JsonHelper.Deserialize<NoteDto>(responseAsString);
@@ -115,7 +121,7 @@ namespace GitLabCodeReview.Client
 
         public async Task<DiscussionDto> AddDiscussion(long projectId, long mergeRequestInternalId, CreateDiscussionDto createDiscussionDto, string body)
         {
-            var uri = $"{this.apiUrl}/projects/{projectId}/merge_requests/{mergeRequestInternalId}/discussions?body={body}";
+            var uri = $"{this.gitOptions.ApiUrl}/projects/{projectId}/merge_requests/{mergeRequestInternalId}/discussions?body={body}";
             var content = JsonConvert.SerializeObject(createDiscussionDto, this.settings);
             var response = await client.PostAsync(uri, new StringContent(content, Encoding.UTF8, "application/json"));
             var responseAsString = await response.Content.ReadAsStringAsync();
@@ -126,12 +132,16 @@ namespace GitLabCodeReview.Client
         private async Task<T[]> GetPaged<T>(string uri)
         {
             var result = new List<T>();
-            var maxPerPage = 100;
-            var maxPages = 1000;
+            var maxPerPage = this.gitOptions.MaxItemsPerPage.HasValue && this.gitOptions.MaxItemsPerPage.Value <= 100
+                ? this.gitOptions.MaxItemsPerPage.Value
+                : 100;
+            var maxPages = this.gitOptions.MaxPages.HasValue && this.gitOptions.MaxPages.Value <= 1000
+                ? this.gitOptions.MaxPages.Value
+                : 1000;
             for(var i = 1; i <= maxPages; i++)
             {
                 var uriPerPage = uri.Parameter("per_page", maxPerPage.ToString()).Parameter("page", i.ToString());
-                var response = await client.GetAsync(uri);
+                var response = await client.GetAsync(uriPerPage);
                 if (!response.IsSuccessStatusCode)
                 {
                     break;
