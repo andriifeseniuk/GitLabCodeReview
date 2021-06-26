@@ -134,12 +134,32 @@ namespace GitLabCodeReview.Services
                 EnvDTE.Properties props = dte.Properties["GitLab Code Review", "General"];
                 this.GitOptions.ApiUrl = (string)props.Item(nameof(GitLabOptions.ApiUrl)).Value;
                 this.GitOptions.PrivateToken = (string)props.Item(nameof(GitLabOptions.PrivateToken)).Value;
-                this.GitOptions.SelectedProjectId = (int?)props.Item(nameof(GitLabOptions.SelectedProjectId)).Value;
+                this.GitOptions.SelectedProjectId = (long?)props.Item(nameof(GitLabOptions.SelectedProjectId)).Value;
                 this.GitOptions.RepositoryLocalPath = (string)props.Item(nameof(GitLabOptions.RepositoryLocalPath)).Value;
                 this.GitOptions.WorkingDirectory = (string)props.Item(nameof(GitLabOptions.WorkingDirectory)).Value;
                 this.GitOptions.AutoCleanWorkingDirectory = (bool)props.Item(nameof(GitLabOptions.AutoCleanWorkingDirectory)).Value;
                 this.GitOptions.MaxItemsPerPage = (int?)props.Item(nameof(GitLabOptions.MaxItemsPerPage)).Value;
                 this.GitOptions.MaxPages = (int?)props.Item(nameof(GitLabOptions.MaxPages)).Value;
+            }
+            catch (Exception ex)
+            {
+                this.errorService.AddError(ex);
+            }
+            finally
+            {
+                this.IsPending = false;
+            }
+        }
+
+        public void SaveOptions()
+        {
+            this.IsPending = true;
+            try
+            {
+                var serviceProvoder = GitLabMainWindowCommand.Instance.ServiceProvider;
+                var dte = (DTE)serviceProvoder.GetService(typeof(DTE));
+                EnvDTE.Properties props = dte.Properties["GitLab Code Review", "General"];
+                props.Item(nameof(GitLabOptions.SelectedProjectId)).Value = this.GitOptions.SelectedProjectId;
             }
             catch (Exception ex)
             {

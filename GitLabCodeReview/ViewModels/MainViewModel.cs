@@ -25,6 +25,7 @@ namespace GitLabCodeReview.ViewModels
             this.errorService = new ErrorService();
             this.errorService.Errors.CollectionChanged += Errors_CollectionChanged;
             this.RefreshAllCommand = new DelegateCommand(obj => this.RefreshAll());
+            this.SaveCommand = new DelegateCommand(obj => this.SaveOptions());
             this.gitLabService = new GitLabService(this.errorService);
 
             this.gitLabService.IsPendingChanged += OnIsPendingChanged;
@@ -78,6 +79,8 @@ namespace GitLabCodeReview.ViewModels
 
         public ICommand RefreshAllCommand { get; }
 
+        public ICommand SaveCommand { get; }
+
         public ChangesDisplayOptions[] ChangesOptions => this.changesOptions;
 
         public ChangesDisplayOptions SelectedChangeOption
@@ -100,6 +103,11 @@ namespace GitLabCodeReview.ViewModels
             await this.RefreshUserInfo();
             await this.RefreshProjects();
             this.RemoveOldDirectories();
+        }
+
+        private void SaveOptions()
+        {
+            this.gitLabService.SaveOptions();
         }
 
         private void Errors_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -132,7 +140,13 @@ namespace GitLabCodeReview.ViewModels
             var projects = await gitLabService.GetProjectsAsync();
             foreach (var project in projects)
             {
-                this.Projects.Add(new ProjectViewModel(project.Id, project.Name));
+                var projectVm = new ProjectViewModel(project.Id, project.Name);
+                this.Projects.Add(projectVm);
+                if (this.GitOptions.SelectedProjectId.HasValue
+                    && this.GitOptions.SelectedProjectId.Value == project.Id)
+                {
+                    projectVm.IsSelected = true;
+                }
             }
 
             foreach (var project in this.Projects)
@@ -167,6 +181,20 @@ namespace GitLabCodeReview.ViewModels
             this.ChangesRoot.Items.Clear();
         }
 
+        private async Task RefreshChanges()
+        {
+            this.ChangesRoot.Items.Clear();
+            var projectName = this.Projects.First(p => p.Id == this.SelectedProjectId).Name;
+
+            var details = await this.gitLabService.GetMergeRequestDetailsAsync();
+            foreach (var change in details.Changes)
+            {
+                var leaf = new ChangeViewModel(change, details, projectName, this.gitLabService, this.errorService);
+                var pathSplitList = this.GetPathSplitList(leaf.FullPath);
+                this.AddNode(this.ChangesRoot, leaf, pathSplitList.ToArray());
+            }
+        }
+
         private void AddNode(FolderViewModel root, ITreeNode leaf, string[] parentsFolders)
         {
             var currentParent = root;
@@ -183,20 +211,6 @@ namespace GitLabCodeReview.ViewModels
             }
 
             currentParent.Items.Add(leaf);
-        }
-
-        private async Task RefreshChanges()
-        {
-            this.ChangesRoot.Items.Clear();
-            var projectName = this.Projects.First(p => p.Id == this.SelectedProjectId).Name;
-
-            var details = await this.gitLabService.GetMergeRequestDetailsAsync();
-            foreach (var change in details.Changes)
-            {
-                var leaf = new ChangeViewModel(change, details, projectName, this.gitLabService, this.errorService);
-                var pathSplitList = this.GetPathSplitList(leaf.FullPath);
-                this.AddNode(this.ChangesRoot, leaf, pathSplitList.ToArray());
-            }
         }
 
         private string[] GetPathSplitList(string fullPath)
