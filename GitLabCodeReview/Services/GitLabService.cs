@@ -160,6 +160,7 @@ namespace GitLabCodeReview.Services
                 var dte = (DTE)serviceProvoder.GetService(typeof(DTE));
                 EnvDTE.Properties props = dte.Properties["GitLab Code Review", "General"];
                 props.Item(nameof(GitLabOptions.SelectedProjectId)).Value = this.GitOptions.SelectedProjectId;
+                props.Item(nameof(GitLabOptions.FavoriteProjects)).Value = this.GitOptions.FavoriteProjects;
             }
             catch (Exception ex)
             {

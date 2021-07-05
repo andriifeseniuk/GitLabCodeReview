@@ -5,6 +5,7 @@ namespace GitLabCodeReview.DTO
     public class ProjectViewModel : BaseViewModel
     {
         private bool isSelected;
+        private bool isFavorite;
             
         public ProjectViewModel(long id, string name)
         {
@@ -21,6 +22,19 @@ namespace GitLabCodeReview.DTO
             set
             {
                 this.isSelected = value;
+                this.SchedulePropertyChanged();
+            }
+        }
+
+        public bool IsFavorite
+        {
+            get
+            {
+                return this.isFavorite;
+            }
+            set
+            {
+                this.isFavorite = value;
                 this.SchedulePropertyChanged();
             }
         }

@@ -10,6 +10,7 @@ using System.IO;
 using GitLabCodeReview.Helpers;
 using GitLabCodeReview.Enums;
 using System.Collections.Generic;
+using GitLabCodeReview.Extensions;
 
 namespace GitLabCodeReview.ViewModels
 {
@@ -40,6 +41,8 @@ namespace GitLabCodeReview.ViewModels
         public string UserName => this.gitLabService.UserName;
 
         public ObservableCollection<ProjectViewModel> Projects { get; } = new ObservableCollection<ProjectViewModel>();
+
+        public ObservableCollection<ProjectViewModel> FavoriteProjects { get; } = new ObservableCollection<ProjectViewModel>();
 
         public long? SelectedProjectId
         {
@@ -102,6 +105,7 @@ namespace GitLabCodeReview.ViewModels
             this.RefreshOptions();
             await this.RefreshUserInfo();
             await this.RefreshProjects();
+            this.RefreshFavoriteProjects();
             this.RemoveOldDirectories();
         }
 
@@ -138,7 +142,7 @@ namespace GitLabCodeReview.ViewModels
             this.Projects.Clear();
 
             var projects = await gitLabService.GetProjectsAsync();
-            foreach (var project in projects)
+            foreach (var project in projects.OrderBy(p => p.Name))
             {
                 var projectVm = new ProjectViewModel(project.Id, project.Name);
                 this.Projects.Add(projectVm);
@@ -146,6 +150,11 @@ namespace GitLabCodeReview.ViewModels
                     && this.GitOptions.SelectedProjectId.Value == project.Id)
                 {
                     projectVm.IsSelected = true;
+                }
+
+                if (this.gitLabService.GitOptions.IsFavoriteProject(project.Id))
+                {
+                    projectVm.IsFavorite = true;
                 }
             }
 
@@ -156,6 +165,15 @@ namespace GitLabCodeReview.ViewModels
 
             this.MergeRequests.Clear();
             this.ChangesRoot.Items.Clear();
+        }
+
+        private void RefreshFavoriteProjects()
+        {
+            this.FavoriteProjects.Clear();
+            var newFavoriteProjects = this.Projects.Where(p => p.IsFavorite);
+            this.FavoriteProjects.AddRange(newFavoriteProjects);
+            var ids = newFavoriteProjects.Select(p => p.Id).ToArray();
+            this.gitLabService.GitOptions.SetFavoriteProjects(ids);
         }
 
         private async Task RefreshMergeRequests()
@@ -258,14 +276,20 @@ namespace GitLabCodeReview.ViewModels
             switch (e.PropertyName)
             {
                 case nameof(ProjectViewModel.IsSelected):
-                {
-                    if (project.IsSelected)
                     {
-                        this.SelectedProjectId = project.Id;
-                    }
+                        if (project.IsSelected)
+                        {
+                            this.SelectedProjectId = project.Id;
+                        }
 
-                    break;
-                }
+                        break;
+                    }
+                case nameof(ProjectViewModel.IsFavorite):
+                    {
+                        this.RefreshFavoriteProjects();
+                        this.SaveOptions();
+                        break;
+                    }
             }
         }
 
