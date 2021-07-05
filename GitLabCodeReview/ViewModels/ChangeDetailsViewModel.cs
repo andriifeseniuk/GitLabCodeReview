@@ -366,6 +366,21 @@ namespace GitLabCodeReview.ViewModels
                 {
                     this.Items.Add(line);
                 }
+
+                var expandedState = this.LinesFilterOption == LinesFilterOptions.Discussions
+                    || this.LinesFilterOption == LinesFilterOptions.Changes;
+                foreach (var line in filteredLines)
+                {
+                    if (line.Details != null && line.Details.Discussions.Any())
+                    {
+                        line.IsExpanded = expandedState;
+                        line.Details.IsExpanded = expandedState;
+                        foreach (var diss in line.Details.Discussions)
+                        {
+                            diss.IsExpanded = expandedState;
+                        }
+                    }
+                }
             }
         }
 
