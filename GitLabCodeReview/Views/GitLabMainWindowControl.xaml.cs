@@ -6,9 +6,8 @@
 
 namespace GitLabCodeReview.Views
 {
-    using System;
+    using Services;
     using System.Windows.Controls;
-    using Microsoft.VisualStudio.Shell;
     using ViewModels;
 
     /// <summary>
@@ -19,10 +18,10 @@ namespace GitLabCodeReview.Views
         /// <summary>
         /// Initializes a new instance of the <see cref="GitLabMainWindowControl"/> class.
         /// </summary>
-        public GitLabMainWindowControl()
+        public GitLabMainWindowControl(IOptionsService optionsService, IDiffService vsDiffService)
         {
             this.InitializeComponent();
-            var mainViewModel = new MainViewModel();
+            var mainViewModel = new MainViewModel(optionsService, vsDiffService);
             this.DataContext = mainViewModel;
         }
 

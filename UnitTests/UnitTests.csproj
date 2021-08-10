@@ -55,7 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GitLabCodeReview\GitLabCodeReview.csproj">
-      <Project>{7ef4e27c-64cd-48f1-bbae-716f1f1246f1}</Project>
+      <Project>{726116ED-A862-4BB2-AD97-6C81CE1F6390}</Project>
       <Name>GitLabCodeReview</Name>
     </ProjectReference>
   </ItemGroup>

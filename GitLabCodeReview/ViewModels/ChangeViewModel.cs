@@ -18,11 +18,12 @@ namespace GitLabCodeReview.ViewModels
             MergeRequestDetailsDto gitLabMergeRequest,
             string gitLabProject,
             GitLabService service,
-            ErrorService globalErrorService)
+            ErrorService globalErrorService,
+            IDiffService diffService)
         {
             this.change = gitLabChange;
             this.service = service;
-            this.details = new ChangeDetailsViewModel(gitLabChange, gitLabMergeRequest, gitLabProject, service, globalErrorService);
+            this.details = new ChangeDetailsViewModel(gitLabChange, gitLabMergeRequest, gitLabProject, service, globalErrorService, diffService);
             this.Items.Add(this.details);
         }
 

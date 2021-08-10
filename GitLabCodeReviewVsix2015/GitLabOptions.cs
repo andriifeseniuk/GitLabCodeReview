@@ -3,7 +3,7 @@ using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 
-namespace GitLabCodeReview
+namespace GitLabCodeReviewVsix2015
 {
     [CLSCompliant(false)]
     [ComVisible(true)]

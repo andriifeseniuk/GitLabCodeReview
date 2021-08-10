@@ -1,8 +1,10 @@
-﻿namespace GitLabCodeReview.ViewModels
+﻿using GitLabCodeReview.Models;
+
+namespace GitLabCodeReview.ViewModels
 {
     public class OptionsViewModel : BaseViewModel
     {
-        private GitLabOptions options;
+        private OptionsModel options;
 
         public string ApiUrl
         {
@@ -44,7 +46,7 @@
             }
         }
 
-        public void RefreshOptions(GitLabOptions gitLabOptions)
+        public void RefreshOptions(OptionsModel gitLabOptions)
         {
             this.options = gitLabOptions;
             this.SchedulePropertyChanged(nameof(this.ApiUrl));

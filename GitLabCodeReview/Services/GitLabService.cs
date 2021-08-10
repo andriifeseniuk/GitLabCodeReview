@@ -1,6 +1,6 @@
-﻿using EnvDTE;
-using GitLabCodeReview.Client;
+﻿using GitLabCodeReview.Client;
 using GitLabCodeReview.DTO;
+using GitLabCodeReview.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,11 +12,14 @@ namespace GitLabCodeReview.Services
     {
         private long? userId;
         private string userName;
-        private ErrorService errorService;
+        private readonly ErrorService errorService;
+        private readonly IOptionsService gitLabOptionsService;
+
         bool isPending;
 
-        public GitLabService(ErrorService globalErrorService)
+        public GitLabService(IOptionsService optionsService, ErrorService globalErrorService)
         {
+            this.gitLabOptionsService = optionsService;
             this.errorService = globalErrorService;
         }
 
@@ -35,7 +38,7 @@ namespace GitLabCodeReview.Services
             }
         }
 
-        public GitLabOptions GitOptions { get; } = new GitLabOptions();
+        public OptionsModel GitOptions { get; private set; } = new OptionsModel();
 
         public long? UserId
         {
@@ -129,18 +132,8 @@ namespace GitLabCodeReview.Services
             this.IsPending = true;
             try
             {
-                var serviceProvoder = GitLabMainWindowCommand.Instance.ServiceProvider;
-                var dte = (DTE)serviceProvoder.GetService(typeof(DTE));
-                EnvDTE.Properties props = dte.Properties["GitLab Code Review", "General"];
-                this.GitOptions.ApiUrl = (string)props.Item(nameof(GitLabOptions.ApiUrl)).Value;
-                this.GitOptions.PrivateToken = (string)props.Item(nameof(GitLabOptions.PrivateToken)).Value;
-                this.GitOptions.SelectedProjectId = (long?)props.Item(nameof(GitLabOptions.SelectedProjectId)).Value;
-                this.GitOptions.FavoriteProjects = (string)props.Item(nameof(GitLabOptions.FavoriteProjects)).Value;
-                this.GitOptions.RepositoryLocalPath = (string)props.Item(nameof(GitLabOptions.RepositoryLocalPath)).Value;
-                this.GitOptions.WorkingDirectory = (string)props.Item(nameof(GitLabOptions.WorkingDirectory)).Value;
-                this.GitOptions.AutoCleanWorkingDirectory = (bool)props.Item(nameof(GitLabOptions.AutoCleanWorkingDirectory)).Value;
-                this.GitOptions.MaxItemsPerPage = (int?)props.Item(nameof(GitLabOptions.MaxItemsPerPage)).Value;
-                this.GitOptions.MaxPages = (int?)props.Item(nameof(GitLabOptions.MaxPages)).Value;
+                this.GitOptions = this.gitLabOptionsService.LoadOptions();
+
             }
             catch (Exception ex)
             {
@@ -157,11 +150,7 @@ namespace GitLabCodeReview.Services
             this.IsPending = true;
             try
             {
-                var serviceProvoder = GitLabMainWindowCommand.Instance.ServiceProvider;
-                var dte = (DTE)serviceProvoder.GetService(typeof(DTE));
-                EnvDTE.Properties props = dte.Properties["GitLab Code Review", "General"];
-                props.Item(nameof(GitLabOptions.SelectedProjectId)).Value = this.GitOptions.SelectedProjectId;
-                props.Item(nameof(GitLabOptions.FavoriteProjects)).Value = this.GitOptions.FavoriteProjects;
+                this.gitLabOptionsService.SaveOptions(this.GitOptions);
             }
             catch (Exception ex)
             {

@@ -1,6 +1,7 @@
 ﻿using GitLabCodeReview.DTO;
 using GitLabCodeReview.Extensions;
 using GitLabCodeReview.Helpers;
+using GitLabCodeReview.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -17,9 +18,9 @@ namespace GitLabCodeReview.Client
     {
         private readonly HttpClient client;
         private readonly JsonSerializerSettings settings;
-        private readonly GitLabOptions gitOptions;
+        private readonly OptionsModel gitOptions;
 
-        public GitLabClient(GitLabOptions gitLabOptions)
+        public GitLabClient(OptionsModel gitLabOptions)
         {
             if (gitLabOptions == null)
             {

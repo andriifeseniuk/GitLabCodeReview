@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using GitLabCodeReview.Models;
+using System.IO;
 
 namespace GitLabCodeReview.Helpers
 {
@@ -6,7 +7,7 @@ namespace GitLabCodeReview.Helpers
     {
         public const string MergeRequestDirectoryName = "MergeRequest";
 
-        public static string GetWorkingOrTempDirectory(this GitLabOptions options)
+        public static string GetWorkingOrTempDirectory(this OptionsModel options)
         {
             var workingDirectory = !string.IsNullOrWhiteSpace(options.WorkingDirectory)
                 ? options.WorkingDirectory

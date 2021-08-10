@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GitLabCodeReview.Models;
+using System;
 using System.Collections.Generic;
 
 namespace GitLabCodeReview.Extensions
@@ -7,7 +8,7 @@ namespace GitLabCodeReview.Extensions
     {
         private const string Comma = ",";
 
-        public static bool IsFavoriteProject(this GitLabOptions options, long projectId)
+        public static bool IsFavoriteProject(this OptionsModel options, long projectId)
         {
             if (options == null || options.FavoriteProjects == null)
             {
@@ -27,7 +28,7 @@ namespace GitLabCodeReview.Extensions
             return false;
         }
 
-        public static void SetFavoriteProjects(this GitLabOptions options, IEnumerable<long> ids)
+        public static void SetFavoriteProjects(this OptionsModel options, IEnumerable<long> ids)
         {
             if (options == null)
             {

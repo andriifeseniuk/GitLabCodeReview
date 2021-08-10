@@ -18,16 +18,18 @@ namespace GitLabCodeReview.ViewModels
     {
         private readonly ErrorService errorService;
         private readonly GitLabService gitLabService;
+        private readonly IDiffService diffService;
         ChangesDisplayOptions selectedChangeOption = ChangesDisplayOptions.Folders;
         ChangesDisplayOptions[] changesOptions = Enum.GetValues(typeof(ChangesDisplayOptions)).Cast<ChangesDisplayOptions>().ToArray();
 
-        public MainViewModel()
+        public MainViewModel(IOptionsService optionsService, IDiffService vsDiffService)
         {
             this.errorService = new ErrorService();
             this.errorService.Errors.CollectionChanged += Errors_CollectionChanged;
             this.RefreshAllCommand = new DelegateCommand(obj => this.RefreshAll());
             this.SaveCommand = new DelegateCommand(obj => this.SaveOptions());
-            this.gitLabService = new GitLabService(this.errorService);
+            this.gitLabService = new GitLabService(optionsService, this.errorService);
+            this.diffService = vsDiffService;
 
             this.gitLabService.IsPendingChanged += OnIsPendingChanged;
         }
@@ -207,7 +209,7 @@ namespace GitLabCodeReview.ViewModels
             var details = await this.gitLabService.GetMergeRequestDetailsAsync();
             foreach (var change in details.Changes)
             {
-                var leaf = new ChangeViewModel(change, details, projectName, this.gitLabService, this.errorService);
+                var leaf = new ChangeViewModel(change, details, projectName, this.gitLabService, this.errorService, this.diffService);
                 var pathSplitList = this.GetPathSplitList(leaf.FullPath);
                 this.AddNode(this.ChangesRoot, leaf, pathSplitList.ToArray());
             }

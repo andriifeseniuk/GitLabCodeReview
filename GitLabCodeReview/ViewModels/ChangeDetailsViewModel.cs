@@ -1,5 +1,4 @@
-﻿using EnvDTE;
-using GitLabCodeReview.Common.Commands;
+﻿using GitLabCodeReview.Common.Commands;
 using GitLabCodeReview.DTO;
 using GitLabCodeReview.Enums;
 using GitLabCodeReview.Extensions;
@@ -23,6 +22,7 @@ namespace GitLabCodeReview.ViewModels
         private readonly string projectName;
         private readonly GitLabService service;
         private readonly ErrorService errorService;
+        private readonly IDiffService diffService;
         private readonly LinesFilterOptions[] showLinesOptions;
         private LinesFilterOptions showLinesOption = LinesFilterOptions.Changes;
         private LineViewModel[] lineViewModels = new LineViewModel[0];
@@ -32,13 +32,15 @@ namespace GitLabCodeReview.ViewModels
             MergeRequestDetailsDto gitLabMergeRequest,
             string gitLabProject,
             GitLabService service,
-            ErrorService globalErrorService)
+            ErrorService globalErrorService,
+            IDiffService vsDiffService)
         {
             this.change = gitLabChange;
             this.mergeRequest = gitLabMergeRequest;
             this.projectName = gitLabProject;
             this.service = service;
             this.errorService = globalErrorService;
+            this.diffService = vsDiffService;
             this.DiffCommand = new DelegateCommand(x => this.ExecuteDiff());
             this.showLinesOptions = Enum.GetValues(typeof(LinesFilterOptions)).Cast<LinesFilterOptions>().ToArray();
         }
@@ -247,10 +249,7 @@ namespace GitLabCodeReview.ViewModels
                     File.WriteAllText(targetFileLocaPath, targetFileContent);
                 }
 
-                var serviceProvoder = GitLabMainWindowCommand.Instance.ServiceProvider;
-                var dte = (DTE)serviceProvoder.GetService(typeof(DTE));
-                var arg = $"\"{targetFileLocaPath}\" \"{sourceFileLocalPath}\"";
-                dte.ExecuteCommand("Tools.DiffFiles", arg);
+                this.diffService.Diff(targetFileLocaPath, sourceFileLocalPath);
             }
             catch (Exception ex)
             {
