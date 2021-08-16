@@ -22,7 +22,7 @@
 
   <!--The Commands section is where commands, menus, and menu groups are defined.
       This section uses a Guid to identify the package that provides the command defined inside it. -->
-  <Commands package="guidGitLabMainWindowPackage">
+  <Commands package="guidGitLabCodeReviewVsix2019Package">
     <!-- Inside this section we have different sub-sections: one for the menus, another
     for the menu groups, one for the buttons (the actual commands), one for the combos
     and the last one for the bitmaps used. Each element is identified by a command id that
@@ -42,11 +42,11 @@
               <CommandFlag>DefaultInvisible</CommandFlag>
               <CommandFlag>DynamicVisibility</CommandFlag>
           If you do not want an image next to your command, remove the Icon node /> -->
-      <Button guid="guidGitLabMainWindowPackageCmdSet" id="GitLabMainWindowCommandId" priority="0x0100" type="Button">
+      <Button guid="guidGitLabCodeReviewVsix2019PackageCmdSet" id="GitLabMainWindow2019CommandId" priority="0x0100" type="Button">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1"/>
         <Icon guid="guidImages" id="bmpPic1" />
         <Strings>
-          <ButtonText>GitLab Code Review 2015</ButtonText>
+          <ButtonText>GitLab Code Review</ButtonText>
         </Strings>
       </Button>
     </Buttons>
@@ -58,20 +58,20 @@
             bitmap strip containing the bitmaps and then there are the numeric ids of the elements used
             inside a button definition. An important aspect of this declaration is that the element id
             must be the actual index (1-based) of the bitmap inside the bitmap strip. -->
-      <Bitmap guid="guidImages" href="Resources\GitLabMainWindowCommand.png" usedList="bmpPic1"/>
+      <Bitmap guid="guidImages" href="Resources\GitLabMainWindow2019Command.png" usedList="bmpPic1"/>
     </Bitmaps>
   </Commands>
 
   <Symbols>
     <!-- This is the package guid. -->
-    <GuidSymbol name="guidGitLabMainWindowPackage" value="{6c43dddb-8c99-4b85-b1fd-c40425ed7c98}" />
+    <GuidSymbol name="guidGitLabCodeReviewVsix2019Package" value="{bc3f2132-4b71-4da6-b641-d52125ed61d4}" />
 
     <!-- This is the guid used to group the menu commands together -->
-    <GuidSymbol name="guidGitLabMainWindowPackageCmdSet" value="{d014e452-cf1a-47e8-a45a-2c5fe5963f91}">
-      <IDSymbol name="GitLabMainWindowCommandId" value="0x0100" />
+    <GuidSymbol name="guidGitLabCodeReviewVsix2019PackageCmdSet" value="{23690ac2-a84d-4e34-a82c-ac854c4a043e}">
+      <IDSymbol name="GitLabMainWindow2019CommandId" value="0x0100" />
     </GuidSymbol>
 
-    <GuidSymbol name="guidImages" value="{c229667c-9f5f-404c-a5d7-b3098565c3d0}" >
+    <GuidSymbol name="guidImages" value="{5d243e09-9bec-43ad-ba7e-ad05018aa1fd}" >
       <IDSymbol name="bmpPic1" value="1" />
       <IDSymbol name="bmpPic2" value="2" />
       <IDSymbol name="bmpPicSearch" value="3" />

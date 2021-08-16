@@ -1,16 +1,10 @@
-﻿//------------------------------------------------------------------------------
-// <copyright file="GitLabMainWindow.cs" company="Company">
-//     Copyright (c) Company.  All rights reserved.
-// </copyright>
-//------------------------------------------------------------------------------
+﻿using GitLabCodeReview.Views;
+using Microsoft.VisualStudio.Shell;
+using System;
+using System.Runtime.InteropServices;
 
-namespace GitLabCodeReviewVsix2015
+namespace GitLabCodeReviewVsix2019
 {
-    using System;
-    using System.Runtime.InteropServices;
-    using Microsoft.VisualStudio.Shell;
-    using GitLabCodeReview.Views;
-
     /// <summary>
     /// This class implements the tool window exposed by this package and hosts a user control.
     /// </summary>
@@ -22,15 +16,15 @@ namespace GitLabCodeReviewVsix2015
     /// implementation of the IVsUIElementPane interface.
     /// </para>
     /// </remarks>
-    [Guid("f0967664-0fa8-4d13-b133-e3f67558f921")]
-    public class GitLabMainWindow : ToolWindowPane
+    [Guid("a073dcd4-a341-46d8-b754-21020e926cd9")]
+    public class GitLabMainWindow2019 : ToolWindowPane
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="GitLabMainWindow"/> class.
+        /// Initializes a new instance of the <see cref="GitLabMainWindow2019"/> class.
         /// </summary>
-        public GitLabMainWindow() : base(null)
+        public GitLabMainWindow2019() : base(null)
         {
-            this.Caption = "GitLab Code Review 2015";
+            this.Caption = "GitLab Code Review";
 
             // This is the user control hosted by the tool window; Note that, even if this class implements IDisposable,
             // we are not calling Dispose on this object. This is because ToolWindowPane calls Dispose on
