@@ -57,7 +57,7 @@ namespace GitLabCodeReview.Client
         public async Task<UserDto> GetUserAsync()
         {
             var uri = $"{this.gitOptions.ApiUrl}/user";
-            var response = await client.GetAsync(uri);
+            var response = await client.GetAndValidateAsync(uri);
             var responseAsString = await response.Content.ReadAsStringAsync();
             var user = JsonHelper.Deserialize<UserDto>(responseAsString);
             return user;
@@ -80,7 +80,7 @@ namespace GitLabCodeReview.Client
         public async Task<MergeRequestDetailsDto> GetMergeRequestDetailsAsync(long projectId, long mergeRequestInternalId)
         {
             var uri = $"{this.gitOptions.ApiUrl}/projects/{projectId}/merge_requests/{mergeRequestInternalId}/changes";
-            var response = await client.GetAsync(uri);
+            var response = await client.GetAndValidateAsync(uri);
             var responseAsString = await response.Content.ReadAsStringAsync();
             var details = JsonHelper.Deserialize<MergeRequestDetailsDto>(responseAsString);
             return details;
@@ -89,7 +89,7 @@ namespace GitLabCodeReview.Client
         public async Task<FileDto> GetFileAsync(long projectId, string branch, string path)
         {
             var uri = $"{this.gitOptions.ApiUrl}/projects/{projectId}/repository/files/{HttpUtility.UrlEncode(path)}?ref={branch}";
-            var response = await client.GetAsync(uri);
+            var response = await client.GetAndValidateAsync(uri);
             var responseAsString = await response.Content.ReadAsStringAsync();
             var file = JsonHelper.Deserialize<FileDto>(responseAsString);
             return file;
@@ -98,7 +98,7 @@ namespace GitLabCodeReview.Client
         public async Task<BlobDto> GetFileBlobAsync(long projectId, string blobId)
         {
             var uri = $"{this.gitOptions.ApiUrl}/projects/{projectId}/repository/blobs/{blobId}";
-            var response = await client.GetAsync(uri);
+            var response = await client.GetAndValidateAsync(uri);
             var responseAsString = await response.Content.ReadAsStringAsync();
             var blob = JsonHelper.Deserialize<BlobDto>(responseAsString);
             return blob;
@@ -114,7 +114,7 @@ namespace GitLabCodeReview.Client
         public async Task<NoteDto> AddNote(long projectId, long mergeRequestInternalId, string discussionId, string body)
         {
             var uri = $"{this.gitOptions.ApiUrl}/projects/{projectId}/merge_requests/{mergeRequestInternalId}/discussions/{discussionId}/notes?body={body}";
-            var response = await client.PostAsync(uri, new StringContent(string.Empty, Encoding.UTF8, "application/json"));
+            var response = await client.PostAndValidateAsync(uri, new StringContent(string.Empty, Encoding.UTF8, "application/json"));
             var responseAsString = await response.Content.ReadAsStringAsync();
             var note = JsonHelper.Deserialize<NoteDto>(responseAsString);
             return note;
@@ -124,7 +124,7 @@ namespace GitLabCodeReview.Client
         {
             var uri = $"{this.gitOptions.ApiUrl}/projects/{projectId}/merge_requests/{mergeRequestInternalId}/discussions?body={body}";
             var content = JsonConvert.SerializeObject(createDiscussionDto, this.settings);
-            var response = await client.PostAsync(uri, new StringContent(content, Encoding.UTF8, "application/json"));
+            var response = await client.PostAndValidateAsync(uri, new StringContent(content, Encoding.UTF8, "application/json"));
             var responseAsString = await response.Content.ReadAsStringAsync();
             var discussion = JsonHelper.Deserialize<DiscussionDto>(responseAsString);
             return discussion;
@@ -142,7 +142,7 @@ namespace GitLabCodeReview.Client
             for(var i = 1; i <= maxPages; i++)
             {
                 var uriPerPage = uri.Parameter("per_page", maxPerPage.ToString()).Parameter("page", i.ToString());
-                var response = await client.GetAsync(uriPerPage);
+                var response = await client.GetAndValidateAsync(uriPerPage);
                 if (!response.IsSuccessStatusCode)
                 {
                     break;
