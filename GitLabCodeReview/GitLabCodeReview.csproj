@@ -151,6 +151,17 @@
     <None Include="Key.snk" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\options.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\file.png" />
+    <Resource Include="Resources\git-folder.png" />
+    <Resource Include="Resources\git.png" />
+    <Resource Include="Resources\project.png" />
+    <Resource Include="Resources\pull-request.png" />
+    <Resource Include="Resources\user.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
