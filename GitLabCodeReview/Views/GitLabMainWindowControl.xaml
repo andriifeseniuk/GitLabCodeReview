@@ -14,33 +14,13 @@
              Name="MyToolWindow"
              Loaded="MyToolWindow_Loaded">
     <UserControl.Resources>
-        <Style TargetType="Expander">
-            <Setter Property="ContentTemplate">
-                <Setter.Value>
-                    <DataTemplate>
-                        <ContentControl Margin="20,0,0,0" Content="{TemplateBinding Content}"/>
-                    </DataTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style TargetType="RadioButton">
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="Margin" Value="0,0,5,0"/>
-        </Style>
-
-        <Style x:Key="VisibleOnMouseOverParent" TargetType="Control">
-            <Setter Property="Visibility" Value="Hidden"/>
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Control}}, Path=IsMouseOver}" Value="True">
-                    <Setter Property="Visibility" Value="Visible"/>
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-
-        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
-        <converters:BoolInversionConverter x:Key="BoolInversionConverter"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/GitLabCodeReview;component/Styles/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
+    
     <Grid>
         <ScrollViewer IsEnabled="{Binding IsBusy, Converter={StaticResource BoolInversionConverter}}"
             VerticalScrollBarVisibility="Auto" 

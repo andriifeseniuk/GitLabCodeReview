@@ -11,10 +11,11 @@
              d:DesignHeight="300" d:DesignWidth="300">
 
     <UserControl.Resources>
-
-        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
-        <converters:LineBackgroundConverter x:Key="LineBackgroundConverter" />
-
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/GitLabCodeReview;component/Styles/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
     
     <Grid>
