@@ -97,21 +97,7 @@
                     <ItemsControl ItemsSource="{Binding FavoriteProjects}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-
-                                    <RadioButton Grid.Column="0" IsChecked="{Binding IsSelected}" GroupName="FavoriteProjectsRaioGroup"/>
-                                    <Image Grid.Column="1" Source="/GitLabCodeReview;component/Resources/project.png" Height="16" Width="16" Margin="0,0,3,0"/>
-                                    <TextBlock Grid.Column="2" Text="{Binding Name}"/>
-                                    <TextBlock Grid.Column="3" Text="id: " Margin="10,0,0,0"/>
-                                    <TextBlock Grid.Column="4" Text="{Binding Id}"/>
-                                </Grid>
+                                <views:ProjectView DataContext="{Binding}"></views:ProjectView>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -120,23 +106,7 @@
                     <ItemsControl ItemsSource="{Binding Projects}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-
-                                    <RadioButton Grid.Column="0" IsChecked="{Binding IsSelected}" GroupName="ProjectsRaioGroup"/>
-                                    <Image Grid.Column="1" Source="/GitLabCodeReview;component/Resources/project.png" Height="16" Width="16" Margin="0,0,3,0"/>
-                                    <TextBlock Grid.Column="2" Text="{Binding Name}"/>
-                                    <TextBlock Grid.Column="3" Text="id: " Margin="10,0,0,0"/>
-                                    <TextBlock Grid.Column="4" Text="{Binding Id}"/>
-                                    <CheckBox Grid.Column="5" IsChecked="{Binding IsFavorite}" Content="favorite" ToolTip="Favorite Project" Margin="10,0,0,0"/>
-                                </Grid>
+                                <views:ProjectView DataContext="{Binding}"></views:ProjectView>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
