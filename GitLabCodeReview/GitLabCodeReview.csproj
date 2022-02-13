@@ -121,6 +121,9 @@
     <Compile Include="Views\HadesSpinner.xaml.cs">
       <DependentUpon>HadesSpinner.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\HorizontalListBox.xaml.cs">
+      <DependentUpon>HorizontalListBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\LineDetailsView.xaml.cs">
       <DependentUpon>LineDetailsView.xaml</DependentUpon>
     </Compile>
@@ -151,6 +154,10 @@
     <Page Include="Views\HadesSpinner.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\HorizontalListBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\LineDetailsView.xaml">
       <Generator>MSBuild:Compile</Generator>

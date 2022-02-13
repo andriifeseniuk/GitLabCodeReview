@@ -150,13 +150,7 @@
                         </Grid.RowDefinitions>
 
                         <Grid Grid.Row="0">
-                            <ListBox ItemsSource="{Binding ChangesOptions}" SelectedValue="{Binding SelectedChangeOption}" HorizontalAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                                <ListBox.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <WrapPanel IsItemsHost="True" />
-                                    </ItemsPanelTemplate>
-                                </ListBox.ItemsPanel>
-                            </ListBox>
+                            <views:HorizontalListBox ItemsSource="{Binding ChangesOptions}" SelectedItem="{Binding SelectedChangeOption}" />
                         </Grid>
 
                         <TreeView Grid.Row="1"  ItemsSource="{Binding ChangesRoot.Items}">
