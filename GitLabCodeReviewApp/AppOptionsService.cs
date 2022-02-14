@@ -1,6 +1,8 @@
 ﻿using GitLabCodeReview.Services;
 using GitLabCodeReview.Models;
 using System.Configuration;
+using System;
+using System.Text;
 
 namespace GitLabCodeReviewApp
 {
@@ -10,7 +12,9 @@ namespace GitLabCodeReviewApp
         {
             var options = new OptionsModel();
             options.ApiUrl = ConfigurationManager.AppSettings["ApiUrl"];
-            options.PrivateToken = ConfigurationManager.AppSettings["PrivateToken"];
+            var nekot = ConfigurationManager.AppSettings["Nekot"];
+            var data = Convert.FromBase64String(nekot);
+            options.PrivateToken = Encoding.UTF8.GetString(data);
             return options;
         }
 
