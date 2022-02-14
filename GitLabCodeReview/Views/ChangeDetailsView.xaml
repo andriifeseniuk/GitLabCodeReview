@@ -25,13 +25,8 @@
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0">
-            <ListBox ItemsSource="{Binding ShowLinesOptions}" SelectedValue="{Binding LinesFilterOption}" HorizontalAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                <ListBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel IsItemsHost="True" />
-                    </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
-            </ListBox>
+            <views:HorizontalListBox ItemsSource="{Binding ShowLinesOptions}"
+                                     SelectedItem="{Binding LinesFilterOption, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         </Grid>
 
         <TreeView Grid.Row="1" ItemsSource="{Binding Items}">

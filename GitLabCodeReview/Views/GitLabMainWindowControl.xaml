@@ -150,7 +150,8 @@
                         </Grid.RowDefinitions>
 
                         <Grid Grid.Row="0">
-                            <views:HorizontalListBox ItemsSource="{Binding ChangesOptions}" SelectedItem="{Binding SelectedChangeOption}" />
+                            <views:HorizontalListBox ItemsSource="{Binding ChangesOptions}"
+                                                     SelectedItem="{Binding SelectedChangeOption, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </Grid>
 
                         <TreeView Grid.Row="1"  ItemsSource="{Binding ChangesRoot.Items}">
