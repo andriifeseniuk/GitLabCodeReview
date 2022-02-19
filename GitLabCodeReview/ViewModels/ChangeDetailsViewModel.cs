@@ -91,11 +91,11 @@ namespace GitLabCodeReview.ViewModels
             var linesCanBeCommented = new List<LineViewModel>();
             if (change.IsDeletedFile)
             {
-                this.lineViewModels = this.GetLineViewModelsFromSource(targetFileLines);
+                this.lineViewModels = this.GetLineViewModelsFromTarget(targetFileLines);
             }
             else if (change.IsNewFile)
             {
-                this.lineViewModels = this.GetLineViewModelsFromTarget(sourceFileLines);
+                this.lineViewModels = this.GetLineViewModelsFromSource(sourceFileLines);
             }
             else
             {

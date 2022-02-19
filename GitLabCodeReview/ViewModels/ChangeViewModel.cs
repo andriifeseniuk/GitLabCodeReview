@@ -60,6 +60,10 @@ namespace GitLabCodeReview.ViewModels
             }
         }
 
+        public bool IsDeleted => this.change.IsDeletedFile;
+
+        public bool IsAdded => this.change.IsNewFile;
+
         public bool IsExpanded
         {
             get
