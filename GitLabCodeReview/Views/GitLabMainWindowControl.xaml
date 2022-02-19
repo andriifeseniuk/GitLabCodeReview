@@ -27,71 +27,7 @@
             HorizontalScrollBarVisibility="Auto">
             <StackPanel Orientation="Vertical">
                 <Expander Header="Options">
-                    <StackPanel Orientation="Vertical">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <Image Grid.Row="0" Grid.Column="0" Source="/GitLabCodeReview;component/Resources/git.png" Height="16" Width="16" Margin="0,0,3,0"/>
-                            <TextBlock Grid.Row="0" Grid.Column="1" Text="API URL: "/>
-                            <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding GitOptions.ApiUrl}"/>
-
-                            <Image Grid.Row="1" Grid.Column="0" Source="/GitLabCodeReview;component/Resources/options.png" Height="16" Width="16" Margin="0,0,3,0"/>
-                            <TextBlock Grid.Row="1" Grid.Column="1" Text="Selected Project Id: "/>
-                            <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding GitOptions.SelectedProjectId}"/>
-
-                            <Image Grid.Row="2" Grid.Column="0" Source="/GitLabCodeReview;component/Resources/git-folder.png" Height="16" Width="16" Margin="0,0,3,0"/>
-                            <TextBlock Grid.Row="2" Grid.Column="1" Text="Repository Local Path: "/>
-                            <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding GitOptions.RepositoryLocalPath}"/>
-
-                            <Image Grid.Row="3" Grid.Column="0" Source="/GitLabCodeReview;component/Resources/git-folder.png" Height="16" Width="16" Margin="0,0,3,0"/>
-                            <TextBlock Grid.Row="3" Grid.Column="1" Text="Working Directory: "/>
-                            <TextBlock Grid.Row="3" Grid.Column="2" Text="{Binding GitOptions.WorkingDirectory}"/>
-
-                            <Image Grid.Row="4" Grid.Column="0" Source="/GitLabCodeReview;component/Resources/options.png" Height="16" Width="16" Margin="0,0,3,0"/>
-                            <TextBlock Grid.Row="4" Grid.Column="1" Text="Auto-clean Working Directory: "/>
-                            <TextBlock Grid.Row="4" Grid.Column="2" Text="{Binding GitOptions.AutoCleanWorkingDirectory}"/>
-                        </Grid>
-
-                        <StackPanel Orientation="Horizontal">
-                            <Button Content="Refresh" Command="{Binding RefreshAllCommand}"/>
-                            <Button Content="Save" Command="{Binding SaveCommand}" Margin="10,0,0,0"/>
-                        </StackPanel>
-                    </StackPanel>
-                </Expander>
-                <Expander Header="User Info">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <Image Grid.Row="0" Grid.Column="0" Source="/GitLabCodeReview;component/Resources/options.png" Height="16" Width="16" Margin="0,0,3,0"/>
-                        <TextBlock Grid.Row="0" Grid.Column="1" Text="User ID: " />
-                        <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding UserId}" />
-
-                        <Image Grid.Row="1" Grid.Column="0" Source="/GitLabCodeReview;component/Resources/user.png" Height="16" Width="16" Margin="0,0,3,0"/>
-                        <TextBlock Grid.Row="1" Grid.Column="1" Text="Username: " />
-                        <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding UserName}" />
-                    </Grid>
+                    <views:OptionsView DataContext="{Binding}" />
                 </Expander>
                 <Expander Header="Favorite Projects">
                     <ItemsControl ItemsSource="{Binding FavoriteProjects}">
