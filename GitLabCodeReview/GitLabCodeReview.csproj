@@ -112,6 +112,9 @@
     <Compile Include="Views\ChangeDetailsView.xaml.cs">
       <DependentUpon>ChangeDetailsView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ChangeView.xaml.cs">
+      <DependentUpon>ChangeView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\DiscussionDetailsView.xaml.cs">
       <DependentUpon>DiscussionDetailsView.xaml</DependentUpon>
     </Compile>
@@ -142,6 +145,10 @@
     <Page Include="Views\ChangeDetailsView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ChangeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\DiscussionDetailsView.xaml">
       <Generator>MSBuild:Compile</Generator>
