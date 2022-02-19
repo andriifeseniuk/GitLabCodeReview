@@ -23,6 +23,9 @@
     
     <Grid>
         <TabControl IsEnabled="{Binding IsBusy, Converter={StaticResource BoolInversionConverter}}">
+            <TabItem Header="Options">
+                <views:OptionsView DataContext="{Binding}" />
+            </TabItem>
             <TabItem Header="{Binding ErrorsHeader}">
                 <views:ErrorsCollectionView DataContext="{Binding}" />
             </TabItem>
