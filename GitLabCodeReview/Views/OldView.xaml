@@ -1,0 +1,123 @@
+﻿<UserControl x:Class="GitLabCodeReview.Views.OldView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GitLabCodeReview.Views"
+             xmlns:viewModels="clr-namespace:GitLabCodeReview.ViewModels"
+             xmlns:views="clr-namespace:GitLabCodeReview.Views"
+             xmlns:converters="clr-namespace:GitLabCodeReview.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/GitLabCodeReview;component/Styles/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
+    <Grid>
+        <ScrollViewer
+                    VerticalScrollBarVisibility="Auto" 
+                    HorizontalScrollBarVisibility="Auto">
+            <StackPanel Orientation="Vertical">
+                <Expander Header="Options">
+                    <views:OptionsView DataContext="{Binding}" />
+                </Expander>
+                <Expander Header="Favorite Projects">
+                    <ItemsControl ItemsSource="{Binding FavoriteProjects}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <views:ProjectView DataContext="{Binding}"></views:ProjectView>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Expander>
+                <Expander Header="Projects">
+                    <ItemsControl ItemsSource="{Binding Projects}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <views:ProjectView DataContext="{Binding}"></views:ProjectView>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Expander>
+                <Expander Header="Merge requests">
+                    <ItemsControl ItemsSource="{Binding MergeRequests}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <RadioButton Grid.Column="0" Grid.Row="0" IsChecked="{Binding IsSelected}"/>
+                                    <Image Grid.Column="1" Grid.Row="0" Source="/GitLabCodeReview;component/Resources/pull-request.png" Height="16" Width="16" Margin="0,0,3,0"/>
+                                    <TextBlock Grid.Column="2" Grid.Row="0" Text="{Binding InternalId}"/>
+                                    <TextBlock Grid.Column="3" Grid.Row="0" Text=": "/>
+                                    <TextBlock Grid.Column="4" Grid.Row="0" Text="{Binding Title}"/>
+                                    <TextBlock Grid.Column="4" Grid.Row="1" Text="{Binding Author.Name}" Opacity="0.5"/>
+                                    <TextBlock Grid.Column="4" Grid.Row="2" Text="{Binding CreatedAt}" Opacity="0.5"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Expander>
+                <Expander Header="Changes">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0">
+                            <views:HorizontalListBox ItemsSource="{Binding ChangesOptions}"
+                                                             SelectedItem="{Binding SelectedChangeOption, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </Grid>
+
+                        <TreeView Grid.Row="1"  ItemsSource="{Binding ChangesRoot.Items}">
+                            <TreeView.ItemContainerStyle>
+                                <Style TargetType="{x:Type TreeViewItem}">
+                                    <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                </Style>
+                            </TreeView.ItemContainerStyle>
+                            <TreeView.Resources>
+                                <HierarchicalDataTemplate DataType="{x:Type viewModels:DummyTreeNode}">
+                                    <TextBlock Text="{Binding DisplayName}"/>
+                                </HierarchicalDataTemplate>
+                                <HierarchicalDataTemplate DataType="{x:Type viewModels:FolderViewModel}"
+                                                                    ItemsSource="{Binding Items}">
+                                    <views:FolderView DataContext="{Binding}" />
+                                </HierarchicalDataTemplate>
+                                <HierarchicalDataTemplate DataType="{x:Type viewModels:ChangeViewModel}"
+                                                                    ItemsSource="{Binding Items}">
+                                    <views:ChangeView DataContext="{Binding}" />
+                                </HierarchicalDataTemplate>
+                                <HierarchicalDataTemplate DataType="{x:Type viewModels:ChangeDetailsViewModel}">
+                                    <Grid>
+                                        <views:ChangeDetailsView DataContext="{Binding}"></views:ChangeDetailsView>
+                                    </Grid>
+                                </HierarchicalDataTemplate>
+                            </TreeView.Resources>
+                        </TreeView>
+                    </Grid>
+                </Expander>
+                <Expander Header="{Binding ErrorsHeader}">
+                    <views:ErrorsCollectionView DataContext="{Binding}" />
+                </Expander>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
