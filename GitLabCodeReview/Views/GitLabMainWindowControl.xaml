@@ -166,10 +166,7 @@
                                 </HierarchicalDataTemplate>
                                 <HierarchicalDataTemplate DataType="{x:Type viewModels:FolderViewModel}"
                                                             ItemsSource="{Binding Items}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <Image Source="/GitLabCodeReview;component/Resources/git-folder.png" Height="16" Width="16" Margin="0,0,3,0"/>
-                                        <TextBlock Text="{Binding DisplayName}" ToolTip="{Binding DisplayName}"/>
-                                    </StackPanel>
+                                    <views:FolderView DataContext="{Binding}" />
                                 </HierarchicalDataTemplate>
                                 <HierarchicalDataTemplate DataType="{x:Type viewModels:ChangeViewModel}"
                                                             ItemsSource="{Binding Items}">

@@ -118,6 +118,9 @@
     <Compile Include="Views\DiscussionDetailsView.xaml.cs">
       <DependentUpon>DiscussionDetailsView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\FolderView.xaml.cs">
+      <DependentUpon>FolderView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\GitLabMainWindowControl.xaml.cs">
       <DependentUpon>GitLabMainWindowControl.xaml</DependentUpon>
     </Compile>
@@ -153,6 +156,10 @@
     <Page Include="Views\DiscussionDetailsView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\FolderView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\GitLabMainWindowControl.xaml">
       <Generator>MSBuild:Compile</Generator>
