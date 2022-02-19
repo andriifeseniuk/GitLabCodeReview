@@ -185,9 +185,7 @@
                     <ItemsControl ItemsSource="{Binding Errors}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Grid>
-                                    <TextBox Text="{Binding Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap" HorizontalAlignment="Stretch"/>
-                                </Grid>
+                                <views:ErrorView DataContext="{Binding}" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
